@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "dgSpecHash": "rRs2KmCRVYI=",
+  "success": true,
+  "projectFilePath": "D:\\CatSanguo\\CatSanguo\\CatSanguo.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\86138\\.nuget\\packages\\cyotek.drawing.bitmapfont\\2.0.4\\cyotek.drawing.bitmapfont.2.0.4.nupkg.sha512",
+    "C:\\Users\\86138\\.nuget\\packages\\fontstashsharp.base\\1.2.2\\fontstashsharp.base.1.2.2.nupkg.sha512",
+    "C:\\Users\\86138\\.nuget\\packages\\fontstashsharp.monogame\\1.5.4\\fontstashsharp.monogame.1.5.4.nupkg.sha512",
+    "C:\\Users\\86138\\.nuget\\packages\\fontstashsharp.rasterizers.stbtruetypesharp\\1.2.2\\fontstashsharp.rasterizers.stbtruetypesharp.1.2.2.nupkg.sha512",
+    "C:\\Users\\86138\\.nuget\\packages\\monogame.content.builder.task\\3.8.4.1\\monogame.content.builder.task.3.8.4.1.nupkg.sha512",
+    "C:\\Users\\86138\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.4.1\\monogame.framework.desktopgl.3.8.4.1.nupkg.sha512",
+    "C:\\Users\\86138\\.nuget\\packages\\monogame.library.openal\\1.24.3.2\\monogame.library.openal.1.24.3.2.nupkg.sha512",
+    "C:\\Users\\86138\\.nuget\\packages\\monogame.library.sdl\\2.32.2.1\\monogame.library.sdl.2.32.2.1.nupkg.sha512",
+    "C:\\Users\\86138\\.nuget\\packages\\nvorbis\\0.10.4\\nvorbis.0.10.4.nupkg.sha512",
+    "C:\\Users\\86138\\.nuget\\packages\\stbimagesharp\\2.30.15\\stbimagesharp.2.30.15.nupkg.sha512",
+    "C:\\Users\\86138\\.nuget\\packages\\stbtruetypesharp\\1.26.12\\stbtruetypesharp.1.26.12.nupkg.sha512",
+    "C:\\Users\\86138\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
+    "C:\\Users\\86138\\.nuget\\packages\\system.valuetuple\\4.5.0\\system.valuetuple.4.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}

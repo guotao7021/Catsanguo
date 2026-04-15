@@ -1,0 +1,58 @@
+[
+  {
+    "id": "peach_garden",
+    "name": "桃园结义",
+    "requiredGeneralIds": ["guanyu", "zhangfei"],
+    "statBonuses": { "attack": 0.15, "defense": 0.10 },
+    "description": "猫云猫飞结义，攻防兼备"
+  },
+  {
+    "id": "father_son",
+    "name": "父子和将",
+    "requiredGeneralIds": ["zhangliao", "zhanghe"],
+    "statBonuses": { "speed": 0.20, "attack": 0.10 },
+    "description": "张氏父子，突袭无敌"
+  },
+  {
+    "id": "caocao_generals",
+    "name": "奸雄与将",
+    "requiredGeneralIds": ["caocao", "xiahoudun", "dianwei"],
+    "statBonuses": { "defense": 0.15, "morale_recovery": 0.20 },
+    "description": "曹操与麾下猛将，坚不可摧"
+  },
+  {
+    "id": "eastern_wu",
+    "name": "东吴之主",
+    "requiredGeneralIds": ["sunquan", "zhoutai"],
+    "statBonuses": { "intelligence": 0.15, "defense": 0.10 },
+    "description": "孙权与周泰，智守江东"
+  },
+  {
+    "id": "veteran_general",
+    "name": "老当益壮",
+    "requiredGeneralIds": ["huangzhong", "weiyang"],
+    "statBonuses": { "attack": 0.12, "speed": 0.08 },
+    "description": "老将组合，宝刀未老"
+  },
+  {
+    "id": "strategists",
+    "name": "智将组合",
+    "requiredGeneralIds": ["zhugeliang", "caocao"],
+    "statBonuses": { "intelligence": 0.20, "skill_damage": 0.15 },
+    "description": "两大智者，谋定天下"
+  },
+  {
+    "id": "iron_wall",
+    "name": "铁壁防守",
+    "requiredGeneralIds": ["caoren", "dianwei"],
+    "statBonuses": { "defense": 0.25, "hp": 0.10 },
+    "description": "铜墙铁壁，固若金汤"
+  },
+  {
+    "id": "five_tigers",
+    "name": "五虎上将",
+    "requiredGeneralIds": ["guanyu", "zhangfei", "huangzhong"],
+    "statBonuses": { "attack": 0.20, "defense": 0.15 },
+    "description": "蜀国五虎，威震天下"
+  }
+]

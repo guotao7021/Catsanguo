@@ -1,0 +1,22 @@
+[
+  { "id": "sword_iron", "name": "铁剑", "type": "weapon", "statBonus": 10, "rarity": "common", "statType": "strength" },
+  { "id": "blade_green_dragon", "name": "青龙刀", "type": "weapon", "statBonus": 18, "rarity": "rare", "statType": "strength" },
+  { "id": "halberd_fangtian", "name": "方天戟", "type": "weapon", "statBonus": 22, "rarity": "epic", "statType": "strength" },
+  { "id": "sword_yitian", "name": "倚天剑", "type": "weapon", "statBonus": 15, "rarity": "rare", "statType": "strength" },
+  { "id": "blade_slayer", "name": "屠龙刀", "type": "weapon", "statBonus": 28, "rarity": "legendary", "statType": "strength" },
+  { "id": "armor_leather", "name": "皮甲", "type": "armor", "statBonus": 8, "rarity": "common", "statType": "leadership" },
+  { "id": "armor_iron", "name": "铁甲", "type": "armor", "statBonus": 14, "rarity": "common", "statType": "leadership" },
+  { "id": "armor_bright", "name": "明光铠", "type": "armor", "statBonus": 20, "rarity": "rare", "statType": "leadership" },
+  { "id": "armor_chain", "name": "锁子甲", "type": "armor", "statBonus": 16, "rarity": "rare", "statType": "leadership" },
+  { "id": "armor_bagua", "name": "八卦甲", "type": "armor", "statBonus": 25, "rarity": "legendary", "statType": "leadership" },
+  { "id": "book_lunyu", "name": "论语", "type": "book", "statBonus": 10, "rarity": "common", "statType": "intelligence" },
+  { "id": "book_mengzi", "name": "孟子", "type": "book", "statBonus": 16, "rarity": "common", "statType": "intelligence" },
+  { "id": "book_art_of_war", "name": "孙子兵法", "type": "book", "statBonus": 22, "rarity": "epic", "statType": "intelligence" },
+  { "id": "book_liutao", "name": "六韬", "type": "book", "statBonus": 18, "rarity": "rare", "statType": "intelligence" },
+  { "id": "book_sanlve", "name": "三略", "type": "book", "statBonus": 25, "rarity": "legendary", "statType": "intelligence" },
+  { "id": "horse_common", "name": "普通马", "type": "mount", "statBonus": 8, "rarity": "common", "statType": "speed" },
+  { "id": "horse_dilu", "name": "的卢", "type": "mount", "statBonus": 15, "rarity": "rare", "statType": "speed" },
+  { "id": "horse_jueying", "name": "绝影", "type": "mount", "statBonus": 18, "rarity": "rare", "statType": "speed" },
+  { "id": "horse_zhuahuang", "name": "爪黄飞电", "type": "mount", "statBonus": 22, "rarity": "epic", "statType": "speed" },
+  { "id": "horse_red_hare", "name": "赤兔", "type": "mount", "statBonus": 28, "rarity": "legendary", "statType": "speed" }
+]

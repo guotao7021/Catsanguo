@@ -1,0 +1,668 @@
+{
+  "BattleMerit": 324,
+  "OwnedCityIds": [
+    "cheng_du",
+    "zi_tong",
+    "mian_zhu",
+    "jian_ge",
+    "han_zhong",
+    "jiang_zhou",
+    "nan_yang",
+    "wan_cheng",
+    "luo_yang",
+    "hu_lao",
+    "chen_liu",
+    "xu_chang",
+    "ru_nan",
+    "shou_chun",
+    "he_fei",
+    "xiang_yang",
+    "jiang_xia",
+    "jian_ye",
+    "chai_sang"
+  ],
+  "CompletedStageIds": [],
+  "CurrentSquad": [
+    "zhangliao",
+    "caoren"
+  ],
+  "Generals": [
+    {
+      "Id": "guanyu",
+      "Level": 4,
+      "Experience": 41,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 9,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "sweeping_strike": 38
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "zhangfei",
+      "Level": 5,
+      "Experience": 165,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 17,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "war_cry": 28
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "zhugeliang",
+      "Level": 5,
+      "Experience": 58,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 12,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "fire_attack": 68
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "caocao",
+      "Level": 4,
+      "Experience": 43,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 7,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "tyrant_command": 40
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "zhangliao",
+      "Level": 4,
+      "Experience": 360,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 8,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "ambush_charge": 19
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "sunquan",
+      "Level": 2,
+      "Experience": 46,
+      "IsUnlocked": true,
+      "Status": "Captive",
+      "SkillPoints": 2,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "defensive_formation": 14
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "caoren",
+      "Level": 3,
+      "Experience": 118,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 5,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "defensive_formation": 22
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "dianwei",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "war_cry": 7
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "huangzhong",
+      "Level": 8,
+      "Experience": 13,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "piercing_shot": 17
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "xiahoudun",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "sweeping_strike": 57
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "weiyang",
+      "Level": 4,
+      "Experience": 13,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "piercing_shot": 6
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "zhanghe",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "ambush_charge": 11
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "zhoutai",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {},
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "caohong",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "defensive_formation": 9
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "yujin",
+      "Level": 2,
+      "Experience": 13,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "defensive_formation": 5
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "lidian",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {},
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "xuhuang",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "sweeping_strike": 68
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "ganning",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Captive",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "ambush_charge": 4
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "luxun",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {
+        "weapon": "blade_slayer"
+      },
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "fire_attack": 13
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "lvmeng",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Captive",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "ambush_charge": 13
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "taishici",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {},
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "liubiao",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "defensive_formation": 8
+      },
+      "UnlockedSkillTreeNodes": []
+    },
+    {
+      "Id": "menghuo",
+      "Level": 1,
+      "Experience": 0,
+      "IsUnlocked": true,
+      "Status": "Recruited",
+      "SkillPoints": 0,
+      "EquippedItems": {},
+      "LearnedSkillIds": [],
+      "ActiveSkillSlot": "",
+      "PassiveSkillSlot": "",
+      "SkillLevels": {
+        "war_cry": 4
+      },
+      "UnlockedSkillTreeNodes": []
+    }
+  ],
+  "Cities": [
+    {
+      "CityId": "zi_tong",
+      "Level": 1,
+      "Population": 250,
+      "Grain": 470,
+      "CurrentTroops": 200,
+      "LastProductionTickMs": 1776213434908,
+      "GeneralIds": []
+    },
+    {
+      "CityId": "cheng_du",
+      "Level": 1,
+      "Population": 463,
+      "Grain": 1315,
+      "CurrentTroops": 200,
+      "LastProductionTickMs": 1776213434908,
+      "GeneralIds": [
+        "huangzhong",
+        "weiyang",
+        "yujin"
+      ]
+    },
+    {
+      "CityId": "hu_lao",
+      "Level": 1,
+      "Population": 135,
+      "Grain": 205,
+      "CurrentTroops": 200,
+      "LastProductionTickMs": 1776213434908,
+      "GeneralIds": [
+        "zhangfei",
+        "zhugeliang",
+        "caocao"
+      ]
+    },
+    {
+      "CityId": "chen_liu",
+      "Level": 1,
+      "Population": 235,
+      "Grain": 685,
+      "CurrentTroops": 200,
+      "LastProductionTickMs": 1776213434908,
+      "GeneralIds": [
+        "zhugeliang",
+        "caocao",
+        "guanyu"
+      ]
+    },
+    {
+      "CityId": "xu_chang",
+      "Level": 1,
+      "Population": 405,
+      "Grain": 1255,
+      "CurrentTroops": 200,
+      "LastProductionTickMs": 1776213434908,
+      "GeneralIds": [
+        "guanyu",
+        "zhangfei",
+        "caocao"
+      ]
+    },
+    {
+      "CityId": "ru_nan",
+      "Level": 1,
+      "Population": 180,
+      "Grain": 550,
+      "CurrentTroops": 200,
+      "LastProductionTickMs": 1776213434908,
+      "GeneralIds": [
+        "zhugeliang",
+        "zhangliao",
+        "sunquan"
+      ]
+    },
+    {
+      "CityId": "he_fei",
+      "Level": 1,
+      "Population": 260,
+      "Grain": 840,
+      "CurrentTroops": 200,
+      "LastProductionTickMs": 1776213434908,
+      "GeneralIds": [
+        "guanyu",
+        "zhangfei",
+        "caoren"
+      ]
+    },
+    {
+      "CityId": "xiang_yang",
+      "Level": 1,
+      "Population": 290,
+      "Grain": 940,
+      "CurrentTroops": 200,
+      "LastProductionTickMs": 1776213434908,
+      "GeneralIds": [
+        "zhangfei",
+        "zhugeliang",
+        "zhangliao"
+      ]
+    },
+    {
+      "CityId": "jiang_xia",
+      "Level": 1,
+      "Population": 140,
+      "Grain": 570,
+      "CurrentTroops": 200,
+      "LastProductionTickMs": 1776213434908,
+      "GeneralIds": [
+        "zhangfei",
+        "zhugeliang",
+        "zhangliao"
+      ]
+    },
+    {
+      "CityId": "jian_ye",
+      "Level": 1,
+      "Population": 410,
+      "Grain": 1510,
+      "CurrentTroops": 200,
+      "LastProductionTickMs": 1776213434908,
+      "GeneralIds": [
+        "zhangfei",
+        "zhugeliang",
+        "caocao"
+      ]
+    },
+    {
+      "CityId": "chai_sang",
+      "Level": 1,
+      "Population": 130,
+      "Grain": 600,
+      "CurrentTroops": 400,
+      "LastProductionTickMs": 1776213469410,
+      "GeneralIds": [
+        "zhangliao",
+        "caoren"
+      ]
+    }
+  ],
+  "Armies": [
+    {
+      "Id": "player_main",
+      "GeneralIds": [
+        "guanyu",
+        "zhugeliang"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "cheng_du",
+      "Team": "player"
+    },
+    {
+      "Id": "enemy_ye_cheng",
+      "GeneralIds": [
+        "zhangliao",
+        "zhanghe"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "ye_cheng",
+      "Team": "enemy_wei"
+    },
+    {
+      "Id": "enemy_pu_yang",
+      "GeneralIds": [
+        "lidian"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "pu_yang",
+      "Team": "enemy_wei"
+    },
+    {
+      "Id": "enemy_jin_yang",
+      "GeneralIds": [
+        "xiahoudun"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "jin_yang",
+      "Team": "enemy_wei"
+    },
+    {
+      "Id": "enemy_hu_guan",
+      "GeneralIds": [
+        "zhanghe"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "hu_guan",
+      "Team": "enemy_wei"
+    },
+    {
+      "Id": "enemy_you_zhou",
+      "GeneralIds": [
+        "zhangliao",
+        "yujin"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "you_zhou",
+      "Team": "enemy_wei"
+    },
+    {
+      "Id": "enemy_bei_ping",
+      "GeneralIds": [
+        "lidian"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "bei_ping",
+      "Team": "enemy_wei"
+    },
+    {
+      "Id": "enemy_chai_sang",
+      "GeneralIds": [
+        "ganning"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "chai_sang",
+      "Team": "enemy_wu"
+    },
+    {
+      "Id": "enemy_wu_jun",
+      "GeneralIds": [
+        "taishici"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "wu_jun",
+      "Team": "enemy_wu"
+    },
+    {
+      "Id": "enemy_kuai_ji",
+      "GeneralIds": [
+        "zhoutai"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "kuai_ji",
+      "Team": "enemy_wu"
+    },
+    {
+      "Id": "enemy_lu_jiang",
+      "GeneralIds": [
+        "lvmeng"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "lu_jiang",
+      "Team": "enemy_wu"
+    },
+    {
+      "Id": "enemy_shan_yin",
+      "GeneralIds": [
+        "ganning"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "shan_yin",
+      "Team": "enemy_wu"
+    },
+    {
+      "Id": "player_army_9ff4",
+      "GeneralIds": [
+        "guanyu",
+        "zhugeliang"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "wan_cheng",
+      "Team": "player"
+    },
+    {
+      "Id": "player_army_c1c2",
+      "GeneralIds": [
+        "zhangliao",
+        "caoren"
+      ],
+      "GeneralConfigs": [],
+      "CurrentCityId": "chai_sang",
+      "Team": "player"
+    }
+  ]
+}

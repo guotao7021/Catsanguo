@@ -1,0 +1,140 @@
+[
+  {
+    "id": "guanyu", "name": "猫云", "title": "武圣猫",
+    "strength": 95, "intelligence": 70, "leadership": 90, "speed": 75,
+    "activeSkillId": "sweeping_strike", "passiveSkillId": "martial_saint",
+    "preferredFormation": "cavalry"
+  },
+  {
+    "id": "zhangfei", "name": "猫飞", "title": "猛将猫",
+    "strength": 90, "intelligence": 40, "leadership": 75, "speed": 70,
+    "activeSkillId": "war_cry", "passiveSkillId": "fierce_general",
+    "preferredFormation": "vanguard"
+  },
+  {
+    "id": "zhugeliang", "name": "猫亮", "title": "神算猫",
+    "strength": 40, "intelligence": 98, "leadership": 92, "speed": 60,
+    "activeSkillId": "fire_attack", "passiveSkillId": "divine_calc",
+    "preferredFormation": "archer"
+  },
+  {
+    "id": "caocao", "name": "猫操", "title": "奸雄猫",
+    "strength": 72, "intelligence": 90, "leadership": 96, "speed": 68,
+    "activeSkillId": "tyrant_command", "passiveSkillId": "tyrant_spirit",
+    "preferredFormation": "vanguard"
+  },
+  {
+    "id": "zhangliao", "name": "猫辽", "title": "先锋猫",
+    "strength": 88, "intelligence": 65, "leadership": 78, "speed": 85,
+    "activeSkillId": "ambush_charge", "passiveSkillId": "vanguard_spirit",
+    "preferredFormation": "cavalry"
+  },
+  {
+    "id": "sunquan", "name": "猫权", "title": "守成猫",
+    "strength": 70, "intelligence": 80, "leadership": 88, "speed": 65,
+    "activeSkillId": "defensive_formation", "passiveSkillId": "steady_ruler",
+    "preferredFormation": "vanguard"
+  },
+  {
+    "id": "caoren", "name": "猫仁", "title": "守备猫",
+    "strength": 65, "intelligence": 55, "leadership": 70, "speed": 50,
+    "activeSkillId": "defensive_formation", "passiveSkillId": "steadfast",
+    "preferredFormation": "vanguard"
+  },
+  {
+    "id": "dianwei", "name": "猫韦", "title": "虎卫猫",
+    "strength": 85, "intelligence": 30, "leadership": 65, "speed": 60,
+    "activeSkillId": "war_cry", "passiveSkillId": "fierce_general",
+    "preferredFormation": "vanguard"
+  },
+  {
+    "id": "huangzhong", "name": "猫忠", "title": "神射猫",
+    "strength": 80, "intelligence": 55, "leadership": 70, "speed": 65,
+    "activeSkillId": "piercing_shot", "passiveSkillId": "archer_master",
+    "preferredFormation": "archer"
+  },
+  {
+    "id": "xiahoudun", "name": "猫惇", "title": "独眼猫",
+    "strength": 82, "intelligence": 45, "leadership": 72, "speed": 70,
+    "activeSkillId": "sweeping_strike", "passiveSkillId": "fierce_general",
+    "preferredFormation": "cavalry"
+  },
+  {
+    "id": "weiyang", "name": "猫延", "title": "老将猫",
+    "strength": 78, "intelligence": 50, "leadership": 68, "speed": 60,
+    "activeSkillId": "piercing_shot", "passiveSkillId": "archer_master",
+    "preferredFormation": "archer"
+  },
+  {
+    "id": "zhanghe", "name": "猫郃", "title": "巧变猫",
+    "strength": 75, "intelligence": 65, "leadership": 68, "speed": 78,
+    "activeSkillId": "ambush_charge", "passiveSkillId": "vanguard_spirit",
+    "preferredFormation": "cavalry"
+  },
+  {
+    "id": "zhoutai", "name": "猫泰", "title": "忠盾猫",
+    "strength": 78, "intelligence": 50, "leadership": 82, "speed": 45,
+    "activeSkillId": "defensive_formation", "passiveSkillId": "steadfast",
+    "preferredFormation": "vanguard"
+  },
+  {
+    "id": "caohong", "name": "猫洪", "title": "护军猫",
+    "strength": 70, "intelligence": 45, "leadership": 65, "speed": 55,
+    "activeSkillId": "defensive_formation", "passiveSkillId": "steadfast",
+    "preferredFormation": "vanguard"
+  },
+  {
+    "id": "yujin", "name": "猫禁", "title": "铁壁猫",
+    "strength": 68, "intelligence": 55, "leadership": 72, "speed": 50,
+    "activeSkillId": "defensive_formation", "passiveSkillId": "steadfast",
+    "preferredFormation": "vanguard"
+  },
+  {
+    "id": "lidian", "name": "猫典", "title": "劲弓猫",
+    "strength": 72, "intelligence": 60, "leadership": 68, "speed": 65,
+    "activeSkillId": "piercing_shot", "passiveSkillId": "archer_master",
+    "preferredFormation": "archer"
+  },
+  {
+    "id": "xuhuang", "name": "猫晃", "title": "威猛猫",
+    "strength": 80, "intelligence": 58, "leadership": 75, "speed": 68,
+    "activeSkillId": "sweeping_strike", "passiveSkillId": "vanguard_spirit",
+    "preferredFormation": "cavalry"
+  },
+  {
+    "id": "ganning", "name": "猫宁", "title": "锦帆猫",
+    "strength": 85, "intelligence": 48, "leadership": 70, "speed": 80,
+    "activeSkillId": "ambush_charge", "passiveSkillId": "fierce_general",
+    "preferredFormation": "cavalry"
+  },
+  {
+    "id": "luxun", "name": "猫逊", "title": "儒将猫",
+    "strength": 55, "intelligence": 90, "leadership": 82, "speed": 65,
+    "activeSkillId": "fire_attack", "passiveSkillId": "divine_calc",
+    "preferredFormation": "archer"
+  },
+  {
+    "id": "lvmeng", "name": "猫蒙", "title": "白衣猫",
+    "strength": 75, "intelligence": 78, "leadership": 80, "speed": 70,
+    "activeSkillId": "ambush_charge", "passiveSkillId": "vanguard_spirit",
+    "preferredFormation": "vanguard"
+  },
+  {
+    "id": "taishici", "name": "猫慈", "title": "义勇猫",
+    "strength": 88, "intelligence": 45, "leadership": 68, "speed": 78,
+    "activeSkillId": "sweeping_strike", "passiveSkillId": "fierce_general",
+    "preferredFormation": "cavalry"
+  },
+  {
+    "id": "liubiao", "name": "猫表", "title": "牧守猫",
+    "strength": 45, "intelligence": 72, "leadership": 78, "speed": 40,
+    "activeSkillId": "defensive_formation", "passiveSkillId": "steady_ruler",
+    "preferredFormation": "archer"
+  },
+  {
+    "id": "menghuo", "name": "猫获", "title": "蛮王猫",
+    "strength": 82, "intelligence": 30, "leadership": 55, "speed": 65,
+    "activeSkillId": "war_cry", "passiveSkillId": "fierce_general",
+    "preferredFormation": "vanguard"
+  }
+]

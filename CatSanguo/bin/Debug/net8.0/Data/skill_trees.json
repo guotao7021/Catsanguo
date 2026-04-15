@@ -1,0 +1,42 @@
+[
+  {
+    "generalId": "guanyu",
+    "nodes": [
+      { "nodeId": "gy_1", "nodeType": "stat", "statType": "strength", "statValue": 5.0, "cost": 1, "positionX": 0, "positionY": 0, "description": "武力+5" },
+      { "nodeId": "gy_2", "nodeType": "stat", "statType": "leadership", "statValue": 3.0, "cost": 1, "parentNodeIds": ["gy_1"], "positionX": -1, "positionY": 1, "description": "统率+3" },
+      { "nodeId": "gy_3", "nodeType": "skill", "unlockSkillId": "war_cry", "cost": 3, "parentNodeIds": ["gy_1"], "positionX": 1, "positionY": 1, "description": "解锁技能: 怒吼" },
+      { "nodeId": "gy_4", "nodeType": "stat", "statType": "strength", "statValue": 8.0, "cost": 2, "parentNodeIds": ["gy_2", "gy_3"], "positionX": 0, "positionY": 2, "description": "武力+8" },
+      { "nodeId": "gy_5", "nodeType": "passive", "statType": "attack", "statValue": 0.10, "cost": 3, "parentNodeIds": ["gy_4"], "positionX": 0, "positionY": 3, "description": "攻击+10%" }
+    ]
+  },
+  {
+    "generalId": "zhugeliang",
+    "nodes": [
+      { "nodeId": "zl_1", "nodeType": "stat", "statType": "intelligence", "statValue": 5.0, "cost": 1, "positionX": 0, "positionY": 0, "description": "智力+5" },
+      { "nodeId": "zl_2", "nodeType": "stat", "statType": "intelligence", "statValue": 3.0, "cost": 1, "parentNodeIds": ["zl_1"], "positionX": -1, "positionY": 1, "description": "智力+3" },
+      { "nodeId": "zl_3", "nodeType": "skill", "unlockSkillId": "defensive_formation", "cost": 3, "parentNodeIds": ["zl_1"], "positionX": 1, "positionY": 1, "description": "解锁技能: 防御阵" },
+      { "nodeId": "zl_4", "nodeType": "passive", "statType": "cooldown_reduction", "statValue": 0.10, "cost": 2, "parentNodeIds": ["zl_2", "zl_3"], "positionX": 0, "positionY": 2, "description": "冷却缩减+10%" },
+      { "nodeId": "zl_5", "nodeType": "stat", "statType": "intelligence", "statValue": 10.0, "cost": 3, "parentNodeIds": ["zl_4"], "positionX": 0, "positionY": 3, "description": "智力+10" }
+    ]
+  },
+  {
+    "generalId": "caocao",
+    "nodes": [
+      { "nodeId": "cc_1", "nodeType": "stat", "statType": "leadership", "statValue": 5.0, "cost": 1, "positionX": 0, "positionY": 0, "description": "统率+5" },
+      { "nodeId": "cc_2", "nodeType": "stat", "statType": "strength", "statValue": 3.0, "cost": 1, "parentNodeIds": ["cc_1"], "positionX": -1, "positionY": 1, "description": "武力+3" },
+      { "nodeId": "cc_3", "nodeType": "passive", "statType": "team_attack", "statValue": 0.05, "cost": 3, "parentNodeIds": ["cc_1"], "positionX": 1, "positionY": 1, "description": "全队攻击+5%" },
+      { "nodeId": "cc_4", "nodeType": "stat", "statType": "leadership", "statValue": 8.0, "cost": 2, "parentNodeIds": ["cc_2", "cc_3"], "positionX": 0, "positionY": 2, "description": "统率+8" },
+      { "nodeId": "cc_5", "nodeType": "passive", "statType": "team_defense", "statValue": 0.10, "cost": 3, "parentNodeIds": ["cc_4"], "positionX": 0, "positionY": 3, "description": "全队防御+10%" }
+    ]
+  },
+  {
+    "generalId": "zhangliao",
+    "nodes": [
+      { "nodeId": "zhl_1", "nodeType": "stat", "statType": "speed", "statValue": 5.0, "cost": 1, "positionX": 0, "positionY": 0, "description": "速度+5" },
+      { "nodeId": "zhl_2", "nodeType": "stat", "statType": "strength", "statValue": 3.0, "cost": 1, "parentNodeIds": ["zhl_1"], "positionX": -1, "positionY": 1, "description": "武力+3" },
+      { "nodeId": "zhl_3", "nodeType": "skill", "unlockSkillId": "ambush_charge", "cost": 3, "parentNodeIds": ["zhl_1"], "positionX": 1, "positionY": 1, "description": "解锁技能: 突袭" },
+      { "nodeId": "zhl_4", "nodeType": "stat", "statType": "speed", "statValue": 8.0, "cost": 2, "parentNodeIds": ["zhl_2", "zhl_3"], "positionX": 0, "positionY": 2, "description": "速度+8" },
+      { "nodeId": "zhl_5", "nodeType": "passive", "statType": "cavalry_charge", "statValue": 0.20, "cost": 3, "parentNodeIds": ["zhl_4"], "positionX": 0, "positionY": 3, "description": "骑兵冲锋伤害+20%" }
+    ]
+  }
+]

@@ -1,0 +1,112 @@
+[
+  {
+    "id": "mt_qinling", "type": "mountain",
+    "gridX": 3.0, "gridY": 3.0,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "mt_taihang", "type": "mountain",
+    "gridX": 7.5, "gridY": 1.5,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "mt_yishan", "type": "mountain",
+    "gridX": 11.0, "gridY": 1.0,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "mt_western", "type": "mountain",
+    "gridX": 0.5, "gridY": 5.5,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "mt_zhongyue", "type": "mountain",
+    "gridX": 5.0, "gridY": 2.5,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "mt_shudao", "type": "mountain",
+    "gridX": 1.5, "gridY": 4.5,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "river_han", "type": "river",
+    "gridX": 4.5, "gridY": 4.5,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "river_yangtze_west", "type": "river",
+    "gridX": 3.0, "gridY": 7.5,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "river_yangtze_mid", "type": "river",
+    "gridX": 7.0, "gridY": 6.5,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "river_yangtze_east", "type": "river",
+    "gridX": 11.5, "gridY": 5.5,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "river_huaihe", "type": "river",
+    "gridX": 10.5, "gridY": 3.5,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "river_yellow", "type": "river",
+    "gridX": 9.0, "gridY": 0.8,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "forest_nanyang", "type": "forest",
+    "gridX": 5.5, "gridY": 5.5,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "forest_xuzhou", "type": "forest",
+    "gridX": 13.0, "gridY": 2.0,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "forest_hanzhong", "type": "forest",
+    "gridX": 2.0, "gridY": 4.0,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "forest_south", "type": "forest",
+    "gridX": 4.5, "gridY": 8.5,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "forest_nanling", "type": "forest",
+    "gridX": 8.5, "gridY": 8.5,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "forest_jiangdong", "type": "forest",
+    "gridX": 14.0, "gridY": 6.0,
+    "isResource": false, "resourceType": "grain", "resourceAmount": 0, "owner": "none"
+  },
+  {
+    "id": "mine_yizhou", "type": "mine",
+    "gridX": 1.0, "gridY": 8.0,
+    "isResource": true, "resourceType": "merit", "resourceAmount": 20, "owner": "none"
+  },
+  {
+    "id": "farm_jingzhou", "type": "farm",
+    "gridX": 7.0, "gridY": 7.5,
+    "isResource": true, "resourceType": "grain", "resourceAmount": 30, "owner": "none"
+  },
+  {
+    "id": "mine_huainan", "type": "mine",
+    "gridX": 12.0, "gridY": 4.5,
+    "isResource": true, "resourceType": "merit", "resourceAmount": 25, "owner": "none"
+  },
+  {
+    "id": "farm_central", "type": "farm",
+    "gridX": 9.5, "gridY": 2.0,
+    "isResource": true, "resourceType": "grain", "resourceAmount": 20, "owner": "none"
+  }
+]

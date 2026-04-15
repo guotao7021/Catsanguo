@@ -1,0 +1,400 @@
+[
+  {
+    "id": "sweeping_strike",
+    "name": "横扫千军",
+    "description": "对周围敌军造成大范围伤害",
+    "type": "active",
+    "targetMode": "AOE_Circle",
+    "coefficient": 2.5,
+    "radius": 150,
+    "cooldown": 15.0,
+    "castTime": 0.5,
+    "effectType": "damage",
+    "statBasis": "strength",
+    "buffStat": "",
+    "buffPercent": 0,
+    "buffDuration": 0,
+    "moraleChange": 0,
+    "triggers": [
+      {
+        "event": "OnSkillCast",
+        "conditions": [
+          { "type": "AlwaysTrue" }
+        ],
+        "effects": [
+          { "type": "Damage", "coefficient": 0.5, "targetMode": "AllEnemies", "statBasis": "strength" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "martial_saint",
+    "name": "武圣",
+    "description": "永久增加15%攻击力",
+    "type": "passive",
+    "targetMode": "Self",
+    "coefficient": 1.0,
+    "radius": 0,
+    "cooldown": 0,
+    "castTime": 0,
+    "effectType": "buff",
+    "statBasis": "strength",
+    "buffStat": "attack",
+    "buffPercent": 0.15,
+    "buffDuration": 0,
+    "moraleChange": 0,
+    "triggers": [
+      {
+        "event": "OnBattleStart",
+        "conditions": [
+          { "type": "AlwaysTrue" }
+        ],
+        "effects": [
+          { "type": "AddBuff", "buffId": "buff_atk_up_15", "duration": -1, "targetMode": "Self" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "war_cry",
+    "name": "怒吼",
+    "description": "降低周围敌军士气",
+    "type": "active",
+    "targetMode": "AOE_Circle",
+    "coefficient": 1.0,
+    "radius": 180,
+    "cooldown": 20.0,
+    "castTime": 0.3,
+    "effectType": "morale",
+    "statBasis": "strength",
+    "buffStat": "",
+    "buffPercent": 0,
+    "buffDuration": 0,
+    "moraleChange": -20,
+    "triggers": [
+      {
+        "event": "OnSkillCast",
+        "conditions": [
+          { "type": "AlwaysTrue" }
+        ],
+        "effects": [
+          { "type": "ModifyMorale", "value": -15, "targetMode": "AllEnemies" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fierce_general",
+    "name": "猛将",
+    "description": "永久增加20%防御力",
+    "type": "passive",
+    "targetMode": "Self",
+    "coefficient": 1.0,
+    "radius": 0,
+    "cooldown": 0,
+    "castTime": 0,
+    "effectType": "buff",
+    "statBasis": "strength",
+    "buffStat": "defense",
+    "buffPercent": 0.20,
+    "buffDuration": 0,
+    "moraleChange": 0,
+    "triggers": [
+      {
+        "event": "OnBattleStart",
+        "conditions": [
+          { "type": "AlwaysTrue" }
+        ],
+        "effects": [
+          { "type": "AddBuff", "buffId": "buff_def_up_20", "duration": -1, "targetMode": "Self" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fire_attack",
+    "name": "火计",
+    "description": "以智力为基础对一条线上的敌军造成火焰伤害",
+    "type": "active",
+    "targetMode": "AOE_Line",
+    "coefficient": 3.0,
+    "radius": 200,
+    "cooldown": 25.0,
+    "castTime": 0.8,
+    "effectType": "damage",
+    "statBasis": "intelligence",
+    "buffStat": "",
+    "buffPercent": 0,
+    "buffDuration": 0,
+    "moraleChange": 0,
+    "triggers": [
+      {
+        "event": "OnSkillCast",
+        "conditions": [
+          { "type": "Random", "probability": 0.3 }
+        ],
+        "effects": [
+          { "type": "AddBuff", "buffId": "buff_poison", "duration": 5, "targetMode": "AllEnemies" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "divine_calc",
+    "name": "神算",
+    "description": "全队攻击力增加10%",
+    "type": "passive",
+    "targetMode": "Self",
+    "coefficient": 1.0,
+    "radius": 0,
+    "cooldown": 0,
+    "castTime": 0,
+    "effectType": "buff",
+    "statBasis": "intelligence",
+    "buffStat": "attack",
+    "buffPercent": 0.10,
+    "buffDuration": 0,
+    "moraleChange": 0,
+    "triggers": [
+      {
+        "event": "OnBattleStart",
+        "conditions": [
+          { "type": "AlwaysTrue" }
+        ],
+        "effects": [
+          { "type": "AddBuff", "buffId": "buff_atk_up_10", "duration": -1, "targetMode": "AllAllies" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tyrant_command",
+    "name": "奸雄令",
+    "description": "全队速度增加30%持续8秒",
+    "type": "active",
+    "targetMode": "Self",
+    "coefficient": 1.0,
+    "radius": 0,
+    "cooldown": 30.0,
+    "castTime": 0.3,
+    "effectType": "buff",
+    "statBasis": "intelligence",
+    "buffStat": "speed",
+    "buffPercent": 0.30,
+    "buffDuration": 8.0,
+    "moraleChange": 0,
+    "triggers": [
+      {
+        "event": "OnSkillCast",
+        "conditions": [
+          { "type": "AlwaysTrue" }
+        ],
+        "effects": [
+          { "type": "AddBuff", "buffId": "buff_spd_up_30", "duration": 8, "targetMode": "AllAllies" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tyrant_spirit",
+    "name": "奸雄",
+    "description": "士气不会低于30",
+    "type": "passive",
+    "targetMode": "Self",
+    "coefficient": 1.0,
+    "radius": 0,
+    "cooldown": 0,
+    "castTime": 0,
+    "effectType": "buff",
+    "statBasis": "intelligence",
+    "buffStat": "",
+    "buffPercent": 0,
+    "buffDuration": 0,
+    "moraleChange": 0
+  },
+  {
+    "id": "ambush_charge",
+    "name": "突袭",
+    "description": "对单个目标造成大量伤害",
+    "type": "active",
+    "targetMode": "SingleTarget",
+    "coefficient": 3.0,
+    "radius": 0,
+    "cooldown": 12.0,
+    "castTime": 0.3,
+    "effectType": "damage",
+    "statBasis": "strength",
+    "buffStat": "",
+    "buffPercent": 0,
+    "buffDuration": 0,
+    "moraleChange": 0,
+    "triggers": [
+      {
+        "event": "OnKill",
+        "conditions": [
+          { "type": "AlwaysTrue" }
+        ],
+        "effects": [
+          { "type": "Heal", "coefficient": 0.5, "targetMode": "Self" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vanguard_spirit",
+    "name": "先锋",
+    "description": "冲锋伤害提升至2.0倍",
+    "type": "passive",
+    "targetMode": "Self",
+    "coefficient": 1.0,
+    "radius": 0,
+    "cooldown": 0,
+    "castTime": 0,
+    "effectType": "buff",
+    "statBasis": "strength",
+    "buffStat": "attack",
+    "buffPercent": 0.10,
+    "buffDuration": 0,
+    "moraleChange": 0,
+    "triggers": [
+      {
+        "event": "OnBattleStart",
+        "conditions": [
+          { "type": "AlwaysTrue" }
+        ],
+        "effects": [
+          { "type": "AddBuff", "buffId": "buff_atk_up_10", "duration": -1, "targetMode": "Self" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "defensive_formation",
+    "name": "防御阵",
+    "description": "全队防御力增加50%持续6秒",
+    "type": "active",
+    "targetMode": "Self",
+    "coefficient": 1.0,
+    "radius": 0,
+    "cooldown": 22.0,
+    "castTime": 0.5,
+    "effectType": "buff",
+    "statBasis": "intelligence",
+    "buffStat": "defense",
+    "buffPercent": 0.50,
+    "buffDuration": 6.0,
+    "moraleChange": 0,
+    "triggers": [
+      {
+        "event": "OnSkillCast",
+        "conditions": [
+          { "type": "AlwaysTrue" }
+        ],
+        "effects": [
+          { "type": "AddBuff", "buffId": "buff_def_up_50", "duration": 6, "targetMode": "AllAllies" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "steady_ruler",
+    "name": "守成",
+    "description": "士气恢复速度翻倍",
+    "type": "passive",
+    "targetMode": "Self",
+    "coefficient": 1.0,
+    "radius": 0,
+    "cooldown": 0,
+    "castTime": 0,
+    "effectType": "buff",
+    "statBasis": "intelligence",
+    "buffStat": "defense",
+    "buffPercent": 0.05,
+    "buffDuration": 0,
+    "moraleChange": 0
+  },
+  {
+    "id": "piercing_shot",
+    "name": "穿云箭",
+    "description": "对直线上所有敌军造成伤害",
+    "type": "active",
+    "targetMode": "AOE_Line",
+    "coefficient": 2.0,
+    "radius": 250,
+    "cooldown": 18.0,
+    "castTime": 0.6,
+    "effectType": "damage",
+    "statBasis": "strength",
+    "buffStat": "",
+    "buffPercent": 0,
+    "buffDuration": 0,
+    "moraleChange": 0,
+    "triggers": [
+      {
+        "event": "OnSkillCast",
+        "conditions": [
+          { "type": "AlwaysTrue" }
+        ],
+        "effects": [
+          { "type": "ModifyMorale", "value": -10, "targetMode": "AllEnemies" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "steadfast",
+    "name": "坚守",
+    "description": "永久增加25%防御力",
+    "type": "passive",
+    "targetMode": "Self",
+    "coefficient": 1.0,
+    "radius": 0,
+    "cooldown": 0,
+    "castTime": 0,
+    "effectType": "buff",
+    "statBasis": "leadership",
+    "buffStat": "defense",
+    "buffPercent": 0.25,
+    "buffDuration": 0,
+    "moraleChange": 0,
+    "triggers": [
+      {
+        "event": "OnBattleStart",
+        "conditions": [
+          { "type": "AlwaysTrue" }
+        ],
+        "effects": [
+          { "type": "AddBuff", "buffId": "buff_def_up_25", "duration": -1, "targetMode": "Self" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "archer_master",
+    "name": "神射",
+    "description": "攻击距离增加30%",
+    "type": "passive",
+    "targetMode": "Self",
+    "coefficient": 1.0,
+    "radius": 0,
+    "cooldown": 0,
+    "castTime": 0,
+    "effectType": "buff",
+    "statBasis": "strength",
+    "buffStat": "attack",
+    "buffPercent": 0.10,
+    "buffDuration": 0,
+    "moraleChange": 0,
+    "triggers": [
+      {
+        "event": "OnBattleStart",
+        "conditions": [
+          { "type": "AlwaysTrue" }
+        ],
+        "effects": [
+          { "type": "AddBuff", "buffId": "buff_range_up_30", "duration": -1, "targetMode": "Self" }
+        ]
+      }
+    ]
+  }
+]

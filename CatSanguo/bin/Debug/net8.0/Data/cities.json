@@ -1,0 +1,549 @@
+[
+  {
+    "id": "cheng_du", "name": "成都", "gridX": 1, "gridY": 7,
+    "cityType": "city", "cityScale": "huge",
+    "owner": "player", "garrison": [],
+    "connectedCityIds": ["zi_tong", "mian_zhu", "jiang_zhou"],
+    "defenseLevel": 3, "wallLevel": 3, "garrisonDefenseBonus": 0.15,
+    "population": 350, "grain": 1200, "maxTroops": 800,
+    "grainProductionPerTick": 16, "troopProductionPerTick": 8,
+    "recruitCost": 150, "upgradeCost": 350,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "zi_tong", "name": "梓潼", "gridX": 2, "gridY": 6,
+    "cityType": "city", "cityScale": "small",
+    "owner": "player", "garrison": [],
+    "connectedCityIds": ["cheng_du", "jian_ge"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 80, "grain": 300, "maxTroops": 200,
+    "grainProductionPerTick": 3, "troopProductionPerTick": 1,
+    "recruitCost": 80, "upgradeCost": 150,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "mian_zhu", "name": "绵竹", "gridX": 1, "gridY": 6,
+    "cityType": "city", "cityScale": "small",
+    "owner": "player", "garrison": [],
+    "connectedCityIds": ["cheng_du", "jian_ge"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 70, "grain": 250, "maxTroops": 200,
+    "grainProductionPerTick": 3, "troopProductionPerTick": 1,
+    "recruitCost": 80, "upgradeCost": 150,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "jian_ge", "name": "剑阁", "gridX": 2, "gridY": 5,
+    "cityType": "pass", "cityScale": "medium",
+    "owner": "player", "garrison": [],
+    "connectedCityIds": ["zi_tong", "mian_zhu", "han_zhong", "tian_shui"],
+    "defenseLevel": 3, "wallLevel": 3, "garrisonDefenseBonus": 0.30,
+    "population": 50, "grain": 200, "maxTroops": 400,
+    "grainProductionPerTick": 2, "troopProductionPerTick": 2,
+    "recruitCost": 100, "upgradeCost": 250,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "han_zhong", "name": "汉中", "gridX": 3, "gridY": 4,
+    "cityType": "city", "cityScale": "large",
+    "owner": "player", "garrison": [],
+    "connectedCityIds": ["jian_ge", "chang_an", "nan_yang"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 200, "grain": 800, "maxTroops": 600,
+    "grainProductionPerTick": 9, "troopProductionPerTick": 5,
+    "recruitCost": 120, "upgradeCost": 280,
+    "connectedStageId": "stage_changban", "unlockReward": ["zhangfei"], "requiredCityIds": []
+  },
+  {
+    "id": "bai_di", "name": "白帝城", "gridX": 3, "gridY": 8,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "neutral", "garrison": [
+      { "generalId": "menghuo", "formationType": "vanguard", "soldierCount": 20, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["jiang_zhou", "yi_ling"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 100, "grain": 400, "maxTroops": 400,
+    "grainProductionPerTick": 4, "troopProductionPerTick": 2,
+    "recruitCost": 100, "upgradeCost": 200,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "jiang_zhou", "name": "江州", "gridX": 2, "gridY": 8,
+    "cityType": "port", "cityScale": "medium",
+    "owner": "neutral", "garrison": [
+      { "generalId": "liubiao", "formationType": "archer", "soldierCount": 15, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["cheng_du", "bai_di", "wu_ling"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 90, "grain": 500, "maxTroops": 400,
+    "grainProductionPerTick": 6, "troopProductionPerTick": 2,
+    "recruitCost": 90, "upgradeCost": 180,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "yi_ling", "name": "夷陵", "gridX": 4, "gridY": 7,
+    "cityType": "city", "cityScale": "small",
+    "owner": "neutral", "garrison": [
+      { "generalId": "weiyang", "formationType": "archer", "soldierCount": 15, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["bai_di", "jiang_ling", "wu_ling"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 60, "grain": 200, "maxTroops": 200,
+    "grainProductionPerTick": 2, "troopProductionPerTick": 1,
+    "recruitCost": 80, "upgradeCost": 150,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "chang_an", "name": "长安", "gridX": 4, "gridY": 3,
+    "cityType": "city", "cityScale": "huge",
+    "owner": "neutral", "garrison": [
+      { "generalId": "caoren", "formationType": "vanguard", "soldierCount": 25, "positionX": 0, "positionY": 0 },
+      { "generalId": "dianwei", "formationType": "vanguard", "soldierCount": 20, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["han_zhong", "tong_guan", "tian_shui"],
+    "defenseLevel": 4, "wallLevel": 4, "garrisonDefenseBonus": 0.20,
+    "population": 400, "grain": 1500, "maxTroops": 800,
+    "grainProductionPerTick": 16, "troopProductionPerTick": 8,
+    "recruitCost": 180, "upgradeCost": 400,
+    "connectedStageId": "stage_hulao", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "tong_guan", "name": "潼关", "gridX": 5, "gridY": 3,
+    "cityType": "pass", "cityScale": "medium",
+    "owner": "neutral", "garrison": [
+      { "generalId": "caohong", "formationType": "vanguard", "soldierCount": 20, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["chang_an", "luo_yang", "nan_yang"],
+    "defenseLevel": 3, "wallLevel": 3, "garrisonDefenseBonus": 0.30,
+    "population": 40, "grain": 150, "maxTroops": 400,
+    "grainProductionPerTick": 2, "troopProductionPerTick": 2,
+    "recruitCost": 100, "upgradeCost": 250,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "tian_shui", "name": "天水", "gridX": 2, "gridY": 3,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "neutral", "garrison": [],
+    "connectedCityIds": ["jian_ge", "chang_an", "wu_wei"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 120, "grain": 500, "maxTroops": 400,
+    "grainProductionPerTick": 5, "troopProductionPerTick": 3,
+    "recruitCost": 100, "upgradeCost": 200,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "wu_wei", "name": "武威", "gridX": 1, "gridY": 2,
+    "cityType": "city", "cityScale": "small",
+    "owner": "neutral", "garrison": [],
+    "connectedCityIds": ["tian_shui"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 50, "grain": 200, "maxTroops": 200,
+    "grainProductionPerTick": 2, "troopProductionPerTick": 1,
+    "recruitCost": 80, "upgradeCost": 150,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "luo_yang", "name": "洛阳", "gridX": 7, "gridY": 3,
+    "cityType": "city", "cityScale": "huge",
+    "owner": "neutral", "garrison": [],
+    "connectedCityIds": ["tong_guan", "hu_lao", "wan_cheng"],
+    "defenseLevel": 4, "wallLevel": 4, "garrisonDefenseBonus": 0.20,
+    "population": 350, "grain": 1300, "maxTroops": 800,
+    "grainProductionPerTick": 16, "troopProductionPerTick": 8,
+    "recruitCost": 160, "upgradeCost": 380,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "hu_lao", "name": "虎牢关", "gridX": 6, "gridY": 3,
+    "cityType": "pass", "cityScale": "large",
+    "owner": "neutral", "garrison": [
+      { "generalId": "huangzhong", "formationType": "archer", "soldierCount": 20, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["luo_yang", "xu_chang", "chen_liu"],
+    "defenseLevel": 4, "wallLevel": 4, "garrisonDefenseBonus": 0.35,
+    "population": 30, "grain": 100, "maxTroops": 600,
+    "grainProductionPerTick": 1, "troopProductionPerTick": 3,
+    "recruitCost": 120, "upgradeCost": 300,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "xu_chang", "name": "许昌", "gridX": 8, "gridY": 4,
+    "cityType": "city", "cityScale": "large",
+    "owner": "enemy_wei", "garrison": [
+      { "generalId": "caocao", "formationType": "vanguard", "soldierCount": 30, "positionX": 0, "positionY": 0 },
+      { "generalId": "xiahoudun", "formationType": "cavalry", "soldierCount": 25, "positionX": 0, "positionY": 0 },
+      { "generalId": "xuhuang", "formationType": "cavalry", "soldierCount": 20, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["hu_lao", "wan_cheng", "ye_cheng", "ru_nan"],
+    "defenseLevel": 4, "wallLevel": 4, "garrisonDefenseBonus": 0.20,
+    "population": 350, "grain": 1200, "maxTroops": 600,
+    "grainProductionPerTick": 12, "troopProductionPerTick": 6,
+    "recruitCost": 180, "upgradeCost": 350,
+    "connectedStageId": "stage_chibi", "unlockReward": ["caocao"], "requiredCityIds": []
+  },
+  {
+    "id": "ye_cheng", "name": "邺城", "gridX": 8, "gridY": 1,
+    "cityType": "city", "cityScale": "large",
+    "owner": "enemy_wei", "garrison": [
+      { "generalId": "zhangliao", "formationType": "cavalry", "soldierCount": 25, "positionX": 0, "positionY": 0 },
+      { "generalId": "zhanghe", "formationType": "cavalry", "soldierCount": 20, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["xu_chang", "hu_guan", "jin_yang", "ping_yuan"],
+    "defenseLevel": 4, "wallLevel": 4, "garrisonDefenseBonus": 0.20,
+    "population": 300, "grain": 1100, "maxTroops": 600,
+    "grainProductionPerTick": 11, "troopProductionPerTick": 5,
+    "recruitCost": 170, "upgradeCost": 340,
+    "connectedStageId": "stage_wuzhang", "unlockReward": ["zhangliao"], "requiredCityIds": []
+  },
+  {
+    "id": "chen_liu", "name": "陈留", "gridX": 9, "gridY": 3,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "enemy_wei", "garrison": [
+      { "generalId": "yujin", "formationType": "vanguard", "soldierCount": 18, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["hu_lao", "pu_yang", "xiao_pei"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 150, "grain": 600, "maxTroops": 400,
+    "grainProductionPerTick": 6, "troopProductionPerTick": 3,
+    "recruitCost": 100, "upgradeCost": 200,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "wan_cheng", "name": "宛城", "gridX": 7, "gridY": 5,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "neutral", "garrison": [],
+    "connectedCityIds": ["luo_yang", "xu_chang", "nan_yang", "xiang_yang"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 180, "grain": 700, "maxTroops": 400,
+    "grainProductionPerTick": 7, "troopProductionPerTick": 3,
+    "recruitCost": 110, "upgradeCost": 220,
+    "connectedStageId": "stage_chibi", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "pu_yang", "name": "濮阳", "gridX": 9, "gridY": 2,
+    "cityType": "city", "cityScale": "small",
+    "owner": "enemy_wei", "garrison": [
+      { "generalId": "lidian", "formationType": "archer", "soldierCount": 15, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["chen_liu", "ye_cheng", "ping_yuan"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 80, "grain": 300, "maxTroops": 200,
+    "grainProductionPerTick": 3, "troopProductionPerTick": 1,
+    "recruitCost": 85, "upgradeCost": 160,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "ru_nan", "name": "汝南", "gridX": 9, "gridY": 5,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "enemy_wei", "garrison": [
+      { "generalId": "caohong", "formationType": "vanguard", "soldierCount": 18, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["xu_chang", "shou_chun", "jiang_xia"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 130, "grain": 500, "maxTroops": 400,
+    "grainProductionPerTick": 5, "troopProductionPerTick": 2,
+    "recruitCost": 95, "upgradeCost": 190,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "nan_yang", "name": "南阳", "gridX": 6, "gridY": 5,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "neutral", "garrison": [],
+    "connectedCityIds": ["han_zhong", "tong_guan", "wan_cheng", "xiang_yang"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 140, "grain": 550, "maxTroops": 400,
+    "grainProductionPerTick": 5, "troopProductionPerTick": 2,
+    "recruitCost": 95, "upgradeCost": 190,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "jin_yang", "name": "晋阳", "gridX": 7, "gridY": 1,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "enemy_wei", "garrison": [
+      { "generalId": "xiahoudun", "formationType": "cavalry", "soldierCount": 18, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["ye_cheng", "hu_guan"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 150, "grain": 600, "maxTroops": 400,
+    "grainProductionPerTick": 6, "troopProductionPerTick": 3,
+    "recruitCost": 100, "upgradeCost": 200,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "hu_guan", "name": "壶关", "gridX": 8, "gridY": 2,
+    "cityType": "pass", "cityScale": "small",
+    "owner": "enemy_wei", "garrison": [
+      { "generalId": "zhanghe", "formationType": "cavalry", "soldierCount": 15, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["ye_cheng", "jin_yang"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.25,
+    "population": 30, "grain": 100, "maxTroops": 200,
+    "grainProductionPerTick": 1, "troopProductionPerTick": 1,
+    "recruitCost": 80, "upgradeCost": 180,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "you_zhou", "name": "幽州", "gridX": 10, "gridY": 0,
+    "cityType": "city", "cityScale": "large",
+    "owner": "enemy_wei", "garrison": [
+      { "generalId": "zhangliao", "formationType": "cavalry", "soldierCount": 22, "positionX": 0, "positionY": 0 },
+      { "generalId": "yujin", "formationType": "vanguard", "soldierCount": 18, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["ping_yuan", "bei_ping"],
+    "defenseLevel": 3, "wallLevel": 3, "garrisonDefenseBonus": 0.15,
+    "population": 250, "grain": 900, "maxTroops": 600,
+    "grainProductionPerTick": 9, "troopProductionPerTick": 5,
+    "recruitCost": 140, "upgradeCost": 300,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "bei_ping", "name": "北平", "gridX": 12, "gridY": 0,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "enemy_wei", "garrison": [
+      { "generalId": "lidian", "formationType": "archer", "soldierCount": 15, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["you_zhou", "xu_zhou"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 120, "grain": 450, "maxTroops": 400,
+    "grainProductionPerTick": 5, "troopProductionPerTick": 2,
+    "recruitCost": 95, "upgradeCost": 190,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "ping_yuan", "name": "平原", "gridX": 10, "gridY": 1,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "neutral", "garrison": [],
+    "connectedCityIds": ["ye_cheng", "pu_yang", "you_zhou", "xu_zhou"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 100, "grain": 400, "maxTroops": 400,
+    "grainProductionPerTick": 4, "troopProductionPerTick": 2,
+    "recruitCost": 90, "upgradeCost": 180,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "xu_zhou", "name": "徐州", "gridX": 12, "gridY": 3,
+    "cityType": "city", "cityScale": "large",
+    "owner": "neutral", "garrison": [
+      { "generalId": "dianwei", "formationType": "vanguard", "soldierCount": 20, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["ping_yuan", "bei_ping", "xiao_pei", "xia_pi"],
+    "defenseLevel": 3, "wallLevel": 3, "garrisonDefenseBonus": 0.15,
+    "population": 200, "grain": 750, "maxTroops": 600,
+    "grainProductionPerTick": 8, "troopProductionPerTick": 4,
+    "recruitCost": 120, "upgradeCost": 260,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "xia_pi", "name": "下邳", "gridX": 12, "gridY": 4,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "neutral", "garrison": [],
+    "connectedCityIds": ["xu_zhou", "he_fei", "shou_chun"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 130, "grain": 500, "maxTroops": 400,
+    "grainProductionPerTick": 5, "troopProductionPerTick": 2,
+    "recruitCost": 95, "upgradeCost": 190,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "xiao_pei", "name": "小沛", "gridX": 11, "gridY": 3,
+    "cityType": "city", "cityScale": "small",
+    "owner": "neutral", "garrison": [],
+    "connectedCityIds": ["chen_liu", "xu_zhou"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 60, "grain": 200, "maxTroops": 200,
+    "grainProductionPerTick": 2, "troopProductionPerTick": 1,
+    "recruitCost": 80, "upgradeCost": 150,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "shou_chun", "name": "寿春", "gridX": 11, "gridY": 5,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "neutral", "garrison": [],
+    "connectedCityIds": ["ru_nan", "xia_pi", "he_fei", "lu_jiang"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 130, "grain": 500, "maxTroops": 400,
+    "grainProductionPerTick": 5, "troopProductionPerTick": 2,
+    "recruitCost": 95, "upgradeCost": 190,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "he_fei", "name": "合肥", "gridX": 11, "gridY": 4,
+    "cityType": "city", "cityScale": "large",
+    "owner": "enemy_wei", "garrison": [
+      { "generalId": "xuhuang", "formationType": "cavalry", "soldierCount": 22, "positionX": 0, "positionY": 0 },
+      { "generalId": "caohong", "formationType": "vanguard", "soldierCount": 18, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["xia_pi", "shou_chun", "jian_ye"],
+    "defenseLevel": 3, "wallLevel": 3, "garrisonDefenseBonus": 0.15,
+    "population": 220, "grain": 800, "maxTroops": 600,
+    "grainProductionPerTick": 8, "troopProductionPerTick": 4,
+    "recruitCost": 130, "upgradeCost": 280,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "jian_ye", "name": "建业", "gridX": 13, "gridY": 5,
+    "cityType": "city", "cityScale": "huge",
+    "owner": "enemy_wu", "garrison": [
+      { "generalId": "sunquan", "formationType": "vanguard", "soldierCount": 30, "positionX": 0, "positionY": 0 },
+      { "generalId": "lvmeng", "formationType": "vanguard", "soldierCount": 25, "positionX": 0, "positionY": 0 },
+      { "generalId": "luxun", "formationType": "archer", "soldierCount": 20, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["he_fei", "wu_jun", "lu_jiang", "chai_sang"],
+    "defenseLevel": 5, "wallLevel": 5, "garrisonDefenseBonus": 0.25,
+    "population": 400, "grain": 1500, "maxTroops": 800,
+    "grainProductionPerTick": 18, "troopProductionPerTick": 8,
+    "recruitCost": 200, "upgradeCost": 400,
+    "connectedStageId": "stage_wuzhang", "unlockReward": ["sunquan"], "requiredCityIds": []
+  },
+  {
+    "id": "chai_sang", "name": "柴桑", "gridX": 10, "gridY": 6,
+    "cityType": "port", "cityScale": "medium",
+    "owner": "enemy_wu", "garrison": [
+      { "generalId": "ganning", "formationType": "cavalry", "soldierCount": 20, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["jian_ye", "jiang_xia", "lu_jiang"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 130, "grain": 600, "maxTroops": 400,
+    "grainProductionPerTick": 7, "troopProductionPerTick": 3,
+    "recruitCost": 100, "upgradeCost": 200,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "wu_jun", "name": "吴郡", "gridX": 14, "gridY": 5,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "enemy_wu", "garrison": [
+      { "generalId": "taishici", "formationType": "cavalry", "soldierCount": 20, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["jian_ye", "kuai_ji"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 160, "grain": 650, "maxTroops": 400,
+    "grainProductionPerTick": 6, "troopProductionPerTick": 3,
+    "recruitCost": 100, "upgradeCost": 200,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "kuai_ji", "name": "会稽", "gridX": 14, "gridY": 7,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "enemy_wu", "garrison": [
+      { "generalId": "zhoutai", "formationType": "vanguard", "soldierCount": 18, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["wu_jun", "shan_yin"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 140, "grain": 550, "maxTroops": 400,
+    "grainProductionPerTick": 5, "troopProductionPerTick": 2,
+    "recruitCost": 95, "upgradeCost": 190,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "lu_jiang", "name": "庐江", "gridX": 11, "gridY": 6,
+    "cityType": "city", "cityScale": "small",
+    "owner": "enemy_wu", "garrison": [
+      { "generalId": "lvmeng", "formationType": "vanguard", "soldierCount": 15, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["shou_chun", "jian_ye", "chai_sang"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 80, "grain": 300, "maxTroops": 200,
+    "grainProductionPerTick": 3, "troopProductionPerTick": 1,
+    "recruitCost": 80, "upgradeCost": 150,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "shan_yin", "name": "山阴", "gridX": 15, "gridY": 7,
+    "cityType": "city", "cityScale": "small",
+    "owner": "enemy_wu", "garrison": [
+      { "generalId": "ganning", "formationType": "cavalry", "soldierCount": 12, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["kuai_ji"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 60, "grain": 200, "maxTroops": 200,
+    "grainProductionPerTick": 2, "troopProductionPerTick": 1,
+    "recruitCost": 80, "upgradeCost": 150,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "xiang_yang", "name": "襄阳", "gridX": 6, "gridY": 6,
+    "cityType": "city", "cityScale": "large",
+    "owner": "neutral", "garrison": [
+      { "generalId": "liubiao", "formationType": "archer", "soldierCount": 22, "positionX": 0, "positionY": 0 },
+      { "generalId": "menghuo", "formationType": "vanguard", "soldierCount": 18, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["wan_cheng", "nan_yang", "jiang_ling", "jiang_xia"],
+    "defenseLevel": 3, "wallLevel": 3, "garrisonDefenseBonus": 0.15,
+    "population": 250, "grain": 900, "maxTroops": 600,
+    "grainProductionPerTick": 9, "troopProductionPerTick": 5,
+    "recruitCost": 130, "upgradeCost": 280,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "jiang_ling", "name": "江陵", "gridX": 6, "gridY": 7,
+    "cityType": "city", "cityScale": "large",
+    "owner": "neutral", "garrison": [
+      { "generalId": "huangzhong", "formationType": "archer", "soldierCount": 18, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["xiang_yang", "yi_ling", "wu_ling", "chang_sha"],
+    "defenseLevel": 3, "wallLevel": 3, "garrisonDefenseBonus": 0.15,
+    "population": 220, "grain": 800, "maxTroops": 600,
+    "grainProductionPerTick": 8, "troopProductionPerTick": 4,
+    "recruitCost": 120, "upgradeCost": 260,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "jiang_xia", "name": "江夏", "gridX": 8, "gridY": 6,
+    "cityType": "port", "cityScale": "medium",
+    "owner": "neutral", "garrison": [
+      { "generalId": "weiyang", "formationType": "archer", "soldierCount": 15, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["xiang_yang", "ru_nan", "chai_sang", "chang_sha"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 120, "grain": 550, "maxTroops": 400,
+    "grainProductionPerTick": 6, "troopProductionPerTick": 2,
+    "recruitCost": 95, "upgradeCost": 190,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "chang_sha", "name": "长沙", "gridX": 8, "gridY": 8,
+    "cityType": "city", "cityScale": "medium",
+    "owner": "neutral", "garrison": [
+      { "generalId": "caoren", "formationType": "vanguard", "soldierCount": 15, "positionX": 0, "positionY": 0 }
+    ],
+    "connectedCityIds": ["jiang_ling", "jiang_xia", "ling_ling", "gui_yang"],
+    "defenseLevel": 2, "wallLevel": 2, "garrisonDefenseBonus": 0.10,
+    "population": 160, "grain": 600, "maxTroops": 400,
+    "grainProductionPerTick": 6, "troopProductionPerTick": 3,
+    "recruitCost": 100, "upgradeCost": 200,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "ling_ling", "name": "零陵", "gridX": 7, "gridY": 9,
+    "cityType": "city", "cityScale": "small",
+    "owner": "neutral", "garrison": [],
+    "connectedCityIds": ["chang_sha", "wu_ling"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 50, "grain": 180, "maxTroops": 200,
+    "grainProductionPerTick": 2, "troopProductionPerTick": 1,
+    "recruitCost": 80, "upgradeCost": 150,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "wu_ling", "name": "武陵", "gridX": 5, "gridY": 8,
+    "cityType": "city", "cityScale": "small",
+    "owner": "neutral", "garrison": [],
+    "connectedCityIds": ["jiang_zhou", "yi_ling", "jiang_ling", "ling_ling"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 60, "grain": 200, "maxTroops": 200,
+    "grainProductionPerTick": 2, "troopProductionPerTick": 1,
+    "recruitCost": 80, "upgradeCost": 150,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  },
+  {
+    "id": "gui_yang", "name": "桂阳", "gridX": 9, "gridY": 9,
+    "cityType": "city", "cityScale": "small",
+    "owner": "neutral", "garrison": [],
+    "connectedCityIds": ["chang_sha"],
+    "defenseLevel": 1, "wallLevel": 1, "garrisonDefenseBonus": 0.05,
+    "population": 50, "grain": 180, "maxTroops": 200,
+    "grainProductionPerTick": 2, "troopProductionPerTick": 1,
+    "recruitCost": 80, "upgradeCost": 150,
+    "connectedStageId": "", "unlockReward": [], "requiredCityIds": []
+  }
+]

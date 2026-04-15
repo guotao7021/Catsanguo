@@ -1,0 +1,41 @@
+[
+  {
+    "type": "vanguard",
+    "displayName": "盾兵方阵",
+    "baseHP": 600,
+    "baseAttack": 28,
+    "baseDefense": 50,
+    "baseSpeed": 0.9,
+    "attackRange": 40,
+    "defenseModifier": 1.3,
+    "attackModifier": 1.0,
+    "speedModifier": 0.9,
+    "layoutPattern": "grid_3x3"
+  },
+  {
+    "type": "archer",
+    "displayName": "弓兵方阵",
+    "baseHP": 400,
+    "baseAttack": 38,
+    "baseDefense": 20,
+    "baseSpeed": 0.85,
+    "attackRange": 200,
+    "defenseModifier": 0.7,
+    "attackModifier": 1.2,
+    "speedModifier": 0.85,
+    "layoutPattern": "rows_2x5"
+  },
+  {
+    "type": "cavalry",
+    "displayName": "骑兵方阵",
+    "baseHP": 450,
+    "baseAttack": 35,
+    "baseDefense": 30,
+    "baseSpeed": 1.4,
+    "attackRange": 35,
+    "defenseModifier": 0.85,
+    "attackModifier": 1.25,
+    "speedModifier": 1.4,
+    "layoutPattern": "v_wedge"
+  }
+]

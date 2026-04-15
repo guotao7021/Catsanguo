@@ -1,0 +1,105 @@
+[
+  {
+    "id": "stage_1",
+    "name": "虎牢关",
+    "description": "教学关卡 - 初次交锋",
+    "difficulty": 1,
+    "playerSlots": 1,
+    "enemySquads": [
+      {
+        "generalId": "caocao",
+        "formationType": "vanguard",
+        "soldierCount": 25,
+        "positionX": 950,
+        "positionY": 360
+      }
+    ],
+    "playerGeneralPool": ["guanyu", "zhangfei"]
+  },
+  {
+    "id": "stage_2",
+    "name": "长坂坡",
+    "description": "以少胜多 - 骑兵突击",
+    "difficulty": 2,
+    "playerSlots": 2,
+    "enemySquads": [
+      {
+        "generalId": "caocao",
+        "formationType": "vanguard",
+        "soldierCount": 35,
+        "positionX": 900,
+        "positionY": 250
+      },
+      {
+        "generalId": "zhangliao",
+        "formationType": "cavalry",
+        "soldierCount": 30,
+        "positionX": 1000,
+        "positionY": 450
+      }
+    ],
+    "playerGeneralPool": ["guanyu", "zhangfei", "zhugeliang"]
+  },
+  {
+    "id": "stage_3",
+    "name": "赤壁",
+    "description": "火烧赤壁 - 利用火计取胜",
+    "difficulty": 2,
+    "playerSlots": 2,
+    "enemySquads": [
+      {
+        "generalId": "caocao",
+        "formationType": "vanguard",
+        "soldierCount": 40,
+        "positionX": 900,
+        "positionY": 200
+      },
+      {
+        "generalId": "zhangliao",
+        "formationType": "cavalry",
+        "soldierCount": 35,
+        "positionX": 1000,
+        "positionY": 360
+      },
+      {
+        "generalId": "sunquan",
+        "formationType": "archer",
+        "soldierCount": 30,
+        "positionX": 950,
+        "positionY": 520
+      }
+    ],
+    "playerGeneralPool": ["guanyu", "zhangfei", "zhugeliang"]
+  },
+  {
+    "id": "stage_4",
+    "name": "五丈原",
+    "description": "最终决战 - 全面对决",
+    "difficulty": 3,
+    "playerSlots": 3,
+    "enemySquads": [
+      {
+        "generalId": "caocao",
+        "formationType": "vanguard",
+        "soldierCount": 45,
+        "positionX": 880,
+        "positionY": 180
+      },
+      {
+        "generalId": "zhangliao",
+        "formationType": "cavalry",
+        "soldierCount": 40,
+        "positionX": 1050,
+        "positionY": 360
+      },
+      {
+        "generalId": "sunquan",
+        "formationType": "archer",
+        "soldierCount": 35,
+        "positionX": 950,
+        "positionY": 540
+      }
+    ],
+    "playerGeneralPool": ["guanyu", "zhangfei", "zhugeliang"]
+  }
+]

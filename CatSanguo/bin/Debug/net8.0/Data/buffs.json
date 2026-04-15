@@ -1,0 +1,145 @@
+[
+  {
+    "id": "buff_atk_up_15",
+    "name": "攻击提升",
+    "description": "永久增加15%攻击力",
+    "duration": 0,
+    "maxStack": 1,
+    "stackMode": "Refresh",
+    "tickInterval": 0,
+    "isDebuff": false,
+    "effects": [
+      { "type": "ModifyAttribute", "attrType": "Attack", "modifierType": "Multiply", "value": 0.15 }
+    ]
+  },
+  {
+    "id": "buff_atk_up_10",
+    "name": "攻击提升",
+    "description": "永久增加10%攻击力",
+    "duration": 0,
+    "maxStack": 1,
+    "stackMode": "Refresh",
+    "tickInterval": 0,
+    "isDebuff": false,
+    "effects": [
+      { "type": "ModifyAttribute", "attrType": "Attack", "modifierType": "Multiply", "value": 0.10 }
+    ]
+  },
+  {
+    "id": "buff_def_up_20",
+    "name": "防御提升",
+    "description": "永久增加20%防御力",
+    "duration": 0,
+    "maxStack": 1,
+    "stackMode": "Refresh",
+    "tickInterval": 0,
+    "isDebuff": false,
+    "effects": [
+      { "type": "ModifyAttribute", "attrType": "Defense", "modifierType": "Multiply", "value": 0.20 }
+    ]
+  },
+  {
+    "id": "buff_def_up_25",
+    "name": "防御提升",
+    "description": "永久增加25%防御力",
+    "duration": 0,
+    "maxStack": 1,
+    "stackMode": "Refresh",
+    "tickInterval": 0,
+    "isDebuff": false,
+    "effects": [
+      { "type": "ModifyAttribute", "attrType": "Defense", "modifierType": "Multiply", "value": 0.25 }
+    ]
+  },
+  {
+    "id": "buff_def_up_50",
+    "name": "防御阵",
+    "description": "全队防御力提升50%，持续6秒",
+    "duration": 6,
+    "maxStack": 1,
+    "stackMode": "Refresh",
+    "tickInterval": 0,
+    "isDebuff": false,
+    "effects": [
+      { "type": "ModifyAttribute", "attrType": "Defense", "modifierType": "Multiply", "value": 0.50 }
+    ]
+  },
+  {
+    "id": "buff_spd_up_30",
+    "name": "速度提升",
+    "description": "全队速度提升30%，持续8秒",
+    "duration": 8,
+    "maxStack": 1,
+    "stackMode": "Refresh",
+    "tickInterval": 0,
+    "isDebuff": false,
+    "effects": [
+      { "type": "ModifyAttribute", "attrType": "Speed", "modifierType": "Multiply", "value": 0.30 }
+    ]
+  },
+  {
+    "id": "buff_poison",
+    "name": "中毒",
+    "description": "每回合损失生命，最多叠加3层",
+    "duration": 5,
+    "maxStack": 3,
+    "stackMode": "Stack",
+    "tickInterval": 1,
+    "isDebuff": true,
+    "effects": [
+      { "type": "DamageOverTime", "value": 10 }
+    ]
+  },
+  {
+    "id": "buff_stun",
+    "name": "眩晕",
+    "description": "无法行动，持续2秒",
+    "duration": 2,
+    "maxStack": 1,
+    "stackMode": "Refresh",
+    "tickInterval": 0,
+    "isDebuff": true,
+    "effects": [
+      { "type": "Stun" }
+    ]
+  },
+  {
+    "id": "buff_silence",
+    "name": "沉默",
+    "description": "无法使用技能，持续3秒",
+    "duration": 3,
+    "maxStack": 1,
+    "stackMode": "Refresh",
+    "tickInterval": 0,
+    "isDebuff": true,
+    "effects": [
+      { "type": "Silence" }
+    ]
+  },
+  {
+    "id": "buff_regen",
+    "name": "回复",
+    "description": "每回合恢复生命，持续6秒",
+    "duration": 6,
+    "maxStack": 1,
+    "stackMode": "Refresh",
+    "tickInterval": 1,
+    "isDebuff": false,
+    "effects": [
+      { "type": "HealOverTime", "value": 15 }
+    ]
+  },
+  {
+    "id": "buff_range_up_30",
+    "name": "射程提升",
+    "description": "永久增加30%射程",
+    "duration": 0,
+    "maxStack": 1,
+    "stackMode": "Refresh",
+    "tickInterval": 0,
+    "isDebuff": false,
+    "effects": [
+      { "type": "ModifyAttribute", "attrType": "AttackRange", "modifierType": "Multiply", "value": 0.30 }
+    ]
+  }
+]
