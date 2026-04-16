@@ -16,6 +16,7 @@ public class ArmyToken
     public string LeadGeneralName { get; set; } = "";
     public string Team { get; set; } = "player";
     public string LeadFormation { get; set; } = "vanguard";
+    public string OriginCityId { get; set; } = "";
 
     // Position state
     public string? CurrentCityId { get; set; }
@@ -29,12 +30,22 @@ public class ArmyToken
     public Vector2 ScreenPosition { get; set; }
     public bool IsSelected { get; set; }
 
+    // Day-based movement
+    public int[]? DaysPerSegment { get; set; }
+    public int DaysElapsedInSegment { get; set; }
+    public int TotalDaysRemaining { get; set; }
+
+    // Animation (visual movement after turn advance)
+    private Vector2 _animStartPos;
+    private Vector2 _animEndPos;
+    private float _animTimer;
+    private const float AnimDuration = 1.0f;
+    public bool IsAnimating { get; private set; }
+
     // Movement trail
     private readonly Vector2[] _trailPositions = new Vector2[4];
     private int _trailIndex = 0;
     private float _trailTimer = 0;
-
-    private const float SegmentDuration = 2.0f;
 
     // ==================== 武将配置管理 ====================
 
@@ -67,14 +78,45 @@ public class ArmyToken
         GeneralIds = GeneralEntries.Select(e => e.GeneralId).ToList();
     }
 
-    public void StartMove(List<string> path)
+    /// <summary>
+    /// 计算两城之间行军天数: max(3, round(gridDist * 5))
+    /// </summary>
+    public static int CalculateSegmentDays(CityData from, CityData to)
+    {
+        float dx = from.GridX - to.GridX;
+        float dy = from.GridY - to.GridY;
+        float dist = MathF.Sqrt(dx * dx + dy * dy);
+        return Math.Max(3, (int)Math.Round(dist * 5));
+    }
+
+    public void StartMove(List<string> path, Dictionary<string, CityNode> cityLookup)
     {
         if (path.Count < 2) return;
         MovePath = path;
         CurrentSegmentIndex = 0;
         SegmentProgress = 0;
+        DaysElapsedInSegment = 0;
         CurrentCityId = null;
         TargetCityId = path[^1];
+
+        // 预计算每段行军天数
+        DaysPerSegment = new int[path.Count - 1];
+        int totalDays = 0;
+        for (int i = 0; i < path.Count - 1; i++)
+        {
+            if (cityLookup.TryGetValue(path[i], out var fromNode) &&
+                cityLookup.TryGetValue(path[i + 1], out var toNode))
+            {
+                DaysPerSegment[i] = CalculateSegmentDays(fromNode.Data, toNode.Data);
+            }
+            else
+            {
+                DaysPerSegment[i] = 5;
+            }
+            totalDays += DaysPerSegment[i];
+        }
+        TotalDaysRemaining = totalDays;
+
         // Reset trail
         for (int i = 0; i < _trailPositions.Length; i++)
             _trailPositions[i] = ScreenPosition;
@@ -85,15 +127,110 @@ public class ArmyToken
         CurrentCityId = cityId;
         TargetCityId = null;
         MovePath = null;
+        DaysPerSegment = null;
         CurrentSegmentIndex = 0;
         SegmentProgress = 0;
+        DaysElapsedInSegment = 0;
+        TotalDaysRemaining = 0;
     }
 
-    public string? Update(float dt, Dictionary<string, CityNode> cityLookup)
+    /// <summary>
+    /// 推进行军至下一个城池，返回 (城池ID, 是否终点, 消耗天数)；未到达任何城池返回 null
+    /// </summary>
+    public (string cityId, bool isFinal, int daysUsed)? AdvanceToNextCity(int maxDays)
     {
-        if (!IsMoving || MovePath == null) return null;
+        if (!IsMoving || MovePath == null || DaysPerSegment == null) return null;
 
-        // Update trail
+        int daysUsed = 0;
+        int remaining = maxDays;
+
+        while (remaining > 0)
+        {
+            int segDays = DaysPerSegment[CurrentSegmentIndex];
+            int daysNeeded = segDays - DaysElapsedInSegment;
+
+            if (remaining >= daysNeeded)
+            {
+                daysUsed += daysNeeded;
+                remaining -= daysNeeded;
+                TotalDaysRemaining -= daysNeeded;
+                DaysElapsedInSegment = 0;
+                CurrentSegmentIndex++;
+
+                if (CurrentSegmentIndex >= MovePath.Count - 1)
+                {
+                    return (MovePath[^1], true, daysUsed);
+                }
+                else
+                {
+                    return (MovePath[CurrentSegmentIndex], false, daysUsed);
+                }
+            }
+            else
+            {
+                DaysElapsedInSegment += remaining;
+                TotalDaysRemaining -= remaining;
+                daysUsed += remaining;
+                remaining = 0;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// 根据当前行军状态计算视觉位置
+    /// </summary>
+    public Vector2 ComputeMarchPosition(Dictionary<string, CityNode> cityLookup)
+    {
+        if (CurrentCityId != null && cityLookup.TryGetValue(CurrentCityId, out var city))
+        {
+            return city.Center + new Vector2(0, -30);
+        }
+
+        if (IsMoving && MovePath != null && DaysPerSegment != null &&
+            CurrentSegmentIndex < MovePath.Count - 1)
+        {
+            float progress = DaysPerSegment[CurrentSegmentIndex] > 0
+                ? (float)DaysElapsedInSegment / DaysPerSegment[CurrentSegmentIndex]
+                : 0f;
+
+            string fromId = MovePath[CurrentSegmentIndex];
+            string toId = MovePath[CurrentSegmentIndex + 1];
+            if (cityLookup.TryGetValue(fromId, out var fromNode) &&
+                cityLookup.TryGetValue(toId, out var toNode))
+            {
+                return Vector2.Lerp(fromNode.Center, toNode.Center, progress);
+            }
+        }
+
+        return ScreenPosition;
+    }
+
+    /// <summary>
+    /// 开始从当前位置到目标位置的过渡动画
+    /// </summary>
+    public void StartAnimation(Vector2 targetPos)
+    {
+        _animStartPos = ScreenPosition;
+        _animEndPos = targetPos;
+        _animTimer = 0;
+        IsAnimating = true;
+    }
+
+    /// <summary>
+    /// 仅处理动画插值（回合制下不再实时推进行军）
+    /// </summary>
+    public void UpdateAnimation(float dt)
+    {
+        if (!IsAnimating) return;
+
+        _animTimer += dt;
+        float t = Math.Clamp(_animTimer / AnimDuration, 0f, 1f);
+        float eased = EaseInOutCubic(t);
+        ScreenPosition = Vector2.Lerp(_animStartPos, _animEndPos, eased);
+
+        // Update trail during animation
         _trailTimer += dt;
         if (_trailTimer >= 0.08f)
         {
@@ -102,41 +239,11 @@ public class ArmyToken
             _trailIndex++;
         }
 
-        SegmentProgress += dt / SegmentDuration;
-
-        if (SegmentProgress >= 1f)
+        if (t >= 1f)
         {
-            CurrentSegmentIndex++;
-            SegmentProgress = 0;
-
-            if (CurrentSegmentIndex >= MovePath.Count - 1)
-            {
-                string arrivedCity = MovePath[^1];
-                StopAtCity(arrivedCity);
-                return arrivedCity;
-            }
-            else
-            {
-                string intermediateCity = MovePath[CurrentSegmentIndex];
-                return intermediateCity;
-            }
+            IsAnimating = false;
+            ScreenPosition = _animEndPos;
         }
-
-        // Interpolate screen position
-        if (MovePath.Count > CurrentSegmentIndex + 1)
-        {
-            string fromId = MovePath[CurrentSegmentIndex];
-            string toId = MovePath[CurrentSegmentIndex + 1];
-
-            if (cityLookup.TryGetValue(fromId, out var fromNode) &&
-                cityLookup.TryGetValue(toId, out var toNode))
-            {
-                float eased = EaseInOutCubic(SegmentProgress);
-                ScreenPosition = Vector2.Lerp(fromNode.Center, toNode.Center, eased);
-            }
-        }
-
-        return null;
     }
 
     public void UpdateStationaryPosition(Dictionary<string, CityNode> cityLookup)

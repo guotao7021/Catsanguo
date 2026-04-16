@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FontStashSharp;
 using CatSanguo.Data.Schemas;
+using CatSanguo.Data;
 
 namespace CatSanguo.WorldMap;
 
@@ -32,9 +33,27 @@ public class CityRenderer
     private static Color GetFactionColor(string owner)
     {
         string o = owner.ToLower();
+        // 玩家势力 - 蓝
         if (o == "player") return new Color(60, 120, 220);
-        if (o.StartsWith("enemy_wu")) return new Color(60, 180, 100);
-        if (o.StartsWith("enemy")) return new Color(220, 60, 60);
+        // 兼容 cities.json 旧值
+        if (o == "enemy_wei") return new Color(220, 50, 50);
+        if (o == "enemy_wu") return new Color(50, 190, 80);
+        if (o == "neutral") return new Color(130, 120, 100);
+        // 精确匹配 factionId 前缀（格式: {leader}_{scenario}）
+        if (o.StartsWith("caocao")) return new Color(220, 50, 50);       // 曹操 - 红
+        if (o.StartsWith("yuanshao")) return new Color(160, 50, 200);    // 袁绍 - 紫
+        if (o.StartsWith("yuan_shu")) return new Color(200, 80, 160);    // 袁术 - 粉紫
+        if (o.StartsWith("dongzhuo")) return new Color(230, 120, 40);    // 董卓 - 橙
+        if (o.StartsWith("lvbu")) return new Color(255, 80, 0);          // 吕布 - 亮橙
+        if (o.StartsWith("sun") || o.StartsWith("sun_liu")) return new Color(50, 190, 80); // 孙家 - 绿
+        if (o.StartsWith("liubei") || o.StartsWith("liubei_")) return new Color(240, 200, 50); // 刘备 - 金黄
+        if (o.StartsWith("liubiao")) return new Color(170, 150, 70);     // 刘表 - 暗黄
+        if (o.StartsWith("liuzhang") || o.StartsWith("liuyan")) return new Color(120, 180, 60); // 刘璋/刘焉 - 黄绿
+        if (o.StartsWith("gongsun")) return new Color(50, 200, 220);     // 公孙瓒 - 青
+        if (o.StartsWith("machao") || o.StartsWith("ma_teng")) return new Color(60, 200, 160); // 马家 - 蓝绿
+        if (o.StartsWith("zhanglu")) return new Color(180, 200, 40);     // 张鲁 - 黄绿
+        if (o.StartsWith("menghuo")) return new Color(180, 100, 40);     // 孟获 - 棕
+        // 中立
         return new Color(130, 120, 100);
     }
 
@@ -42,8 +61,22 @@ public class CityRenderer
     {
         string o = owner.ToLower();
         if (o == "player") return new Color(80, 150, 255);
-        if (o.StartsWith("enemy_wu")) return new Color(80, 210, 130);
-        if (o.StartsWith("enemy")) return new Color(255, 80, 80);
+        if (o == "enemy_wei") return new Color(255, 80, 80);
+        if (o == "enemy_wu") return new Color(80, 220, 110);
+        if (o == "neutral") return new Color(150, 140, 120);
+        if (o.StartsWith("caocao")) return new Color(255, 80, 80);
+        if (o.StartsWith("yuanshao")) return new Color(190, 80, 230);
+        if (o.StartsWith("yuan_shu")) return new Color(230, 110, 190);
+        if (o.StartsWith("dongzhuo")) return new Color(255, 150, 60);
+        if (o.StartsWith("lvbu")) return new Color(255, 110, 30);
+        if (o.StartsWith("sun") || o.StartsWith("sun_liu")) return new Color(80, 220, 110);
+        if (o.StartsWith("liubei") || o.StartsWith("liubei_")) return new Color(255, 230, 80);
+        if (o.StartsWith("liubiao")) return new Color(200, 180, 100);
+        if (o.StartsWith("liuzhang") || o.StartsWith("liuyan")) return new Color(150, 210, 90);
+        if (o.StartsWith("gongsun")) return new Color(80, 230, 250);
+        if (o.StartsWith("machao") || o.StartsWith("ma_teng")) return new Color(90, 230, 190);
+        if (o.StartsWith("zhanglu")) return new Color(210, 230, 70);
+        if (o.StartsWith("menghuo")) return new Color(210, 130, 60);
         return new Color(150, 140, 120);
     }
 
@@ -52,9 +85,20 @@ public class CityRenderer
         string typeTag = cityType switch { "pass" => "关", "port" => "港", _ => "城" };
         string o = owner.ToLower();
         string factionTag;
-        if (o == "player") factionTag = "蜀";
-        else if (o.StartsWith("enemy_wu")) factionTag = "吴";
-        else if (o.StartsWith("enemy")) factionTag = "魏";
+        if (o == "player") factionTag = "我";
+        else if (o.StartsWith("caocao") || o == "enemy_wei") factionTag = "魏";
+        else if (o.StartsWith("sun") || o == "enemy_wu") factionTag = "吴";
+        else if (o.StartsWith("liubei")) factionTag = "蜀";
+        else if (o.StartsWith("yuanshao")) factionTag = "袁";
+        else if (o.StartsWith("yuan_shu")) factionTag = "术";
+        else if (o.StartsWith("dongzhuo")) factionTag = "董";
+        else if (o.StartsWith("lvbu")) factionTag = "吕";
+        else if (o.StartsWith("gongsun")) factionTag = "公";
+        else if (o.StartsWith("liubiao")) factionTag = "表";
+        else if (o.StartsWith("liuzhang") || o.StartsWith("liuyan")) factionTag = "蜀";
+        else if (o.StartsWith("machao") || o.StartsWith("ma_teng")) factionTag = "马";
+        else if (o.StartsWith("zhanglu")) factionTag = "张";
+        else if (o.StartsWith("menghuo")) factionTag = "蛮";
         else factionTag = "中";
         return $"[{typeTag}·{factionTag}]";
     }
@@ -68,28 +112,30 @@ public class CityRenderer
         Color factionColor = GetFactionColor(owner);
         Color factionAccent = GetFactionAccent(owner);
 
-        // 参考图风格 - 简洁小方块
-        int size = (int)(18 * scale);
+        int size = (int)(24 * scale);
         int halfSize = size / 2;
         int baseY = (int)center.Y;
 
-        // 根据城池规模调整颜色深度
-        Color baseColor = city.Data.CityScale switch
-        {
-            "large" => new Color(240, 230, 200),     // 大城池 - 更亮
-            "medium" => new Color(220, 210, 180),    // 中等城池
-            _ => new Color(200, 190, 160)            // 小城池 - 稍暗
-        };
+        // 势力颜色光晕（大范围半透明）
+        int glowSize = size + 16;
+        int glowHalf = glowSize / 2;
+        sb.Draw(pixel, new Rectangle((int)center.X - glowHalf, baseY - glowHalf, glowSize, glowSize), factionColor * 0.25f);
 
-        // 绘制方块
-        sb.Draw(pixel, new Rectangle((int)center.X - halfSize, baseY - halfSize, size, size), baseColor);
+        // 势力颜色填充（整个方块）
+        sb.Draw(pixel, new Rectangle((int)center.X - halfSize, baseY - halfSize, size, size), factionColor * 0.7f);
+
+        // 内部亮色核心
+        int innerSize = size - 4;
+        int innerHalf = innerSize / 2;
+        Color innerColor = city.Data.CityScale switch
+        {
+            "large" or "huge" => Color.Lerp(factionColor, Color.White, 0.3f),
+            _ => Color.Lerp(factionColor, Color.White, 0.15f)
+        };
+        sb.Draw(pixel, new Rectangle((int)center.X - innerHalf, baseY - innerHalf, innerSize, innerSize), innerColor * 0.6f);
         
-        // 势力颜色边框
-        DrawBorder(sb, pixel, new Rectangle((int)center.X - halfSize, baseY - halfSize, size, size), factionColor, 2);
-        
-        // 内部填充 - 势力颜色淡化
-        Color innerColor = factionColor * 0.3f;
-        sb.Draw(pixel, new Rectangle((int)center.X - halfSize + 2, baseY - halfSize + 2, size - 4, size - 4), innerColor);
+        // 势力颜色边框（加粗）
+        DrawBorder(sb, pixel, new Rectangle((int)center.X - halfSize, baseY - halfSize, size, size), factionAccent, 2);
 
         // 选择指示器
         DrawSelectionIndicator(sb, pixel, city, selectedArmy, time,
@@ -107,23 +153,25 @@ public class CityRenderer
         Color factionColor = GetFactionColor(city.Data.Owner);
         Color factionAccent = GetFactionAccent(city.Data.Owner);
 
-        // 关口 - 菱形标记
-        int size = (int)(16 * scale);
+        int size = (int)(22 * scale);
         int halfSize = size / 2;
         int baseY = (int)center.Y;
 
-        Color baseColor = new Color(210, 200, 170);
-        
-        // 绘制菱形
+        // 势力颜色光晕
+        int glowSize = size + 14;
+        int glowHalf = glowSize / 2;
+        sb.Draw(pixel, new Rectangle((int)center.X - glowHalf, baseY - glowHalf, glowSize, glowSize), factionColor * 0.2f);
+
+        // 绘制菱形（势力颜色填充）
         for (int row = 0; row < size; row++)
         {
             int halfW = row < size / 2 ? row + 1 : size - row;
             int py = baseY - halfSize + row;
-            sb.Draw(pixel, new Rectangle((int)center.X - halfW, py, halfW * 2, 1), baseColor);
+            sb.Draw(pixel, new Rectangle((int)center.X - halfW, py, halfW * 2, 1), factionColor * 0.7f);
         }
         
         // 势力颜色边框
-        DrawBorder(sb, pixel, new Rectangle((int)center.X - halfSize, baseY - halfSize, size, size), factionColor, 2);
+        DrawBorder(sb, pixel, new Rectangle((int)center.X - halfSize, baseY - halfSize, size, size), factionAccent, 2);
 
         // 选择指示器
         DrawSelectionIndicator(sb, pixel, city, selectedArmy, time,
@@ -141,33 +189,34 @@ public class CityRenderer
         Color factionColor = GetFactionColor(city.Data.Owner);
         Color factionAccent = GetFactionAccent(city.Data.Owner);
 
-        // 港口 - 圆形标记
-        int size = (int)(16 * scale);
+        int size = (int)(22 * scale);
         int halfSize = size / 2;
         int baseY = (int)center.Y;
         int radius = halfSize;
 
-        Color baseColor = new Color(190, 210, 220);  // 偏蓝
-        
-        // 绘制圆形
+        // 势力颜色光晕
+        int glowSize = size + 14;
+        int glowHalf = glowSize / 2;
+        sb.Draw(pixel, new Rectangle((int)center.X - glowHalf, baseY - glowHalf, glowSize, glowSize), factionColor * 0.2f);
+
+        // 绘制圆形（势力颜色填充）
         for (int row = -radius; row <= radius; row++)
         {
             int w = (int)MathF.Sqrt(radius * radius - row * row);
             if (w > 0)
             {
-                sb.Draw(pixel, new Rectangle((int)center.X - w, baseY + row, w * 2, 1), baseColor);
+                sb.Draw(pixel, new Rectangle((int)center.X - w, baseY + row, w * 2, 1), factionColor * 0.7f);
             }
         }
         
-        // 势力颜色边框
-        Color borderColor = factionColor;
-        for (int row = -radius; row <= radius; row += 2)
+        // 势力颜色圆形边框
+        for (int row = -radius; row <= radius; row++)
         {
             int w = (int)MathF.Sqrt(radius * radius - row * row);
             if (w > 0)
             {
-                sb.Draw(pixel, new Rectangle((int)center.X - w, baseY + row, 2, 1), borderColor);
-                sb.Draw(pixel, new Rectangle((int)center.X + w - 2, baseY + row, 2, 1), borderColor);
+                sb.Draw(pixel, new Rectangle((int)center.X - w, baseY + row, 2, 1), factionAccent);
+                sb.Draw(pixel, new Rectangle((int)center.X + w - 2, baseY + row, 2, 1), factionAccent);
             }
         }
 

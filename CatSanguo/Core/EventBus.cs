@@ -5,6 +5,7 @@ namespace CatSanguo.Core;
 
 public enum GameEventType
 {
+    // 战斗事件
     OnAttack,
     OnHit,
     OnKill,
@@ -13,7 +14,16 @@ public enum GameEventType
     OnBuffRemoved,
     OnSkillCast,
     OnBattleStart,
-    OnMoraleBreak
+    OnMoraleBreak,
+    
+    // 撤退/俘获事件（新）
+    OnRetreat,   // 武将撤退（替代原阵亡）
+    OnCapture,   // 武将被俘获
+    
+    // 回合制事件（新）
+    OnTurnEnd,      // 回合结束
+    OnMonthEnd,     // 月末（经济迭代）
+    OnQuarterEnd    // 季末（兵力迭代）
 }
 
 public struct GameEvent

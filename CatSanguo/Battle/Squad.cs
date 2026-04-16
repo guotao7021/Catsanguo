@@ -18,6 +18,7 @@ public enum SquadState
     Engaging,
     UsingSkill,
     Fleeing,
+    Retreating,  // 新：HP归0后尝试撤退
     Dead
 }
 
@@ -218,8 +219,8 @@ public class Squad
         set => Attributes.SetBase(AttrType.Speed, value);
     }
 
-    public bool IsDead => State == SquadState.Dead;
-    public bool IsActive => State != SquadState.Dead && State != SquadState.Fleeing;
+    public bool IsDead => State == SquadState.Dead || State == SquadState.Retreating;
+    public bool IsActive => State != SquadState.Dead && State != SquadState.Fleeing && State != SquadState.Retreating;
 
     public void InitializeSoldierOffsets()
     {
@@ -259,7 +260,7 @@ public class Squad
 
     public void Update(float deltaTime, List<Squad> allSquads)
     {
-        if (State == SquadState.Dead) return;
+        if (State == SquadState.Dead || State == SquadState.Retreating) return;
 
         // Update buffs
         if (BuffTimer > 0)
@@ -416,7 +417,8 @@ public class Squad
         if (HP <= 0)
         {
             HP = 0;
-            State = SquadState.Dead;
+            // 新：进入撤退状态，而不是直接死亡
+            State = SquadState.Retreating;
         }
     }
 

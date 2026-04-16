@@ -30,7 +30,6 @@ public class RoadRenderer
 
                 if (!cityLookup.TryGetValue(connectedId, out var otherNode)) continue;
 
-                // Only draw roads between cities that are at least explored
                 if (fog != null)
                 {
                     var fogA = fog.GetFogState(node.Data.GridX, node.Data.GridY);
@@ -39,80 +38,42 @@ public class RoadRenderer
                         continue;
                 }
 
-                // Determine road type and tint
-                string ownerA = node.Data.Owner.ToLower();
-                string ownerB = otherNode.Data.Owner.ToLower();
-                bool playerRoad = ownerA == "player" && ownerB == "player";
                 bool isWaterRoute = node.Data.CityType == "port" && otherNode.Data.CityType == "port";
 
                 if (isWaterRoute)
                     DrawWaterRoute(sb, pixel, node.Center, otherNode.Center);
                 else
-                    DrawStyledRoad(sb, pixel, node.Center, otherNode.Center, playerRoad);
+                    DrawStyledRoad(sb, pixel, node.Center, otherNode.Center);
             }
         }
     }
 
-    private void DrawStyledRoad(SpriteBatch sb, Texture2D pixel, Vector2 start, Vector2 end, bool playerOwned)
+    private void DrawStyledRoad(SpriteBatch sb, Texture2D pixel, Vector2 start, Vector2 end)
     {
-        // 古风道路 - 土黄色调
-        Color borderColor = new Color(90, 75, 50, 200);     // 深棕色边框
-        Color fillColor = playerOwned
-            ? new Color(180, 165, 130, 220)    // 玩家道路：更亮的土黄色
-            : new Color(170, 150, 110, 200);   // 普通道路：标准土黄色
-
-        // 边框（更宽）
-        DrawLine(sb, pixel, start, end, borderColor, 6);
-        // 填充
-        DrawLine(sb, pixel, start, end, fillColor, 4);
-        // 中心细线
-        DrawLine(sb, pixel, start, end, new Color(200, 185, 150, 180), 1);
-
-        // 装饰点 - 更大的间距
-        Vector2 diff = end - start;
-        float totalLen = diff.Length();
-        if (totalLen < 50) return;
-
-        Vector2 dir = diff / totalLen;
-        Color dotColor = new Color(140, 125, 95, 180);
-        float spacing = 40f;
-
-        for (float d = spacing; d < totalLen - spacing / 2; d += spacing)
-        {
-            Vector2 pos = start + dir * d;
-            // 小方块装饰
-            sb.Draw(pixel, new Rectangle((int)pos.X - 1, (int)pos.Y - 1, 3, 3), dotColor);
-        }
+        // 陆路 - 土黄色，适当粗细和透明度
+        Color roadColor = new Color(90, 75, 50) * 0.45f;
+        DrawLine(sb, pixel, start, end, roadColor, 3);
     }
 
     private void DrawWaterRoute(SpriteBatch sb, Texture2D pixel, Vector2 start, Vector2 end)
     {
-        // 古风水路 - 蓝绿色调
-        Color waterColor = new Color(70, 130, 190, 180);     // 主水色
-        Color waterLight = new Color(110, 170, 220, 140);    // 高光
+        // 水路 - 蓝色虚线
+        Color waterColor = new Color(70, 130, 190) * 0.35f;
 
         Vector2 diff = end - start;
         float totalLen = diff.Length();
         if (totalLen < 10) return;
 
         Vector2 dir = diff / totalLen;
-        float dashLen = 15f;   // 更长的实线
-        float gapLen = 10f;    // 更长的间隔
+        float dashLen = 12f;
+        float gapLen = 8f;
 
         for (float d = 0; d < totalLen; d += dashLen + gapLen)
         {
             float segEnd = MathF.Min(d + dashLen, totalLen);
             Vector2 segStart = start + dir * d;
             Vector2 segEndPos = start + dir * segEnd;
-            // 主线
-            DrawLine(sb, pixel, segStart, segEndPos, waterColor, 4);
-            // 高光
-            if (segEnd - d > 5)
-            {
-                Vector2 highlightStart = segStart + dir * 2;
-                Vector2 highlightEnd = segEndPos - dir * 2;
-                DrawLine(sb, pixel, highlightStart, highlightEnd, waterLight, 1);
-            }
+            DrawLine(sb, pixel, segStart, segEndPos, waterColor, 2);
         }
     }
 

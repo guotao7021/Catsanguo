@@ -17,10 +17,13 @@ public class ArmyManager
     private Dictionary<string, CityNode> _cityLookup = new();
     private List<CityNode> _allCityNodes = new();
     private float _time;
+    private bool _isAnimPhase;
 
     public ArmyToken? SelectedArmy => _selectedArmy;
     public IReadOnlyList<ArmyToken> Armies => _armies;
-    public List<ArmyToken> ArmiesList => _armies; // 允许添加军队
+    public List<ArmyToken> ArmiesList => _armies;
+    public bool IsAnimPhase => _isAnimPhase;
+    public Dictionary<string, CityNode> CityLookup => _cityLookup;
 
     // Events
     public event Action<ArmyToken, string>? OnArmyArrived;
@@ -76,16 +79,20 @@ public class ArmyManager
     {
         _time += dt;
 
-        foreach (var army in _armies)
+        // 动画阶段：仅更新动画，不处理输入
+        if (_isAnimPhase)
         {
-            if (army.IsMoving)
+            bool anyAnimating = false;
+            foreach (var army in _armies)
             {
-                string? arrivedCity = army.Update(dt, _cityLookup);
-                if (arrivedCity != null)
-                {
-                    HandleArmyArrival(army, arrivedCity);
-                }
+                army.UpdateAnimation(dt);
+                if (army.IsAnimating) anyAnimating = true;
             }
+            if (!anyAnimating)
+            {
+                _isAnimPhase = false;
+            }
+            return;
         }
 
         // Handle click input (using world-space mouse position)
@@ -97,6 +104,108 @@ public class ArmyManager
         if (input.IsRightMouseClicked())
         {
             _selectedArmy = null;
+        }
+    }
+
+    /// <summary>
+    /// 回合结束时推进所有行军中的军队
+    /// </summary>
+    public void AdvanceAllArmies(int days)
+    {
+        foreach (var army in _armies.ToList())
+        {
+            if (!army.IsMoving) continue;
+
+            var oldPos = army.ScreenPosition;
+            int remaining = days;
+            bool stopped = false;
+
+            while (remaining > 0 && army.IsMoving && !stopped)
+            {
+                var result = army.AdvanceToNextCity(remaining);
+                if (result == null) break;
+
+                var (cityId, isFinal, daysUsed) = result.Value;
+                remaining -= daysUsed;
+
+                if (!_cityLookup.TryGetValue(cityId, out var cityNode)) break;
+
+                string owner = cityNode.Data.Owner.ToLower();
+                bool isFriendly = MapPathfinder.IsFriendly(owner, army.Team);
+
+                if (isFinal)
+                {
+                    HandleArmyArrivalTurnBased(army, cityId, true);
+                    stopped = true;
+                }
+                else if (!isFriendly && !(owner == "neutral" && !cityNode.Data.Garrison.Any()))
+                {
+                    // 遇到敌方城池 - 停下触发战斗
+                    HandleArmyArrivalTurnBased(army, cityId, true);
+                    stopped = true;
+                }
+                else if (owner == "neutral" && !cityNode.Data.Garrison.Any())
+                {
+                    // 空中立城池 - 占领并继续
+                    if (army.Team == "player")
+                    {
+                        cityNode.Data.Owner = "player";
+                        GameState.Instance.AddOwnedCity(cityId);
+                        OnArmyArrived?.Invoke(army, cityId);
+                    }
+                }
+                // 友方城池 - 直接通过
+            }
+
+            // 设置动画
+            var newPos = army.ComputeMarchPosition(_cityLookup);
+            if (Vector2.Distance(oldPos, newPos) > 1f)
+            {
+                army.StartAnimation(newPos);
+            }
+            else
+            {
+                army.ScreenPosition = newPos;
+            }
+        }
+
+        _isAnimPhase = _armies.Any(a => a.IsAnimating);
+    }
+
+    private void HandleArmyArrivalTurnBased(ArmyToken army, string cityId, bool isFinalDest)
+    {
+        if (!_cityLookup.TryGetValue(cityId, out var cityNode)) return;
+
+        string owner = cityNode.Data.Owner.ToLower();
+        bool isFriendly = MapPathfinder.IsFriendly(owner, army.Team);
+
+        if (isFriendly)
+        {
+            if (isFinalDest)
+            {
+                army.StopAtCity(cityId);
+                army.UpdateStationaryPosition(_cityLookup);
+            }
+        }
+        else if (owner == "neutral" && !cityNode.Data.Garrison.Any())
+        {
+            if (army.Team == "player")
+            {
+                cityNode.Data.Owner = "player";
+                GameState.Instance.AddOwnedCity(cityId);
+                OnArmyArrived?.Invoke(army, cityId);
+            }
+            if (isFinalDest)
+            {
+                army.StopAtCity(cityId);
+                army.UpdateStationaryPosition(_cityLookup);
+            }
+        }
+        else
+        {
+            army.StopAtCity(cityId);
+            army.UpdateStationaryPosition(_cityLookup);
+            OnArmyArrived?.Invoke(army, cityId);
         }
     }
 
@@ -142,50 +251,7 @@ public class ArmyManager
         var path = MapPathfinder.FindPath(_selectedArmy.CurrentCityId, targetCityId, _allCityNodes, _selectedArmy.Team);
         if (path.Count >= 2)
         {
-            _selectedArmy.StartMove(path);
-        }
-    }
-
-    private void HandleArmyArrival(ArmyToken army, string cityId)
-    {
-        if (!_cityLookup.TryGetValue(cityId, out var cityNode)) return;
-
-        string owner = cityNode.Data.Owner.ToLower();
-        bool isFinalDest = !army.IsMoving;
-
-        // Check if friendly: same team or player arriving at player city
-        bool isFriendly = MapPathfinder.IsFriendly(owner, army.Team);
-
-        if (isFriendly)
-        {
-            // Friendly city - pass through or station
-            if (isFinalDest)
-            {
-                army.StopAtCity(cityId);
-                army.UpdateStationaryPosition(_cityLookup);
-            }
-        }
-        else if (owner == "neutral" && !cityNode.Data.Garrison.Any())
-        {
-            // Empty neutral city - capture and continue
-            if (army.Team == "player")
-            {
-                cityNode.Data.Owner = "player";
-                GameState.Instance.AddOwnedCity(cityId);
-                OnArmyArrived?.Invoke(army, cityId);
-            }
-            if (isFinalDest)
-            {
-                army.StopAtCity(cityId);
-                army.UpdateStationaryPosition(_cityLookup);
-            }
-        }
-        else
-        {
-            // Enemy city or neutral with garrison - stop and trigger battle
-            army.StopAtCity(cityId);
-            army.UpdateStationaryPosition(_cityLookup);
-            OnArmyArrived?.Invoke(army, cityId);
+            _selectedArmy.StartMove(path, _cityLookup);
         }
     }
 

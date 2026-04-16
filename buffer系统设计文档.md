@@ -1,39 +1,88 @@
-一、Buff系统设计目标（必须满足）
-🎯 核心能力
-✅ 支持 任意效果组合
-✅ 支持 叠加 / 覆盖 / 刷新
-✅ 支持 触发式（OnHit / OnKill）
-✅ 支持 持续效果（DOT / HOT）
-✅ 支持 控制效果（眩晕 / 沉默）
-✅ 支持 属性修改（攻击 / 防御）
-✅ 支持 网络同步 / 回放一致性
-🧠 二、核心设计思想（工业级关键）
-❗1. Buff ≠ 状态机
+# 猫三国 - Buffer系统设计文档
 
-👉 Buff是“效果容器”，不是行为控制器
+> 最后更新：2026-04-15（根据实际代码同步）
 
-❗2. 所有效果 = Effect组件
+## 一、Buff系统设计目标
+
+### 核心能力
+- 支持任意效果组合
+- 支持叠加 / 覆盖 / 刷新
+- 支持触发式（OnHit / OnKill）
+- 支持持续效果（DOT / HOT）
+- 支持控制效果（眩晕 / 沉默）
+- 支持属性修改（攻击 / 防御）
+
+## 二、核心设计思想
+
+### 1. Buff ≠ 状态机
+Buff是"效果容器"，不是行为控制器
+
+### 2. 所有效果 = Effect组件
+```
 Buff = 数据 + 多个Effect
-❗3. 事件驱动（核心）
+```
+
+### 3. 事件驱动
+```
 OnAdd / OnTick / OnRemove / OnEvent
-🧱 三、核心架构设计
-3.1 Buff结构（数据层）
-public struct BuffInstance
+```
+
+## 三、核心架构设计（已实现）
+
+### 3.1 BuffSystem 在战斗中的位置
+
+```
+BattleScene
+ ├── EventBus（事件发布）
+ ├── BuffSystem（Buff管理）
+ ├── SkillTriggerSystem（技能触发）
+ └── BattleContext（连接所有子系统）
+```
+
+### 3.2 Buff生命周期
+
+```
+创建(Add) → 应用效果(OnAdd) → Tick循环(OnTick) → 过期移除(OnRemove)
+```
+
+### 3.3 Tick流程
+
+```
+BuffSystem.Tick(deltaTime):
+  for each activeBuff:
+    elapsed += dt
+    
+    if 到tickInterval时间:
+      执行 OnTick效果
+    
+    if duration结束:
+      执行 OnRemove
+      删除Buff
+```
+
+## 四、Buff数据结构
+
+### Buff实例
+
+```csharp
+public class BuffInstance
 {
-    public int buffId;
-    public int casterId;
-    public int targetId;
-
-    public float duration;
-    public float elapsed;
-
-    public int stackCount;
-
-    public int seed; // 用于随机一致性（网络同步）
+    public string BuffId { get; set; }
+    public string CasterId { get; set; }
+    public string TargetId { get; set; }
+    
+    public float Duration { get; set; }
+    public float Elapsed { get; set; }
+    
+    public int StackCount { get; set; }
 }
-3.2 Buff配置（策划驱动）
+```
+
+### Buff配置（JSON）
+
+```json
 {
-  "id": 2001,
+  "id": "buff_poison",
   "name": "中毒",
   "duration": 5,
   "maxStack": 3,
@@ -42,154 +91,136 @@ public struct BuffInstance
     { "type": "DamageOverTime", "value": 10 }
   ]
 }
-3.3 Effect类型（核心扩展点）
-🎯 分类
-1️⃣ 属性类（Modifier）
-增伤
-减防
-攻速
-2️⃣ 行为类（Control）
-眩晕
-禁止移动
-沉默
-3️⃣ 触发类（Trigger）
-OnHit触发
-OnKill触发
-4️⃣ 持续类（Periodic）
-DOT（持续伤害）
-HOT（回血）
-🧩 四、Effect接口设计（核心）
+```
+
+## 五、Effect类型
+
+### 分类
+
+| 类型 | 说明 | 示例 |
+|------|------|------|
+| 属性类(Modifier) | 通过AttributeSet修改属性 | 增伤、减防、攻速 |
+| 行为类(Control) | 控制效果 | 眩晕、沉默、禁止移动 |
+| 触发类(Trigger) | 响应事件 | OnHit触发、OnKill触发 |
+| 持续类(Periodic) | 周期性效果 | DOT(持续伤害)、HOT(回血) |
+
+### Effect接口
+
+```csharp
 public interface IBuffEffect
 {
-    void OnAdd(BuffContext ctx);
-    void OnRemove(BuffContext ctx);
-
-    void OnTick(BuffContext ctx);
-
-    void OnEvent(BuffContext ctx, GameEvent evt);
+    void OnAdd(BuffContext ctx);     // Buff添加时
+    void OnRemove(BuffContext ctx);  // Buff移除时
+    void OnTick(BuffContext ctx);    // 每个Tick间隔
 }
-BuffContext（关键桥梁）
-public struct BuffContext
-{
-    public World world;
-    public BuffInstance buff;
-    public UnitData target;
-    public UnitData caster;
-}
-⚔️ 五、核心Effect实现（示例）
-5.1 DOT伤害（持续伤害）
-public class DamageOverTimeEffect : IBuffEffect
-{
-    public float damage;
+```
 
-    public void OnTick(BuffContext ctx)
-    {
-        ctx.target.hp -= damage;
-    }
+## 六、核心Effect实现
 
-    public void OnAdd(BuffContext ctx) {}
-    public void OnRemove(BuffContext ctx) {}
-    public void OnEvent(BuffContext ctx, GameEvent evt) {}
-}
-5.2 眩晕控制
-public class StunEffect : IBuffEffect
-{
-    public void OnAdd(BuffContext ctx)
-    {
-        ctx.target.tags |= UnitTag.Stunned;
-    }
+### 6.1 DOT伤害（持续伤害）
 
-    public void OnRemove(BuffContext ctx)
-    {
-        ctx.target.tags &= ~UnitTag.Stunned;
-    }
+```csharp
+// 每tick对目标造成固定伤害
+OnTick: target.hp -= damage;
+```
 
-    public void OnTick(BuffContext ctx) {}
-    public void OnEvent(BuffContext ctx, GameEvent evt) {}
-}
-5.3 攻击触发Buff
-public class OnHitApplyBuffEffect : IBuffEffect
-{
-    public int buffId;
+### 6.2 属性修改
 
-    public void OnEvent(BuffContext ctx, GameEvent evt)
-    {
-        if (evt.type == EventType.OnHit)
-        {
-            ctx.world.AddBuff(buffId, ctx.caster.id, evt.targetId);
-        }
-    }
-}
-🔄 六、Buff生命周期（核心流程）
-生命周期
-添加 → OnAdd → Tick循环 → OnRemove
-Tick流程（每帧）
-for each Buff:
-    elapsed += dt
+```csharp
+// 添加时创建Modifier，移除时删除
+OnAdd: target.AttributeSet.AddModifier(new Modifier { ... });
+OnRemove: target.AttributeSet.RemoveModifier(sourceId);
+```
 
-    if 到Tick时间:
-        执行 OnTick
+### 6.3 控制效果（眩晕）
 
-    if duration结束:
-        执行 OnRemove
-        删除Buff
-🧠 七、叠加机制（必须设计）
-支持3种模式：
-1️⃣ Stack（叠加层数）
-中毒：最多3层
-2️⃣ Refresh（刷新时间）
-重新施加 → duration重置
-3️⃣ Replace（覆盖）
-强Buff覆盖弱Buff
-实现结构
-public enum BuffStackType
-{
-    Stack,
-    Refresh,
-    Replace
-}
-⚡ 八、性能优化（工业级关键）
-1️⃣ 分桶更新（核心）
-Buff按tickInterval分组
-2️⃣ 避免每帧遍历所有Buff
+```csharp
+OnAdd: target.AddTag(UnitTag.Stunned);
+OnRemove: target.RemoveTag(UnitTag.Stunned);
+```
 
-👉 用时间轮 / 分片更新
+## 七、叠加机制
 
-3️⃣ Struct存储（避免GC）
-4️⃣ 批处理执行
-收集效果 → 批量执行
-🌐 九、网络同步（必须支持）
-原则
-Buff只通过Command添加
-所有随机 = 固定seed
-同步内容
-buffId
-casterId
-targetId
-时间戳
-🧪 十、调试与工具（产品级必须）
-Debug能力
-查看单位Buff列表
-查看Buff剩余时间
-查看Effect执行日志
-示例输出
-[Frame 200]
-单位A 获得Buff：中毒
-Tick伤害：10
-剩余时间：3.2s
-🚀 十一、与技能系统联动（关键）
-技能流程
-释放技能 → 添加Buff → Buff驱动效果
-支持复杂玩法
-连锁触发
-条件触发
-被动技能
-🎯 十二、最终能力总结
-你的Buff系统可以做到：
-能力	支持
-DOT/HOT	✅
-控制技能	✅
-被动触发	✅
-多层叠加	✅
-技能联动	✅
-网络同步	✅
+### 支持3种模式
+
+| 模式 | 说明 | 示例 |
+|------|------|------|
+| Stack | 叠加层数 | 中毒最多3层 |
+| Refresh | 刷新时间 | 重新施加→duration重置 |
+| Replace | 覆盖 | 强Buff覆盖弱Buff |
+
+## 八、与其他系统联动
+
+### 与技能系统联动（通过EventBus）
+
+```
+释放技能 → EventBus.OnSkillCast
+   → SkillTriggerSystem检查触发
+   → Effect执行: BuffSystem.AddBuff()
+   → Buff应用: OnAdd → Modifier添加
+```
+
+### 与属性系统联动
+
+```
+Buff添加 → OnAdd → AttributeSet.AddModifier()
+Buff移除 → OnRemove → AttributeSet.RemoveModifier()
+→ 属性自动重算
+```
+
+### 与战斗AI联动
+
+```
+BattleAI在决策时考虑：
+  - 目标身上有什么Buff
+  - 是否有控制效果
+  - 是否需要解除Buff
+```
+
+## 九、BattleScene中的集成
+
+```csharp
+// BattleScene中的Buff系统
+private BuffSystem _buffSystem;
+
+// 在BattleScene.Enter()中初始化
+_buffSystem = new BuffSystem();
+_battleContext.BuffSystem = _buffSystem;
+
+// 在BattleScene.UpdateFighting()中每帧更新
+_buffSystem.Tick(deltaTime);
+```
+
+## 十、与战斗表现联动
+
+| Buff事件 | 视觉表现 |
+|----------|----------|
+| Buff添加 | EventBus → 飘字提示 |
+| DOT伤害 | FloatingTextManager → 伤害数字 |
+| Buff移除 | 状态图标消失 |
+| 控制效果 | Squad动画变化 |
+
+## 十一、后续扩展
+
+| 方向 | 优先级 | 说明 |
+|------|--------|------|
+| Buff图标显示 | 高 | Squad上方显示当前Buff图标 |
+| Buff详情面板 | 中 | 点击查看Buff效果和剩余时间 |
+| 免疫系统 | 中 | 特定Buff对某些状态免疫 |
+| Buff转移 | 低 | 技能将Buff从一个目标转移到另一个 |
+| Buff净化 | 中 | 移除目标负面Buff |
+
+## 十二、最终能力总结
+
+| 能力 | 状态 |
+|------|------|
+| DOT/HOT | 已实现 |
+| 控制技能 | 已实现 |
+| 属性修改 | 已实现（通过Modifier） |
+| 多层叠加 | 已实现 |
+| 技能联动 | 已实现（EventBus驱动） |
+| 生命周期管理 | 已实现 |
+
+Buff系统 = 所有状态效果的统一容器
+
+当前已在BattleScene中集成BuffSystem，通过EventBus与SkillTriggerSystem联动，支持DOT/HOT、控制效果、属性修改等核心功能。Buff通过Modifier系统与AttributeSet交互，确保属性计算的一致性。

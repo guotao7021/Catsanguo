@@ -48,6 +48,7 @@ public class BattleScene : Scene
     private float _speedMultiplier = 1f;
     private string _resultText = "";
     private bool _isVictory;
+    private List<string> _capturedGenerals = new();
 
     // Deploy state
     private int _deployingSquadIndex = -1;
@@ -205,7 +206,7 @@ public class BattleScene : Scene
             {
                 var worldMap = new WorldMapScene();
                 if (_isVictory)
-                    worldMap.OnBattleVictory(_targetCity);
+                    worldMap.OnBattleVictory(_targetCity, _capturedGenerals);
                 Game.SceneManager.ChangeScene(worldMap);
             }
             else
@@ -691,6 +692,33 @@ public class BattleScene : Scene
     private void ShowResultPanel()
     {
         var xpMap = CalculateBattleXp();
+
+        // 使用CaptureManager处理撤退和俘获
+        var eventBus = new EventBus();
+        var captureManager = new CaptureManager(eventBus);
+        var capturedGenerals = new List<string>();
+
+        if (_isVictory)
+        {
+            // 对每个撤退状态的敌方武将进行俘获判定
+            foreach (var enemySquad in _enemySquads.Where(s => s.IsDead && s.General != null))
+            {
+                var pursuer = _playerSquads.FirstOrDefault(s => s.IsActive && s.General != null);
+                if (pursuer != null && pursuer.General != null && enemySquad.General != null)
+                {
+                    bool retreated = captureManager.TryRetreat(enemySquad.General, pursuer.General);
+                    if (!retreated)
+                    {
+                        bool captured = captureManager.TryCapture(enemySquad.General, pursuer.General);
+                        if (captured)
+                        {
+                            capturedGenerals.Add(enemySquad.General.Id);
+                        }
+                    }
+                }
+            }
+        }
+
         var resultData = new BattleResultData
         {
             IsVictory = _isVictory,
@@ -704,7 +732,9 @@ public class BattleScene : Scene
             WoodReward = 0,
             IronReward = 0,
             MeritReward = 0,
-            KeyEvents = new List<string>()
+            KeyEvents = new List<string>(),
+            // 俘虏判定结果
+            CapturedGenerals = capturedGenerals
         };
         _uiManager.ShowResult(resultData);
     }

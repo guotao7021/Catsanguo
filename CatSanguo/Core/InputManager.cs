@@ -10,6 +10,10 @@ public class InputManager
     private MouseState _currentMouse;
     private MouseState _previousMouse;
 
+    // Double click detection
+    private float _lastClickTime;
+    private const float DoubleClickInterval = 0.35f; // seconds
+
     public Vector2 MousePosition => _currentMouse.Position.ToVector2();
 
     public int ScrollWheelDelta => _currentMouse.ScrollWheelValue - _previousMouse.ScrollWheelValue;
@@ -18,6 +22,12 @@ public class InputManager
 
     public bool IsRightMouseHeld()
         => _currentMouse.RightButton == ButtonState.Pressed;
+
+    public bool IsLeftMouseHeld()
+        => _currentMouse.LeftButton == ButtonState.Pressed;
+
+    public bool IsLeftMouseReleased()
+        => _currentMouse.LeftButton == ButtonState.Released && _previousMouse.LeftButton == ButtonState.Pressed;
 
     public void Update()
     {
@@ -41,4 +51,16 @@ public class InputManager
 
     public bool IsMouseInRect(Rectangle rect)
         => rect.Contains(_currentMouse.Position);
+
+    public bool IsMouseDoubleClicked(float currentTime = 0f)
+    {
+        bool justClicked = _currentMouse.LeftButton == ButtonState.Pressed && _previousMouse.LeftButton == ButtonState.Released;
+        if (justClicked)
+        {
+            bool isDoubleClick = (currentTime - _lastClickTime) < DoubleClickInterval && currentTime > 0;
+            _lastClickTime = currentTime;
+            return isDoubleClick;
+        }
+        return false;
+    }
 }

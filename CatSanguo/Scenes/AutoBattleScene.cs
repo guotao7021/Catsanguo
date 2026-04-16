@@ -40,6 +40,9 @@ public class AutoBattleResult
 
     // 俘虏武将（战斗胜利后俘获的敌方武将）
     public List<string> CapturedGenerals { get; set; } = new();
+
+    // 战后幸存兵力：generalId -> survivingSoldierCount
+    public Dictionary<string, int> SurvivingSoldiers { get; set; } = new();
 }
 
 public enum AutoBattlePhase
@@ -686,6 +689,35 @@ public class AutoBattleScene : Scene
     {
         var (gold, food, wood, iron, merit, rating) = CalculateRewards();
 
+        // 使用CaptureManager处理撤退和俘获
+        var eventBus = new EventBus();
+        var captureManager = new CaptureManager(eventBus);
+        var capturedGenerals = new List<string>();
+
+        if (_isVictory)
+        {
+            // 对每个撤退状态的敌方武将进行俘获判定
+            foreach (var enemySquad in _enemySquads.Where(s => s.IsDead && s.General != null))
+            {
+                // 寻找最近的玩家武将作为追击者
+                var pursuer = _playerSquads.FirstOrDefault(s => s.IsActive && s.General != null);
+                if (pursuer != null && pursuer.General != null && enemySquad.General != null)
+                {
+                    // 先判定撤退
+                    bool retreated = captureManager.TryRetreat(enemySquad.General, pursuer.General);
+                    if (!retreated)
+                    {
+                        // 撤退失败，判定俘获
+                        bool captured = captureManager.TryCapture(enemySquad.General, pursuer.General);
+                        if (captured)
+                        {
+                            capturedGenerals.Add(enemySquad.General.Id);
+                        }
+                    }
+                }
+            }
+        }
+
         var result = new AutoBattleResult
         {
             IsVictory = _isVictory,
@@ -699,12 +731,12 @@ public class AutoBattleScene : Scene
             IronReward = iron,
             MeritReward = merit,
             PerformanceRating = rating,
-            // 俘虏所有阵亡的敌方武将
-            CapturedGenerals = _isVictory
-                ? _enemySquads.Where(s => s.IsDead && s.General != null)
-                    .Select(s => s.General!.Id)
-                    .ToList()
-                : new List<string>()
+            // 俘虏判定结果
+            CapturedGenerals = capturedGenerals,
+            // 战后幸存兵力
+            SurvivingSoldiers = _playerSquads
+                .Where(s => s.General != null && !s.IsDead)
+                .ToDictionary(s => s.General!.Id, s => s.SoldierCount)
         };
         _onComplete?.Invoke(result);
     }

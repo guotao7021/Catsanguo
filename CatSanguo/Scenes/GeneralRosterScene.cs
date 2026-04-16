@@ -45,12 +45,34 @@ public class GeneralRosterScene : Scene
     private List<Button> _skillTreeButtons = new();
 
     private int _selectedGeneralIndex = -1;
+    private List<int> _filteredGeneralIndices = new(); // 当前显示的武将索引（原_allGenerals中的位置）
     private GeneralProgress? _selectedGeneral;
     private Action? _onSaveComplete;
+    private float _rosterScrollOffset = 0f; // 武将列表滚动偏移
 
     // Notification
     private string _notifyText = "";
     private float _notifyTimer = 0f;
+    
+    // 升级加点选择
+    private bool _showStatSelect = false;
+    private List<Button> _statSelectButtons = new();
+    private static readonly (string key, string label)[] StatOptions = {
+        ("strength", "武力+1"),
+        ("intelligence", "智力+1"),
+        ("command", "统帅+1"),
+        ("politics", "政治+1"),
+        ("charisma", "魅力+1")
+    };
+    
+    // 赏赐系统
+    private bool _showRewardSelect = false;
+    private List<Button> _rewardButtons = new();
+    private static readonly (int gold, string label)[] RewardOptions = {
+        (50, "赏赐50金"),
+        (100, "赏赐100金"),
+        (200, "赏赐200金")
+    };
 
     public GeneralRosterScene(Action? onSaveComplete = null)
     {
@@ -132,7 +154,7 @@ public class GeneralRosterScene : Scene
     {
         var buttons = new List<Button>();
         int startX = 615;
-        int startY = 160;
+        int startY = 200;
         int btnWidth = 170;
         int btnHeight = 40;
         int gap = 10;
@@ -182,7 +204,7 @@ public class GeneralRosterScene : Scene
 
         var gen = _allGenerals[_selectedGeneralIndex];
         int startX = 615;
-        int startY = 160;
+        int startY = 200;
         int btnWidth = 200;
         int btnHeight = 35;
         int gap = 8;
@@ -338,7 +360,7 @@ public class GeneralRosterScene : Scene
         }
 
         int startX = 620;
-        int startY = 160;
+        int startY = 200;
         int nodeSize = 40;
         int gapX = 60;
         int gapY = 60;
@@ -399,31 +421,39 @@ public class GeneralRosterScene : Scene
     private void CreateGeneralButtons()
     {
         var buttons = new List<Button>();
+        _filteredGeneralIndices.Clear();
+        _rosterScrollOffset = 0f;
+
         int startX = 30;
         int startY = 80;
-        int cardWidth = 180;
-        int cardHeight = 80;
-        int gapX = 15;
-        int gapY = 10;
+        int cardWidth = 530;
+        int cardHeight = 50;
+        int gapY = 6;
+
+        string playerFactionId = GameState.Instance.PlayerFactionId;
 
         for (int i = 0; i < _allGenerals.Count; i++)
         {
             var gen = _allGenerals[i];
             var progress = GameState.Instance.GetGeneralProgress(gen.Id);
-            int col = i % 3;
-            int row = i / 3;
-            int x = startX + col * (cardWidth + gapX);
+
+            // 只显示本势力已解锁的武将
+            if (!string.IsNullOrEmpty(gen.ForceId) && gen.ForceId != playerFactionId)
+                continue;
+            if (progress?.IsUnlocked != true)
+                continue;
+
+            _filteredGeneralIndices.Add(i);
+
+            int row = _filteredGeneralIndices.Count - 1;
+            int x = startX;
             int y = startY + row * (cardHeight + gapY);
 
             int idx = i;
-            string label;
-            if (progress?.IsUnlocked == false)
-                label = $"[未解锁] {gen.Name}";
-            else
-                label = $"{gen.Name} Lv.{progress?.Level ?? 1}";
+            string label = $"{gen.Name} Lv.{progress?.Level ?? 1}  武{gen.Strength} 智{gen.Intelligence} 统{gen.Command} 魅{gen.Charisma} 忠{gen.Loyalty}";
 
             var btn = new Button(label, new Rectangle(x, y, cardWidth, cardHeight));
-            btn.NormalColor = progress?.IsUnlocked == false ? new Color(35, 30, 25) : new Color(45, 40, 35);
+            btn.NormalColor = new Color(45, 40, 35);
             btn.HoverColor = new Color(65, 55, 45);
             btn.OnClick = () => SelectGeneral(idx);
             buttons.Add(btn);
@@ -454,30 +484,95 @@ public class GeneralRosterScene : Scene
     private void TryUpgradeGeneral()
     {
         if (_selectedGeneral == null || _selectedGeneralIndex < 0 || _selectedGeneralIndex >= _allGenerals.Count) return;
-        var gen = _allGenerals[_selectedGeneralIndex];
         if (!_selectedGeneral.IsUnlocked) return;
         if (_selectedGeneral.Level >= _selectedGeneral.LevelCap)
         {
             ShowNotify("已达到等级上限");
             return;
         }
+        if (GameState.Instance.BattleMerit < _selectedGeneral.LevelUpCost)
+        {
+            ShowNotify("战功不足，无法升级");
+            return;
+        }
 
-        bool success = GameState.Instance.TryLevelUpGeneral(gen.Id);
+        // 显示属性选择面板
+        _showStatSelect = true;
+        _statSelectButtons.Clear();
+        int dialogX = GameSettings.ScreenWidth / 2 - 100;
+        int dialogY = GameSettings.ScreenHeight / 2 - 80;
+        for (int i = 0; i < StatOptions.Length; i++)
+        {
+            var (key, label) = StatOptions[i];
+            var btn = new Button(label, new Rectangle(dialogX, dialogY + i * 36, 200, 30));
+            btn.NormalColor = new Color(40, 50, 60);
+            btn.HoverColor = new Color(60, 80, 100);
+            string statKey = key;
+            btn.OnClick = () => ConfirmStatUpgrade(statKey);
+            _statSelectButtons.Add(btn);
+        }
+    }
+
+    private void ConfirmStatUpgrade(string statType)
+    {
+        if (_selectedGeneral == null || _selectedGeneralIndex < 0 || _selectedGeneralIndex >= _allGenerals.Count) return;
+        var gen = _allGenerals[_selectedGeneralIndex];
+
+        bool success = GameState.Instance.TryLevelUpGeneral(gen.Id, statType);
         if (success)
         {
             _selectedGeneral = GameState.Instance.GetGeneralProgress(gen.Id);
-            ShowNotify($"{gen.Name} 升级到 Lv.{_selectedGeneral!.Level}");
+            string statLabel = StatOptions.FirstOrDefault(s => s.key == statType).label ?? statType;
+            ShowNotify($"{gen.Name} 升级到 Lv.{_selectedGeneral!.Level} ({statLabel})");
             CreateGeneralButtons();
             RefreshTab();
 
-            // Disable button if at cap
             if (_upgradeButton != null)
                 _upgradeButton.Enabled = _selectedGeneral.Level < _selectedGeneral.LevelCap;
         }
         else
         {
-            ShowNotify("战功不足，无法升级");
+            ShowNotify("升级失败");
         }
+        _showStatSelect = false;
+    }
+
+    private void OpenRewardDialog()
+    {
+        if (_selectedGeneral == null) return;
+        _showRewardSelect = true;
+        _rewardButtons.Clear();
+        int dialogX = GameSettings.ScreenWidth / 2 - 100;
+        int dialogY = GameSettings.ScreenHeight / 2 - 60;
+        for (int i = 0; i < RewardOptions.Length; i++)
+        {
+            var (gold, label) = RewardOptions[i];
+            var btn = new Button(label, new Rectangle(dialogX, dialogY + i * 36, 200, 30));
+            btn.NormalColor = new Color(50, 45, 30);
+            btn.HoverColor = new Color(80, 70, 40);
+            int amount = gold;
+            btn.OnClick = () => ConfirmReward(amount);
+            _rewardButtons.Add(btn);
+        }
+    }
+
+    private void ConfirmReward(int goldAmount)
+    {
+        if (_selectedGeneral == null) return;
+        string cityId = _selectedGeneral.CurrentCityId;
+        if (string.IsNullOrEmpty(cityId))
+        {
+            ShowNotify("武将未驻扎在城池");
+            _showRewardSelect = false;
+            return;
+        }
+        bool success = GameState.Instance.GrantReward(_selectedGeneral.Data.Id, cityId, goldAmount, out string msg);
+        ShowNotify(msg);
+        if (success)
+        {
+            _selectedGeneral = GameState.Instance.GetGeneralProgress(_selectedGeneral.Data.Id);
+        }
+        _showRewardSelect = false;
     }
 
     private void GoBack()
@@ -496,13 +591,68 @@ public class GeneralRosterScene : Scene
     {
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        foreach (var btn in _generalButtons) btn.Update(Input);
+        // --- 武将列表滚动 ---
+        int listTop = 80;
+        int listBottom = GameSettings.ScreenHeight - 70;
+        int cardHeight = 50;
+        int gapY = 6;
+        int stride = cardHeight + gapY;
+
+        int scrollDelta = Input.ScrollWheelDelta;
+        if (scrollDelta != 0)
+        {
+            var mousePos = Input.MousePosition;
+            if (mousePos.X >= 30 && mousePos.X <= 560 && mousePos.Y >= listTop && mousePos.Y <= listBottom)
+            {
+                _rosterScrollOffset -= scrollDelta * 0.3f;
+                int totalHeight = _generalButtons.Count * stride;
+                int visibleHeight = listBottom - listTop;
+                float maxScroll = Math.Max(0, totalHeight - visibleHeight);
+                _rosterScrollOffset = MathHelper.Clamp(_rosterScrollOffset, 0, maxScroll);
+            }
+        }
+
+        // 更新按钮位置并只更新可见区域的按钮
+        for (int i = 0; i < _generalButtons.Count; i++)
+        {
+            var btn = _generalButtons[i];
+            int baseY = listTop + i * stride;
+            int drawY = baseY - (int)_rosterScrollOffset;
+            btn.Bounds = new Rectangle(btn.Bounds.X, drawY, btn.Bounds.Width, btn.Bounds.Height);
+
+            // 只更新可见区域内的按钮（避免点击不可见的按钮）
+            if (drawY + cardHeight >= listTop && drawY <= listBottom)
+                btn.Update(Input);
+        }
+
         _backButton?.Update(Input);
         _upgradeButton?.Update(Input);
         foreach (var tab in _tabButtons) tab.Update(Input);
         foreach (var btn in _equipSlotButtons) btn.Update(Input);
         foreach (var btn in _skillButtons) btn.Update(Input);
         foreach (var btn in _skillTreeButtons) btn.Update(Input);
+        
+        // 升级加点选择面板
+        if (_showStatSelect)
+        {
+            foreach (var btn in _statSelectButtons) btn.Update(Input);
+            if (Input.IsKeyPressed(Keys.Escape))
+            {
+                _showStatSelect = false;
+                return;
+            }
+        }
+        
+        // 赏赐金额选择面板
+        if (_showRewardSelect)
+        {
+            foreach (var btn in _rewardButtons) btn.Update(Input);
+            if (Input.IsKeyPressed(Keys.Escape))
+            {
+                _showRewardSelect = false;
+                return;
+            }
+        }
 
         if (_notifyTimer > 0)
             _notifyTimer -= dt;
@@ -525,14 +675,23 @@ public class GeneralRosterScene : Scene
         // Top HUD
         SpriteBatch.DrawString(_font, $"战功: {GameState.Instance.BattleMerit}", new Vector2(GameSettings.ScreenWidth - 200, 25), new Color(255, 200, 80));
 
-        // General cards
-        foreach (var btn in _generalButtons) btn.Draw(SpriteBatch, _font, _pixel);
-
-        // Selected general highlight
-        if (_selectedGeneralIndex >= 0 && _selectedGeneralIndex < _generalButtons.Count)
+        // General cards (只绘制可见区域内的按钮)
+        int listTop = 80;
+        int listBottom = GameSettings.ScreenHeight - 70;
+        int cardHeight = 50;
+        foreach (var btn in _generalButtons)
         {
-            var btn = _generalButtons[_selectedGeneralIndex];
-            DrawBorder(btn.Bounds, new Color(255, 220, 100), 3);
+            if (btn.Bounds.Y + cardHeight >= listTop && btn.Bounds.Y <= listBottom)
+                btn.Draw(SpriteBatch, _font, _pixel);
+        }
+
+        // Selected general highlight (通过 _filteredGeneralIndices 映射到正确的按钮索引)
+        int selectedBtnIdx = _filteredGeneralIndices.IndexOf(_selectedGeneralIndex);
+        if (selectedBtnIdx >= 0 && selectedBtnIdx < _generalButtons.Count)
+        {
+            var btn = _generalButtons[selectedBtnIdx];
+            if (btn.Bounds.Y + cardHeight >= listTop && btn.Bounds.Y <= listBottom)
+                DrawBorder(btn.Bounds, new Color(255, 220, 100), 3);
         }
 
         // Tab navigation + Detail panel
@@ -570,6 +729,41 @@ public class GeneralRosterScene : Scene
             SpriteBatch.Draw(_pixel, new Rectangle((int)nx - 15, (int)ny - 5, (int)size.X + 30, (int)size.Y + 10),
                 new Color(0, 0, 0, (int)(180 * alpha)));
             SpriteBatch.DrawString(_font, _notifyText, new Vector2(nx, ny), new Color(255, 230, 100) * alpha);
+        }
+
+        // 升级加点选择面板
+        if (_showStatSelect)
+        {
+            // 半透明遮罩
+            SpriteBatch.Draw(_pixel, new Rectangle(0, 0, GameSettings.ScreenWidth, GameSettings.ScreenHeight), new Color(0, 0, 0, 150));
+            
+            int dialogW = 240;
+            int dialogH = 36 * StatOptions.Length + 50;
+            int dialogX = GameSettings.ScreenWidth / 2 - dialogW / 2;
+            int dialogY = GameSettings.ScreenHeight / 2 - dialogH / 2;
+            
+            SpriteBatch.Draw(_pixel, new Rectangle(dialogX - 10, dialogY - 40, dialogW + 20, dialogH + 50), new Color(50, 45, 35));
+            DrawBorder(new Rectangle(dialogX - 10, dialogY - 40, dialogW + 20, dialogH + 50), new Color(120, 100, 70), 2);
+            SpriteBatch.DrawString(_font, "选择加点属性", new Vector2(dialogX + 10, dialogY - 32), new Color(255, 220, 100));
+            
+            foreach (var btn in _statSelectButtons) btn.Draw(SpriteBatch, _font, _pixel);
+        }
+
+        // 赏赐金额选择面板
+        if (_showRewardSelect)
+        {
+            SpriteBatch.Draw(_pixel, new Rectangle(0, 0, GameSettings.ScreenWidth, GameSettings.ScreenHeight), new Color(0, 0, 0, 150));
+            
+            int dialogW = 240;
+            int dialogH = 36 * RewardOptions.Length + 50;
+            int dialogX = GameSettings.ScreenWidth / 2 - dialogW / 2;
+            int dialogY = GameSettings.ScreenHeight / 2 - dialogH / 2;
+            
+            SpriteBatch.Draw(_pixel, new Rectangle(dialogX - 10, dialogY - 40, dialogW + 20, dialogH + 50), new Color(50, 45, 35));
+            DrawBorder(new Rectangle(dialogX - 10, dialogY - 40, dialogW + 20, dialogH + 50), new Color(120, 100, 70), 2);
+            SpriteBatch.DrawString(_font, "赏赐武将", new Vector2(dialogX + 10, dialogY - 32), new Color(255, 220, 100));
+            
+            foreach (var btn in _rewardButtons) btn.Draw(SpriteBatch, _font, _pixel);
         }
 
         SpriteBatch.End();
@@ -619,13 +813,47 @@ public class GeneralRosterScene : Scene
     private void DrawStatsTab(int panelX, int panelY, GeneralData gen, GeneralProgress progress)
     {
         int statStartY = panelY + 60;
-        DrawStatBar(panelX + 15, statStartY, "武力", gen.Strength, progress.Level, new Color(200, 80, 80));
-        DrawStatBar(panelX + 15, statStartY + 35, "智力", gen.Intelligence, progress.Level, new Color(80, 120, 200));
-        DrawStatBar(panelX + 15, statStartY + 70, "统率", gen.Leadership, progress.Level, new Color(80, 200, 120));
-        DrawStatBar(panelX + 15, statStartY + 105, "速度", gen.Speed, progress.Level, new Color(200, 160, 80));
+        int bonusStr = progress.BonusStats.GetValueOrDefault("strength");
+        int bonusInt = progress.BonusStats.GetValueOrDefault("intelligence");
+        int bonusCmd = progress.BonusStats.GetValueOrDefault("command");
+        int bonusSpd = progress.BonusStats.GetValueOrDefault("speed", 0);
+        int bonusPol = progress.BonusStats.GetValueOrDefault("politics");
+        int bonusCha = progress.BonusStats.GetValueOrDefault("charisma");
+        
+        DrawStatBar(panelX + 15, statStartY, "武力", gen.Strength, progress.Level, new Color(200, 80, 80), bonusStr);
+        DrawStatBar(panelX + 15, statStartY + 28, "智力", gen.Intelligence, progress.Level, new Color(80, 120, 200), bonusInt);
+        DrawStatBar(panelX + 15, statStartY + 56, "统率", gen.Leadership, progress.Level, new Color(80, 200, 120), bonusCmd);
+        DrawStatBar(panelX + 15, statStartY + 84, "速度", gen.Speed, progress.Level, new Color(200, 160, 80), bonusSpd);
+        DrawStatBar(panelX + 15, statStartY + 112, "政治", gen.Politics, progress.Level, new Color(160, 120, 200), bonusPol);
+        DrawStatBar(panelX + 15, statStartY + 140, "魅力", gen.Charisma, progress.Level, new Color(200, 140, 180), bonusCha);
+
+        // 忠诚度 (使用progress的实时忠诚度)
+        int loyaltyY = statStartY + 172;
+        int loyaltyBarW = 150;
+        int loyaltyBarH = 12;
+        int loyalty = progress.Loyalty;
+        float loyaltyRatio = MathHelper.Clamp(loyalty / 100f, 0, 1);
+        Color loyaltyColor = loyalty >= 80 ? new Color(80, 200, 80) :
+                             loyalty >= 50 ? new Color(200, 200, 80) : new Color(200, 80, 80);
+        SpriteBatch.DrawString(_smallFont, "忠诚", new Vector2(panelX + 15, loyaltyY + 2), Color.White);
+        SpriteBatch.Draw(_pixel, new Rectangle(panelX + 65, loyaltyY, loyaltyBarW, loyaltyBarH), new Color(20, 15, 10));
+        int loyaltyFillW = (int)(loyaltyBarW * loyaltyRatio);
+        if (loyaltyFillW > 0)
+            SpriteBatch.Draw(_pixel, new Rectangle(panelX + 65, loyaltyY, loyaltyFillW, loyaltyBarH), loyaltyColor);
+        SpriteBatch.DrawString(_smallFont, $"{loyalty}", new Vector2(panelX + 70 + loyaltyBarW, loyaltyY - 1), loyaltyColor);
+        
+        // 赏赐按钮（点击区域）
+        int rewardBtnX = panelX + 120 + loyaltyBarW;
+        var rewardRect = new Rectangle(rewardBtnX, loyaltyY - 2, 50, 16);
+        bool hoverReward = Input.IsMouseInRect(rewardRect);
+        Color rewardColor = hoverReward ? new Color(255, 220, 100) : new Color(180, 160, 100);
+        SpriteBatch.Draw(_pixel, rewardRect, hoverReward ? new Color(60, 50, 30) : new Color(40, 35, 25));
+        SpriteBatch.DrawString(_smallFont, "赏赐", new Vector2(rewardBtnX + 8, loyaltyY - 1), rewardColor);
+        if (hoverReward && Input.IsMouseClicked())
+            OpenRewardDialog();
 
         // XP Bar
-        int xpBarY = statStartY + 150;
+        int xpBarY = statStartY + 200;
         int barWidth = 200;
         int barHeight = 16;
         float xpRatio = progress.XpProgressRatio;
@@ -673,7 +901,7 @@ public class GeneralRosterScene : Scene
     {
         SpriteBatch.DrawString(_font, "装备槽位 (点击选择)", new Vector2(panelX + 15, panelY + 60), new Color(220, 190, 130));
 
-        int infoY = panelY + 260;
+        int infoY = panelY + 290;
         SpriteBatch.Draw(_pixel, new Rectangle(panelX + 10, infoY, panelWidth - 20, 100), new Color(30, 25, 18));
 
         int y = infoY + 10;
@@ -767,11 +995,11 @@ public class GeneralRosterScene : Scene
         };
     }
 
-    private void DrawStatBar(int x, int y, string label, int baseValue, int level, Color color)
+    private void DrawStatBar(int x, int y, string label, int baseValue, int level, Color color, int bonus = 0)
     {
         int barWidth = 150;
         int barHeight = 12;
-        float effectiveValue = baseValue * (1f + (level - 1) * 0.03f);
+        float effectiveValue = (baseValue + bonus) * (1f + (level - 1) * 0.03f);
         float ratio = MathHelper.Clamp(effectiveValue / 120f, 0, 1);
 
         SpriteBatch.DrawString(_smallFont, label, new Vector2(x, y + 2), Color.White);
@@ -782,7 +1010,8 @@ public class GeneralRosterScene : Scene
             SpriteBatch.Draw(_pixel, new Rectangle(x + 50, y, fillW, barHeight), color);
             SpriteBatch.Draw(_pixel, new Rectangle(x + 50, y, fillW, 2), color * 0.6f);
         }
-        SpriteBatch.DrawString(_smallFont, $"{(int)effectiveValue}", new Vector2(x + 55 + barWidth, y - 1), color);
+        string valueText = bonus > 0 ? $"{baseValue}+{bonus} ({(int)effectiveValue})" : $"{(int)effectiveValue}";
+        SpriteBatch.DrawString(_smallFont, valueText, new Vector2(x + 55 + barWidth, y - 1), color);
     }
 
     private void DrawBorder(Rectangle rect, Color color, int thickness)

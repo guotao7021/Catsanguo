@@ -13,20 +13,86 @@ public enum GeneralStatus
     Captive     // 俘虏 - 战败被俘的武将，可招降
 }
 
+// ==================== 建筑分类枚举（5大类）====================
+/// <summary>建筑分类（5大类）- 替代旧BuildingType</summary>
+public enum BuildingCategory
+{
+    Agriculture, // 农业：农田、水利
+    Commerce,    // 商业：市场、商路
+    Military,    // 军事：兵营、武库
+    Defense,     // 城防：城墙、箭塔
+    Storage      // 仓储：粮仓、金库
+}
+
+// ==================== 官员职位枚举 ====================
+/// <summary>官员职位 - 城池内政需分配武将担任</summary>
+public enum OfficerRole
+{
+    None,             // 未分配
+    Governor,         // 太守 - 城池总体效率加成
+    InteriorOfficer,  // 内政官 - 资源产出加成
+    MilitaryOfficer,  // 军事官 - 征兵效率
+    SearchOfficer     // 搜索官 - 发现武将
+}
+
+// ==================== 外交关系枚举 ====================
+/// <summary>外交关系 - 势力间关系状态</summary>
+public enum DiplomacyRelation
+{
+    Hostile,    // 敌对
+    Neutral,    // 中立
+    Trade,      // 通商
+    Alliance,   // 同盟
+    Ceasefire   // 停战
+}
+
 public class GeneralData
 {
     public string Id { get; set; } = "";
     public string Name { get; set; } = "";
     public string Title { get; set; } = "";
-    public int Strength { get; set; }
-    public int Intelligence { get; set; }
-    public int Leadership { get; set; }
-    public int Speed { get; set; }
+    
+    // 6维属性
+    public int Strength { get; set; }      // 武力 (1-100)
+    public int Intelligence { get; set; }  // 智力 (1-100)
+    public int Command { get; set; }       // 统帅 (1-100) - 旧版本兼容：Leadership
+    public int Politics { get; set; }      // 政治 (1-100)
+    public int Charisma { get; set; }      // 魅力 (1-100)
+    public int Speed { get; set; }         // 速度 (1-100)
+    public int Loyalty { get; set; } = 70; // 忠诚度初始值 (0-100)
+    
     public string ActiveSkillId { get; set; } = "";
     public string PassiveSkillId { get; set; } = "";
     public string PreferredFormation { get; set; } = "vanguard";
     public int Level { get; set; } = 1;
     public int Experience { get; set; } = 0;
+    
+    // 历史登录
+    public int AppearYear { get; set; } = 184;     // 登场年份
+    public string AppearCityId { get; set; } = ""; // 登场城市ID
+
+    // 势力归属
+    public string ForceId { get; set; } = "";       // 所属势力ID（如 "caocao_huangjin"）
+    
+    // 特技与俸禄
+    public List<string> SpecialSkills { get; set; } = new(); // 特技ID列表
+    public int Salary { get; set; } = 10; // 俸禄(每回合金币消耗)
+    
+    // 向后兼容属性（旧版本使用Leadership）
+    [JsonIgnore]
+    public int Leadership
+    {
+        get => Command;
+        set => Command = value;
+    }
+    
+    // 向后兼容属性（旧版本使用Economics）
+    [JsonIgnore]
+    public int Economics
+    {
+        get => Charisma;
+        set => Charisma = value;
+    }
 }
 
 public class SkillData
@@ -160,7 +226,7 @@ public class EquipmentData
     public string Type { get; set; } = "weapon"; // weapon/armor/book/mount
     public int StatBonus { get; set; }
     public string Rarity { get; set; } = "common"; // common/rare/epic/legendary
-    public string StatType { get; set; } = "strength"; // strength/intelligence/leadership/speed
+    public string StatType { get; set; } = "strength"; // strength/intelligence/command/speed/politics/charisma
 }
 
 public class BondData
@@ -257,6 +323,43 @@ public class ResourceData
 
 // ==================== 建筑系统 ====================
 
+/// <summary>建筑数据 - 城池中的具体建筑实例</summary>
+public class Building
+{
+    public string Id { get; set; } = "";
+    public string Name { get; set; } = "";
+    public BuildingCategory Category { get; set; } // 新：5大类
+    public int Level { get; set; } = 1;
+    public int MaxLevel { get; set; } = 10;
+    public bool IsUpgrading { get; set; }
+    public long UpgradeFinishTimeMs { get; set; }
+    public string AssignedOfficerId { get; set; } = ""; // 负责该建筑的武将ID
+    
+    // 向后兼容：旧版本使用Type字段
+    [JsonIgnore]
+    public BuildingType Type
+    {
+        get => Category switch
+        {
+            BuildingCategory.Agriculture => BuildingType.Resource,
+            BuildingCategory.Commerce => BuildingType.Functional,
+            BuildingCategory.Military => BuildingType.Military,
+            BuildingCategory.Defense => BuildingType.Military,
+            BuildingCategory.Storage => BuildingType.Functional,
+            _ => BuildingType.Resource
+        };
+        set => Category = value switch
+        {
+            BuildingType.Resource => BuildingCategory.Agriculture,
+            BuildingType.Military => BuildingCategory.Military,
+            BuildingType.Functional => BuildingCategory.Commerce,
+            BuildingType.Tech => BuildingCategory.Commerce,
+            _ => BuildingCategory.Agriculture
+        };
+    }
+}
+
+/// <summary>旧建筑类型枚举 - 保留用于向后兼容</summary>
 public enum BuildingType
 {
     Resource,   // 资源类：农田、伐木场、矿场
@@ -265,22 +368,11 @@ public enum BuildingType
     Tech        // 科技类：书院
 }
 
-public class Building
-{
-    public string Id { get; set; } = "";
-    public string Name { get; set; } = "";
-    public BuildingType Type { get; set; }
-    public int Level { get; set; } = 1;
-    public int MaxLevel { get; set; } = 10;
-    public bool IsUpgrading { get; set; }
-    public long UpgradeFinishTimeMs { get; set; }
-}
-
 public class BuildingConfig
 {
     public string Id { get; set; } = "";
     public string Name { get; set; } = "";
-    public BuildingType Type { get; set; }
+    public BuildingCategory Category { get; set; } // 新：使用BuildingCategory
     public int MaxLevel { get; set; } = 10;
     public ResourceType ProducesResource { get; set; } = ResourceType.Gold;
     public int BaseProduction { get; set; } = 10;  // 基础产量
@@ -289,29 +381,57 @@ public class BuildingConfig
     public int WoodUpgradeCost { get; set; } = 30;  // 木材升级费用
     public int IronUpgradeCost { get; set; } = 20;  // 铁矿升级费用
     public int UpgradeTimeSeconds { get; set; } = 60; // 升级时间（秒）
+    
+    // 向后兼容
+    [JsonIgnore]
+    public BuildingType Type
+    {
+        get => Category switch
+        {
+            BuildingCategory.Agriculture => BuildingType.Resource,
+            BuildingCategory.Commerce => BuildingType.Functional,
+            BuildingCategory.Military => BuildingType.Military,
+            BuildingCategory.Defense => BuildingType.Military,
+            BuildingCategory.Storage => BuildingType.Functional,
+            _ => BuildingType.Resource
+        };
+        set => Category = value switch
+        {
+            BuildingType.Resource => BuildingCategory.Agriculture,
+            BuildingType.Military => BuildingCategory.Military,
+            BuildingType.Functional => BuildingCategory.Commerce,
+            BuildingType.Tech => BuildingCategory.Commerce,
+            _ => BuildingCategory.Agriculture
+        };
+    }
 }
 
 // 内政配置静态类
 public static class InteriorConfig
 {
-    // 建筑配置表
+    // 建筑配置表 - 5大类建筑
     public static readonly List<BuildingConfig> Buildings = new()
     {
-        // 资源类建筑
-        new BuildingConfig { Id = "farm", Name = "农田", Type = BuildingType.Resource, ProducesResource = ResourceType.Food, BaseProduction = 20, GoldUpgradeCost = 100, UpgradeTimeSeconds = 30 },
-        new BuildingConfig { Id = "lumber_mill", Name = "伐木场", Type = BuildingType.Resource, ProducesResource = ResourceType.Wood, BaseProduction = 15, GoldUpgradeCost = 80, UpgradeTimeSeconds = 30 },
-        new BuildingConfig { Id = "iron_mine", Name = "铁矿", Type = BuildingType.Resource, ProducesResource = ResourceType.Iron, BaseProduction = 10, GoldUpgradeCost = 150, UpgradeTimeSeconds = 45 },
-
+        // 农业类建筑
+        new BuildingConfig { Id = "farm", Name = "农田", Category = BuildingCategory.Agriculture, ProducesResource = ResourceType.Food, BaseProduction = 20, GoldUpgradeCost = 100, UpgradeTimeSeconds = 30 },
+        new BuildingConfig { Id = "irrigation", Name = "水利", Category = BuildingCategory.Agriculture, ProducesResource = ResourceType.Food, BaseProduction = 15, GoldUpgradeCost = 150, UpgradeTimeSeconds = 45 },
+        
+        // 商业类建筑
+        new BuildingConfig { Id = "market", Name = "集市", Category = BuildingCategory.Commerce, ProducesResource = ResourceType.Gold, BaseProduction = 30, GoldUpgradeCost = 300, UpgradeTimeSeconds = 90 },
+        new BuildingConfig { Id = "trade_route", Name = "商路", Category = BuildingCategory.Commerce, ProducesResource = ResourceType.Gold, BaseProduction = 25, GoldUpgradeCost = 250, UpgradeTimeSeconds = 60 },
+        
         // 军事类建筑
-        new BuildingConfig { Id = "barracks", Name = "兵营", Type = BuildingType.Military, MaxLevel = 10, GoldUpgradeCost = 200, UpgradeTimeSeconds = 60 },
-        new BuildingConfig { Id = "training_field", Name = "校场", Type = BuildingType.Military, MaxLevel = 10, GoldUpgradeCost = 150, UpgradeTimeSeconds = 45 },
-
-        // 功能类建筑
-        new BuildingConfig { Id = "market", Name = "集市", Type = BuildingType.Functional, ProducesResource = ResourceType.Gold, BaseProduction = 30, GoldUpgradeCost = 300, UpgradeTimeSeconds = 90 },
-        new BuildingConfig { Id = "warehouse", Name = "仓库", Type = BuildingType.Functional, MaxLevel = 10, GoldUpgradeCost = 120, UpgradeTimeSeconds = 40 },
-
-        // 科技类建筑
-        new BuildingConfig { Id = "academy", Name = "书院", Type = BuildingType.Tech, MaxLevel = 5, GoldUpgradeCost = 500, UpgradeTimeSeconds = 120 },
+        new BuildingConfig { Id = "barracks", Name = "兵营", Category = BuildingCategory.Military, MaxLevel = 10, GoldUpgradeCost = 200, UpgradeTimeSeconds = 60 },
+        new BuildingConfig { Id = "training_field", Name = "校场", Category = BuildingCategory.Military, MaxLevel = 10, GoldUpgradeCost = 150, UpgradeTimeSeconds = 45 },
+        new BuildingConfig { Id = "armory", Name = "武库", Category = BuildingCategory.Military, MaxLevel = 10, GoldUpgradeCost = 180, UpgradeTimeSeconds = 50 },
+        
+        // 城防类建筑
+        new BuildingConfig { Id = "wall", Name = "城墙", Category = BuildingCategory.Defense, MaxLevel = 10, GoldUpgradeCost = 250, UpgradeTimeSeconds = 90 },
+        new BuildingConfig { Id = "watchtower", Name = "箭塔", Category = BuildingCategory.Defense, MaxLevel = 5, GoldUpgradeCost = 200, UpgradeTimeSeconds = 75 },
+        
+        // 仓储类建筑
+        new BuildingConfig { Id = "granary", Name = "粮仓", Category = BuildingCategory.Storage, MaxLevel = 10, GoldUpgradeCost = 120, UpgradeTimeSeconds = 40 },
+        new BuildingConfig { Id = "vault", Name = "金库", Category = BuildingCategory.Storage, MaxLevel = 10, GoldUpgradeCost = 150, UpgradeTimeSeconds = 50 },
     };
 
     // 获取建筑配置
@@ -738,4 +858,95 @@ public class GeneralDeployEntry
     public UnitType UnitType { get; set; } = UnitType.Infantry;
     public BattleFormation BattleFormation { get; set; } = BattleFormation.Vanguard;
     public int SoldierCount { get; set; } = 30;
+}
+
+// ==================== 游戏日期系统 ====================
+
+/// <summary>游戏日期 - 用于回合制时间推进</summary>
+public struct GameDate
+{
+    public int Year { get; set; }
+    public int Month { get; set; }
+    public int Day { get; set; } // 每月固定30天，Day总是1-30
+    
+    public GameDate(int year, int month, int day)
+    {
+        Year = year;
+        Month = month;
+        Day = day;
+    }
+    
+    /// <summary>推进指定天数（每回合10天）</summary>
+    public void AddDays(int days)
+    {
+        Day += days;
+        while (Day > 30)
+        {
+            Day -= 30;
+            Month++;
+            if (Month > 12)
+            {
+                Month = 1;
+                Year++;
+            }
+        }
+    }
+    
+    /// <summary>是否月末（用于经济迭代）</summary>
+    public bool IsMonthEnd => Day >= 25; // 最后5天触发
+    
+    /// <summary>是否季末（用于兵力迭代）</summary>
+    public bool IsQuarterEnd => Month % 3 == 0 && IsMonthEnd;
+    
+    /// <summary>是否年末</summary>
+    public bool IsYearEnd => Month == 12 && IsMonthEnd;
+    
+    /// <summary>转换为显示字符串</summary>
+    public string ToDisplayString()
+    {
+        string monthName = Month switch
+        {
+            1 => "1月上旬", 2 => "1月中旬", 3 => "1月下旬",
+            4 => "2月上旬", 5 => "2月中旬", 6 => "2月下旬",
+            7 => "3月上旬", 8 => "3月中旬", 9 => "3月下旬",
+            10 => "4月上旬", 11 => "4月中旬", 12 => "4月下旬",
+            _ => "未知"
+        };
+        return $"建安{Year - 195}年{monthName}";
+    }
+}
+
+// ==================== 剧本系统 ====================
+
+/// <summary>事件剧本数据 - 定义游戏初始状态</summary>
+public class ScenarioData
+{
+    public string Id { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string Description { get; set; } = "";
+    public GameDate StartDate { get; set; }
+    public List<ScenarioFaction> Factions { get; set; } = new();
+    public List<string> PlayableFactions { get; set; } = new();
+}
+
+/// <summary>剧本中的势力配置</summary>
+public class ScenarioFaction
+{
+    public string FactionId { get; set; } = "";
+    public string FactionName { get; set; } = "";
+    public string LeaderId { get; set; } = "";
+    public List<string> InitialCityIds { get; set; } = new();
+    public List<ScenarioGeneralAllocation> InitialGenerals { get; set; } = new();
+    public int StartGold { get; set; } = 500;
+    public int StartFood { get; set; } = 300;
+    public bool IsPlayable { get; set; } = false;
+}
+
+/// <summary>剧本中武将初始分配</summary>
+public class ScenarioGeneralAllocation
+{
+    public string GeneralId { get; set; } = "";
+    public string AssignedCityId { get; set; } = "";
+    public int InitialLevel { get; set; } = 1;
+    public int InitialLoyalty { get; set; } = 100;
 }

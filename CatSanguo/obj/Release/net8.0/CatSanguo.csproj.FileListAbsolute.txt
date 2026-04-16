@@ -1,0 +1,7 @@
+D:\CatSanguo\CatSanguo\obj\Release\net8.0\mgcb.tool.restore
+D:\CatSanguo\CatSanguo\obj\Release\net8.0\CatSanguo.csproj.AssemblyReference.cache
+D:\CatSanguo\CatSanguo\obj\Release\net8.0\CatSanguo.GeneratedMSBuildEditorConfig.editorconfig
+D:\CatSanguo\CatSanguo\obj\Release\net8.0\CatSanguo.AssemblyInfoInputs.cache
+D:\CatSanguo\CatSanguo\obj\Release\net8.0\CatSanguo.AssemblyInfo.cs
+D:\CatSanguo\CatSanguo\obj\Release\net8.0\CatSanguo.csproj.CoreCompileInputs.cache
+D:\CatSanguo\CatSanguo\obj\Release\net8.0\CatSanguo.sourcelink.json

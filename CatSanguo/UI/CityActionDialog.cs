@@ -11,273 +11,147 @@ using CatSanguo.WorldMap;
 
 namespace CatSanguo.UI;
 
-// ==================== 城池操作对话框 ====================
-
 public enum CityActionPhase
 {
-    Main,           // 主选项：军事/内政
-    // 军事子菜单
-    MilitaryMain,    // 军事：出征
-    MilitaryDeploy,  // 军事出征：编队管理
-    MilitarySelectTarget, // 选择目标城池
-    MilitaryConfirm,    // 确认行军
-    SelectGeneral,  // 武将选择模式（多选加入编队）
-    // 内政子菜单
-    InteriorMain,   // 内政：经济/防御/建筑/人才
-    InteriorEconomy,    // 经济开发
-    InteriorDefense,    // 城池防御
-    InteriorBuilding,   // 城池建筑
-    TalentManage,   // 人才管理
+    CategorySelect,
+    MilitaryManage,
+    MilitaryDeploy,
+    SelectGeneral,
+    MilitarySelectTarget,
+    MilitaryConfirm,
+    InteriorEconomy,
+    InteriorDefense,
+    InteriorBuilding,
+    TalentManage,
+    // 新增：官员管理、外交、俘虏管理
+    OfficerManage,
+    DiplomacyManage,
+    CaptiveManage,
 }
 
+enum SelectedCategory { None, Military, Interior, Talent, Officer, Diplomacy, Captive }
 enum TalentSubTab { Discover, Persuade, Recruit }
+enum OfficerSubTab { Governor, Interior, Military, Search }
+enum DiplomacySubTab { View, Alliance, Trade, Ceasefire, War }
 
-// ==================== 选择器（显示当前值+左右切换） ====================
-class Selector
-{
-    public Rectangle Bounds { get; set; }
-    public List<string> Items { get; set; } = new();
-    public int SelectedIndex { get; set; }
-    public Color NormalColor = new Color(50, 45, 40);
-    public Color BorderColor = new Color(80, 70, 50);
-    public Color BtnColor = new Color(70, 60, 50);
-    public Color BtnHoverColor = new Color(90, 80, 70);
-
-    public string SelectedValue => SelectedIndex >= 0 && SelectedIndex < Items.Count ? Items[SelectedIndex] : "";
-
-    public void Update(InputManager input)
-    {
-        var mousePos = input.MousePosition.ToPoint();
-        int btnW = 28;
-        int h = Bounds.Height;
-
-        // 左按钮
-        var leftBtn = new Rectangle(Bounds.X, Bounds.Y, btnW, h);
-        if (leftBtn.Contains(mousePos) && input.IsMouseClicked())
-        {
-            SelectedIndex = (SelectedIndex - 1 + Items.Count) % Items.Count;
-            return;
-        }
-
-        // 右按钮
-        var rightBtn = new Rectangle(Bounds.Right - btnW, Bounds.Y, btnW, h);
-        if (rightBtn.Contains(mousePos) && input.IsMouseClicked())
-        {
-            SelectedIndex = (SelectedIndex + 1) % Items.Count;
-            return;
-        }
-    }
-
-    public void Draw(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, InputManager input)
-    {
-        var mousePos = input.MousePosition.ToPoint();
-        int btnW = 28;
-        int h = Bounds.Height;
-        bool leftHover = new Rectangle(Bounds.X, Bounds.Y, btnW, h).Contains(mousePos);
-        bool rightHover = new Rectangle(Bounds.Right - btnW, Bounds.Y, btnW, h).Contains(mousePos);
-
-        // 背景
-        sb.Draw(pixel, Bounds, NormalColor);
-        DrawBorderRect(sb, pixel, Bounds, BorderColor, 2);
-
-        // 左按钮
-        sb.Draw(pixel, new Rectangle(Bounds.X, Bounds.Y, btnW, h), leftHover ? BtnHoverColor : BtnColor);
-        sb.DrawString(font, "<", new Vector2(Bounds.X + 8, Bounds.Y + 4), new Color(230, 210, 170));
-
-        // 右按钮
-        sb.Draw(pixel, new Rectangle(Bounds.Right - btnW, Bounds.Y, btnW, h), rightHover ? BtnHoverColor : BtnColor);
-        sb.DrawString(font, ">", new Vector2(Bounds.Right - btnW + 8, Bounds.Y + 4), new Color(230, 210, 170));
-
-        // 中间文字
-        if (!string.IsNullOrEmpty(SelectedValue))
-        {
-            var textSize = font.MeasureString(SelectedValue);
-            var textX = Bounds.X + btnW + (Bounds.Width - btnW * 2 - textSize.X) / 2;
-            var textY = Bounds.Y + (Bounds.Height - textSize.Y) / 2;
-            sb.DrawString(font, SelectedValue, new Vector2(textX, textY), new Color(255, 230, 160));
-        }
-    }
-
-    private void DrawBorderRect(SpriteBatch sb, Texture2D pixel, Rectangle rect, Color color, int thickness)
-    {
-        sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, thickness), color);
-        sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness), color);
-        sb.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, rect.Height), color);
-        sb.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), color);
-    }
-}
-
-// ==================== 武将出征卡片 ====================
 class GeneralDeployCard
 {
     public GeneralData Data { get; set; } = null!;
-    public bool IsSelected { get; set; } = false;
+    public bool IsSelected { get; set; }
     public string SelectedUnit { get; set; } = "步兵";
     public string SelectedFormation { get; set; } = "先锋";
     public int SoldierCount { get; set; } = 30;
 
-    public int UnitIndex
-    {
-        get
-        {
-            var units = new[] { "步兵", "枪兵", "盾兵", "骑兵", "重骑", "轻骑", "弓兵", "强弩", "攻城", "法师" };
-            for (int i = 0; i < units.Length; i++) if (units[i] == SelectedUnit) return i;
-            return 0;
-        }
-    }
+    public static readonly string[] Units = { "步兵", "枪兵", "盾兵", "骑兵", "重骑", "轻骑", "弓兵", "强弩", "攻城", "法师" };
+    public static readonly string[] Formations = { "先锋", "鱼鳞", "方阵", "锥形", "长蛇", "鹤翼", "八卦", "偃月", "环形" };
 
-    public int FormationIndex
+    public int UnitIndex { get { for (int i = 0; i < Units.Length; i++) if (Units[i] == SelectedUnit) return i; return 0; } }
+    public int FormationIndex { get { for (int i = 0; i < Formations.Length; i++) if (Formations[i] == SelectedFormation) return i; return 0; } }
+
+    public UnitType GetUnitType() => SelectedUnit switch
     {
-        get
-        {
-            var formations = new[] { "先锋", "鱼鳞", "方阵", "锥形", "长蛇", "鹤翼", "八卦", "偃月", "环形" };
-            for (int i = 0; i < formations.Length; i++) if (formations[i] == SelectedFormation) return i;
-            return 0;
-        }
-    }
+        "步兵" => UnitType.Infantry, "枪兵" => UnitType.Spearman, "盾兵" => UnitType.ShieldInfantry,
+        "骑兵" => UnitType.Cavalry, "重骑" => UnitType.HeavyCavalry, "轻骑" => UnitType.LightCavalry,
+        "弓兵" => UnitType.Archer, "强弩" => UnitType.Crossbowman, "攻城" => UnitType.Siege,
+        "法师" => UnitType.Mage, _ => UnitType.Infantry
+    };
+
+    public BattleFormation GetBattleFormation() => SelectedFormation switch
+    {
+        "先锋" => BattleFormation.Vanguard, "鱼鳞" => BattleFormation.FishScale, "方阵" => BattleFormation.Square,
+        "锥形" => BattleFormation.Wedge, "长蛇" => BattleFormation.LongSnake, "鹤翼" => BattleFormation.CraneWing,
+        "八卦" => BattleFormation.EightTrigrams, "偃月" => BattleFormation.CrescentMoon, "环形" => BattleFormation.Circle,
+        _ => BattleFormation.Vanguard
+    };
 }
 
 public class CityActionDialog
 {
-    // 状态
-    public CityActionPhase Phase { get; private set; } = CityActionPhase.Main;
+    // State
+    public CityActionPhase Phase { get; private set; } = CityActionPhase.CategorySelect;
     public CityData? SourceCity { get; private set; }
-    /// <summary>仅用于 MilitarySelectTarget 阶段临时显示选中的武将名</summary>
     public string? SelectedGeneralId { get; private set; }
     public CityData? TargetCity { get; private set; }
     public List<string>? MovePath { get; private set; }
     public bool IsSelectingTarget => Phase == CityActionPhase.MilitarySelectTarget;
     public bool IsActive => SourceCity != null;
+    public Vector2 WorldMousePos { get; set; }
+    public Vector2 CityScreenPos { get; set; }
+    public Vector2 CityWorldPos { get; set; }
 
-    // SelectGeneral 模式多选
+    // Internal state
+    private SelectedCategory _selectedCategory = SelectedCategory.None;
     private List<GeneralDeployCard> _deployCards = new();
-    // 人才管理子标签
     private TalentSubTab _currentTalentTab = TalentSubTab.Discover;
-    // 引用所有武将数据
+    private OfficerSubTab _currentOfficerTab = OfficerSubTab.Governor;
+    private DiplomacySubTab _currentDiplomacyTab = DiplomacySubTab.View;
     private List<GeneralData> _allGeneralsRef = new();
+    private List<string> _availableGenerals = new();
+    private List<string> _cityGenerals = new();
+    private int _selectedBuildingIndex = -1;
+    private bool _officerSelectOpen = false;
+    private int _officerSelectSlotIndex = -1;
+    private int _currentMilitaryTab = 0; // 0=编队出征, 1=征兵管理
+    private float _scrollOffset;
+    private int _clickCooldown;
+    private string _persuadeResultMsg = "";
+    private int _persuadeResultTimer;
 
-    // UI组件
-    private Button _militaryBtn = null!;
-    private Button _interiorBtn = null!;
-    private Button _talentBtn = null!;      // 人才管理（主菜单级别）
-    private Button _cancelBtn = null!;
-    private Button _backBtn = null!;
-    private Button _confirmBtn = null!;
+    // 拖拽与调整大小
+    private bool _isDragging = false;
+    private bool _isResizing = false;
+    private Vector2 _dragOffset;
+    private int _popupX, _popupY;
+    private int _popupW = DefaultPopupW;
+    private int _popupH = DefaultPopupH;
+    private bool _positionInitialized = false;
 
-    // 军事子菜单按钮
-    private Button _deployBtn = null!;      // 出征
-    private Button _generalRosterBtn = null!; // 武将培养
-    private Button _selectGeneralBtn = null!; // 选择武将（编队出征页面）
-    private Button _confirmDeployBtn = null!; // 确认出击（编队出征页面）
-
-    // 内政子菜单按钮
-    private Button _economyBtn = null!;     // 经济开发
-    private Button _defenseBtn = null!;     // 城池防御
-    private Button _buildingBtn = null!;    // 城池建筑
-    private Button _talentManageBtn = null!; // 人才管理
-
-    // 动态按钮列表
-    private List<Button> _generalButtons = new();
-    private List<Button> _squadRemoveButtons = new();       // 编队武将旁的移除按钮
-    private List<Button> _selectGeneralButtons = new();     // 武将选择模式的可选武将按钮
-    private List<Button> _talentDiscoverButtons = new();    // 发现人才列表按钮
-    private List<Button> _talentPersuadeButtons = new();    // 说服在野列表按钮
-    private List<Button> _talentRecruitButtons = new();     // 招降俘虏列表按钮
-    private List<Button> _talentTabButtons = new();         // 三个Tab按钮
-
-    // 建筑相关
-    private List<Button> _buildingButtons = new();
-
-    // 回调
+    // Callbacks
     private Action? _onClose;
     private Action<List<string>, List<GeneralDeployEntry>, CityData>? _onLaunchArmy;
     private Action? _onOpenGeneralRoster;
+    private Action? _onEndTurn;
+    private Action? _onSave;
     private Func<string, string>? _getGeneralName;
 
-    // 数据
-    private List<string> _availableGenerals = new();
-    private List<string> _cityGenerals = new();  // 城池驻军武将
+    // Layout constants
+    private const int DefaultPopupW = 500;
+    private const int DefaultPopupH = 400;
+    private const int MinPopupW = 400;
+    private const int MinPopupH = 300;
+    private const int NavColW = 110;
+    private const int DividerW = 2;
+    private int ContentW => _popupW - NavColW - DividerW;
+    private const int NavBtnW = 100;
+    private const int NavBtnH = 42;
+    private const int ActionBtnH = 38;
+    private const int HeaderH = 35;
+    private const int TitleBarH = 28;
+    private const int ResizeHandleSize = 14;
+    private const int Pad = 5;
 
-    // 世界空间（用于目标选择）
-    public Vector2 WorldMousePos { get; set; }
+    // Colors - dark blue/teal theme
+    private static readonly Color BgColor = new Color(20, 30, 45, 230);
+    private static readonly Color NavBgColor = new Color(15, 25, 40, 240);
+    private static readonly Color ContentBgColor = new Color(25, 35, 50, 220);
+    private static readonly Color NavBtnNormal = new Color(30, 55, 75);
+    private static readonly Color NavBtnHover = new Color(45, 80, 110);
+    private static readonly Color NavBtnActive = new Color(50, 100, 140);
+    private static readonly Color ActionBtnNormal = new Color(35, 60, 80);
+    private static readonly Color ActionBtnHover = new Color(55, 90, 120);
+    private static readonly Color BorderColor = new Color(70, 110, 140) * 0.8f;
+    private static readonly Color DividerColor = new Color(50, 80, 100) * 0.6f;
+    private static readonly Color TitleColor = new Color(220, 230, 240);
+    private static readonly Color TextColor = new Color(180, 195, 210);
+    private static readonly Color AccentColor = new Color(255, 220, 130);
+    private static readonly Color DisabledColor = new Color(100, 110, 120);
 
-    public void Initialize(Func<string, string> getGeneralName, SpriteFontBase font, SpriteFontBase titleFont, Action? onOpenGeneralRoster = null)
+    public void Initialize(Func<string, string> getGeneralName, SpriteFontBase font, SpriteFontBase titleFont, Action? onOpenGeneralRoster = null, Action? onEndTurn = null, Action? onSave = null)
     {
         _getGeneralName = getGeneralName;
         _onOpenGeneralRoster = onOpenGeneralRoster;
-        InitButtons();
-    }
-
-    private void InitButtons()
-    {
-        int cx = GameSettings.ScreenWidth / 2;
-        int cy = GameSettings.ScreenHeight / 2;
-        int btnW = 105;
-        int btnH = 46;
-        int spacing = 14;
-
-        // 主菜单按钮（三列等间距布局：军事、内政、人才）
-        // 计算起始位置，确保三个按钮整体居中
-        int totalWidth = btnW * 3 + spacing * 2;
-        int startX = cx - totalWidth / 2;
-        
-        _militaryBtn = new Button("军 事", new Rectangle(startX, cy, btnW, btnH));
-        _militaryBtn.NormalColor = new Color(130, 65, 42);    // 暖红 - 军事主题
-        _militaryBtn.HoverColor = new Color(160, 85, 55);
-        _militaryBtn.BorderColor = new Color(175, 135, 85);
-
-        _interiorBtn = new Button("内 政", new Rectangle(startX + btnW + spacing, cy, btnW, btnH));
-        _interiorBtn.NormalColor = new Color(55, 95, 120);    // 深蓝 - 内政主题
-        _interiorBtn.HoverColor = new Color(75, 125, 155);
-        _interiorBtn.BorderColor = new Color(115, 145, 175);
-
-        _talentBtn = new Button("人 才", new Rectangle(startX + (btnW + spacing) * 2, cy, btnW, btnH));
-        _talentBtn.NormalColor = new Color(75, 115, 55);      // 深绿 - 人才主题
-        _talentBtn.HoverColor = new Color(95, 145, 75);
-        _talentBtn.BorderColor = new Color(135, 165, 95);
-
-        _cancelBtn = new Button("取 消", new Rectangle(cx - 60, cy + 68, 120, 40));
-        _cancelBtn.NormalColor = new Color(60, 55, 48);
-        _cancelBtn.HoverColor = new Color(80, 75, 68);
-        _cancelBtn.BorderColor = new Color(115, 105, 85);
-
-        _backBtn = new Button("返 回", new Rectangle(20, 20, 100, 40));
-        _backBtn.NormalColor = new Color(50, 50, 50);
-
-        _confirmBtn = new Button("确认出击", new Rectangle(GameSettings.ScreenWidth - 140, GameSettings.ScreenHeight - 60, 120, 40));
-        _confirmBtn.NormalColor = new Color(100, 50, 30);
-        _confirmBtn.HoverColor = new Color(140, 70, 40);
-
-        // 军事子菜单
-        _deployBtn = new Button("编队出征", new Rectangle(cx - 90, cy - 40, 180, 50));
-        _deployBtn.NormalColor = new Color(110, 55, 35);      // 深红 - 出征
-        _deployBtn.HoverColor = new Color(140, 75, 50);
-
-        _generalRosterBtn = new Button("武将培养", new Rectangle(cx - 90, cy + 20, 180, 50));
-        _generalRosterBtn.NormalColor = new Color(85, 65, 110); // 紫色 - 培养
-        _generalRosterBtn.HoverColor = new Color(110, 85, 140);
-
-        // 内政子菜单 - 统一使用冷色调
-        _economyBtn = new Button("经济开发", new Rectangle(cx - 90, cy - 40, 180, 50));
-        _economyBtn.NormalColor = new Color(45, 100, 75);     // 翠绿 - 经济
-        _economyBtn.HoverColor = new Color(65, 130, 100);
-
-        _defenseBtn = new Button("城池防御", new Rectangle(cx - 90, cy + 20, 180, 50));
-        _defenseBtn.NormalColor = new Color(65, 75, 110);     // 钢蓝 - 防御
-        _defenseBtn.HoverColor = new Color(85, 100, 140);
-
-        _buildingBtn = new Button("城池建筑", new Rectangle(cx - 90, cy + 80, 180, 50));
-        _buildingBtn.NormalColor = new Color(105, 80, 45);    // 古铜 - 建筑
-        _buildingBtn.HoverColor = new Color(135, 110, 65);
-
-        // 编队出征页面按钮
-        _selectGeneralBtn = new Button("选择武将", new Rectangle(GameSettings.ScreenWidth / 2 - 120, GameSettings.ScreenHeight - 70, 120, 45));
-        _selectGeneralBtn.NormalColor = new Color(60, 50, 80);
-        _selectGeneralBtn.HoverColor = new Color(90, 75, 120);
-
-        _confirmDeployBtn = new Button("确认出击", new Rectangle(GameSettings.ScreenWidth / 2 + 10, GameSettings.ScreenHeight - 70, 120, 45));
-        _confirmDeployBtn.NormalColor = new Color(100, 50, 30);
-        _confirmDeployBtn.HoverColor = new Color(140, 70, 40);
+        _onEndTurn = onEndTurn;
+        _onSave = onSave;
     }
 
     public void Open(CityData city, List<GeneralData> allGenerals, Action? onClose = null, Action<List<string>, List<GeneralDeployEntry>, CityData>? onLaunchArmy = null)
@@ -286,7 +160,8 @@ public class CityActionDialog
         SelectedGeneralId = null;
         TargetCity = null;
         MovePath = null;
-        Phase = CityActionPhase.Main;
+        Phase = CityActionPhase.CategorySelect;
+        _selectedCategory = SelectedCategory.None;
         _allGeneralsRef = allGenerals;
         _availableGenerals = GameState.Instance.GetAvailableGeneralsForCity(city);
         _cityGenerals = GameState.Instance.GetCityGenerals(city.Id);
@@ -294,336 +169,539 @@ public class CityActionDialog
         _onLaunchArmy = onLaunchArmy;
         _deployCards.Clear();
         _currentTalentTab = TalentSubTab.Discover;
+        _selectedBuildingIndex = -1;
+        _scrollOffset = 0;
+        _clickCooldown = 0;
+        _positionInitialized = false;
+        _popupW = DefaultPopupW;
+        _popupH = DefaultPopupH;
+        _isDragging = false;
+        _isResizing = false;
     }
+
+    public void Close()
+    {
+        SourceCity = null;
+        _onClose?.Invoke();
+    }
+
+    private void RefreshCityData()
+    {
+        if (SourceCity == null) return;
+        _availableGenerals = GameState.Instance.GetAvailableGeneralsForCity(SourceCity);
+        _cityGenerals = GameState.Instance.GetCityGenerals(SourceCity.Id);
+        _scrollOffset = 0;
+    }
+
+    // ===================== LAYOUT CALCULATION =====================
+
+    private Rectangle ComputePopupRect()
+    {
+        if (_positionInitialized)
+            return new Rectangle(_popupX, _popupY, _popupW, _popupH);
+
+        int sx = (int)CityScreenPos.X;
+        int sy = (int)CityScreenPos.Y;
+        int offsetX = 45;
+
+        // Try right side first
+        int px = sx + offsetX;
+        if (px + _popupW > GameSettings.ScreenWidth - 10)
+            px = sx - offsetX - _popupW;
+
+        // Vertical: center on city, clamp to screen
+        int py = sy - _popupH / 2;
+        py = Math.Clamp(py, 60, GameSettings.ScreenHeight - 40 - _popupH);
+        px = Math.Clamp(px, 10, GameSettings.ScreenWidth - 10 - _popupW);
+
+        _popupX = px;
+        _popupY = py;
+        _positionInitialized = true;
+
+        return new Rectangle(px, py, _popupW, _popupH);
+    }
+
+    private Rectangle GetNavRect(Rectangle popup) =>
+        new(popup.X, popup.Y, NavColW, popup.Height);
+
+    private Rectangle GetContentRect(Rectangle popup) =>
+        new(popup.X + NavColW + DividerW, popup.Y, ContentW, popup.Height);
+
+    // ===================== UPDATE =====================
 
     public void Update(InputManager input, List<CityNode> allCities)
     {
+        if (_clickCooldown > 0) _clickCooldown--;
+        if (_persuadeResultTimer > 0) _persuadeResultTimer--;
+
+        var popup = ComputePopupRect();
+
+        // --- Drag & Resize handling ---
+        var mp = input.MousePosition;
+        var titleBar = new Rectangle(popup.X, popup.Y, popup.Width - ResizeHandleSize, TitleBarH);
+        var resizeHandle = new Rectangle(popup.Right - ResizeHandleSize, popup.Bottom - ResizeHandleSize, ResizeHandleSize, ResizeHandleSize);
+
+        if (input.IsMouseClicked())
+        {
+            if (resizeHandle.Contains(mp.ToPoint()))
+            {
+                _isResizing = true;
+                _dragOffset = new Vector2(popup.Right - mp.X, popup.Bottom - mp.Y);
+            }
+            else if (titleBar.Contains(mp.ToPoint()))
+            {
+                _isDragging = true;
+                _dragOffset = new Vector2(mp.X - _popupX, mp.Y - _popupY);
+            }
+        }
+
+        if (!input.IsLeftMouseHeld())
+        {
+            _isDragging = false;
+            _isResizing = false;
+        }
+
+        if (_isDragging)
+        {
+            _popupX = (int)(mp.X - _dragOffset.X);
+            _popupY = (int)(mp.Y - _dragOffset.Y);
+            _popupX = Math.Clamp(_popupX, 0, GameSettings.ScreenWidth - _popupW);
+            _popupY = Math.Clamp(_popupY, 0, GameSettings.ScreenHeight - _popupH);
+            popup = new Rectangle(_popupX, _popupY, _popupW, _popupH);
+        }
+
+        if (_isResizing)
+        {
+            _popupW = Math.Max(MinPopupW, (int)(mp.X + _dragOffset.X) - _popupX);
+            _popupH = Math.Max(MinPopupH, (int)(mp.Y + _dragOffset.Y) - _popupY);
+            _popupW = Math.Min(_popupW, GameSettings.ScreenWidth - _popupX);
+            _popupH = Math.Min(_popupH, GameSettings.ScreenHeight - _popupY);
+            popup = new Rectangle(_popupX, _popupY, _popupW, _popupH);
+        }
+
+        if (_isDragging || _isResizing)
+            return; // Don't process other interactions while dragging/resizing
+
+        // Handle scroll in content area
+        var content = GetContentRect(popup);
+        if (input.IsMouseInRect(content))
+        {
+            int scroll = input.ScrollWheelDelta;
+            if (scroll != 0)
+                _scrollOffset = Math.Max(0, _scrollOffset - scroll * 0.3f);
+        }
+
+        // Always update left nav (except in target select mode)
+        if (Phase != CityActionPhase.MilitarySelectTarget)
+            UpdateLeftNav(input, popup);
+
+        // Phase-specific update
         switch (Phase)
         {
-            case CityActionPhase.Main:
-                UpdateMainPhase(input);
-                break;
-            case CityActionPhase.MilitaryMain:
-                UpdateMilitaryMainPhase(input);
+            case CityActionPhase.CategorySelect:
+                UpdateCategorySelect(input, popup);
                 break;
             case CityActionPhase.MilitaryDeploy:
-                UpdateMilitaryDeployPhase(input);
+                UpdateMilitaryDeploy(input, popup);
                 break;
             case CityActionPhase.SelectGeneral:
-                UpdateSelectGeneralPhase(input);
+                UpdateSelectGeneral(input, popup);
                 break;
             case CityActionPhase.MilitarySelectTarget:
-                UpdateMilitarySelectTargetPhase(input, allCities);
+                UpdateMilitarySelectTarget(input, allCities, popup);
                 break;
             case CityActionPhase.MilitaryConfirm:
-                UpdateMilitaryConfirmPhase(input);
-                break;
-            case CityActionPhase.InteriorMain:
-                UpdateInteriorMainPhase(input);
+                UpdateMilitaryConfirm(input, popup);
                 break;
             case CityActionPhase.InteriorEconomy:
-                UpdateInteriorEconomyPhase(input);
-                break;
             case CityActionPhase.InteriorDefense:
-                UpdateInteriorDefensePhase(input);
+                UpdateInteriorInfo(input, popup);
                 break;
             case CityActionPhase.InteriorBuilding:
-                UpdateInteriorBuildingPhase(input);
+                UpdateInteriorBuilding(input, popup);
                 break;
             case CityActionPhase.TalentManage:
-                UpdateTalentManagePhase(input);
+                UpdateTalentManage(input, popup);
+                break;
+            case CityActionPhase.OfficerManage:
+                UpdateOfficerManage(input, popup);
+                break;
+            case CityActionPhase.MilitaryManage:
+                UpdateMilitaryManage(input, popup);
                 break;
         }
     }
 
-    // ==================== 主菜单 ====================
-    private void UpdateMainPhase(InputManager input)
+    private void UpdateLeftNav(InputManager input, Rectangle popup)
     {
-        _militaryBtn.Update(input);
-        _interiorBtn.Update(input);
-        _talentBtn.Update(input);
-        _cancelBtn.Update(input);
+        if (!input.IsMouseClicked()) return;
+        var nav = GetNavRect(popup);
+        var mp = input.MousePosition.ToPoint();
 
-        if (_cancelBtn.IsHovered && input.IsMouseClicked()) { Close(); return; }
-        if (_militaryBtn.IsHovered && input.IsMouseClicked())
+        int btnX = nav.X + Pad;
+        int btnY = nav.Y + 45;
+
+        // Military button
+        var milRect = new Rectangle(btnX, btnY, NavBtnW, NavBtnH);
+        if (milRect.Contains(mp))
         {
-            Phase = CityActionPhase.MilitaryMain;
+            _selectedCategory = SelectedCategory.Military;
+            Phase = CityActionPhase.MilitaryManage;
+            _scrollOffset = 0;
+            _currentMilitaryTab = 0;
             return;
         }
-        if (_interiorBtn.IsHovered && input.IsMouseClicked())
+
+        // Interior button
+        btnY += NavBtnH + 4;
+        var intRect = new Rectangle(btnX, btnY, NavBtnW, NavBtnH);
+        if (intRect.Contains(mp))
         {
-            Phase = CityActionPhase.InteriorMain;
+            _selectedCategory = SelectedCategory.Interior;
+            Phase = CityActionPhase.CategorySelect;
+            _scrollOffset = 0;
             return;
         }
-        if (_talentBtn.IsHovered && input.IsMouseClicked())
+
+        // Talent button
+        btnY += NavBtnH + 4;
+        var talRect = new Rectangle(btnX, btnY, NavBtnW, NavBtnH);
+        if (talRect.Contains(mp))
         {
+            _selectedCategory = SelectedCategory.Talent;
             Phase = CityActionPhase.TalentManage;
+            _scrollOffset = 0;
+            _currentTalentTab = TalentSubTab.Discover;
             return;
+        }
+
+        // Officer button
+        btnY += NavBtnH + 4;
+        var offRect = new Rectangle(btnX, btnY, NavBtnW, NavBtnH);
+        if (offRect.Contains(mp))
+        {
+            _selectedCategory = SelectedCategory.Officer;
+            Phase = CityActionPhase.OfficerManage;
+            _scrollOffset = 0;
+            _officerSelectOpen = false;
+            return;
+        }
+
+        // Diplomacy button
+        btnY += NavBtnH + 4;
+        var dipRect = new Rectangle(btnX, btnY, NavBtnW, NavBtnH);
+        if (dipRect.Contains(mp))
+        {
+            _selectedCategory = SelectedCategory.Diplomacy;
+            Phase = CityActionPhase.DiplomacyManage;
+            _scrollOffset = 0;
+            return;
+        }
+
+        // Captive button
+        btnY += NavBtnH + 4;
+        var capRect = new Rectangle(btnX, btnY, NavBtnW, NavBtnH);
+        if (capRect.Contains(mp))
+        {
+            _selectedCategory = SelectedCategory.Captive;
+            Phase = CityActionPhase.CaptiveManage;
+            _scrollOffset = 0;
+            return;
+        }
+
+        // 结束回合按钮（底部）
+        var endTurnRect = new Rectangle(btnX, nav.Bottom - 42, NavBtnW, 36);
+        if (endTurnRect.Contains(mp))
+        {
+            _onEndTurn?.Invoke();
+            Close();
+            return;
+        }
+
+        // 取消按钮（结束回合上方）
+        var cancelRect = new Rectangle(btnX, nav.Bottom - 82, NavBtnW, 36);
+        if (cancelRect.Contains(mp))
+        {
+            Close();
         }
     }
 
-    // ==================== 军事主菜单 ====================
-    private void UpdateMilitaryMainPhase(InputManager input)
+    private void UpdateCategorySelect(InputManager input, Rectangle popup)
     {
-        _deployBtn.Update(input);
-        _generalRosterBtn.Update(input);
-        _backBtn.Update(input);
+        if (!input.IsMouseClicked()) return;
+        var content = GetContentRect(popup);
+        var mp = input.MousePosition.ToPoint();
+        int btnX = content.X + 10;
+        int btnY = content.Y + HeaderH + 10;
+        int btnW = ContentW - 20;
 
-        if (_backBtn.IsHovered && input.IsMouseClicked()) { Phase = CityActionPhase.Main; return; }
-        if (_deployBtn.IsHovered && input.IsMouseClicked())
+        if (_selectedCategory == SelectedCategory.Military)
         {
-            Phase = CityActionPhase.MilitaryDeploy;
-            return;
-        }
-        if (_generalRosterBtn.IsHovered && input.IsMouseClicked())
-        {
-            _onOpenGeneralRoster?.Invoke();
-            return;
-        }
-
-        // 显示当前编队信息
-        int squadCount = GameState.Instance.CurrentSquad.Count;
-        // （显示逻辑在 Draw 中处理）
-    }
-
-    // ==================== 编队出征 ====================
-    private void UpdateMilitaryDeployPhase(InputManager input)
-    {
-        _backBtn.Update(input);
-        _selectGeneralBtn.Update(input);
-        _confirmDeployBtn.Update(input);
-
-        if (_backBtn.IsHovered && input.IsMouseClicked()) { Phase = CityActionPhase.MilitaryMain; return; }
-
-        // 选择武将按钮
-        if (_selectGeneralBtn.IsHovered && input.IsMouseClicked())
-        {
-            Phase = CityActionPhase.SelectGeneral;
-            _deployCards.Clear();
-            return;
-        }
-
-        // 确认出击按钮
-        if (_confirmDeployBtn.IsHovered && input.IsMouseClicked())
-        {
-            var squad = GameState.Instance.CurrentSquad;
-            if (squad.Count == 0) return; // 编队为空，不能出击
-            Phase = CityActionPhase.MilitarySelectTarget;
-            return;
-        }
-
-        // 更新编队武将移除按钮
-        _squadRemoveButtons.Clear();
-        int squadCount = GameState.Instance.CurrentSquad.Count;
-        int startX = 200;
-        int startY = 150;
-        int btnW = 200;
-        int btnH = 55;
-        int spacing = 10;
-
-        for (int i = 0; i < squadCount; i++)
-        {
-            string genId = GameState.Instance.CurrentSquad[i];
-            string name = _getGeneralName?.Invoke(genId) ?? genId;
-            var btn = new Button($"X {name}", new Rectangle(startX + i * (btnW + spacing), startY, btnW, btnH));
-            btn.NormalColor = new Color(80, 40, 40);
-            btn.HoverColor = new Color(120, 60, 60);
-            _squadRemoveButtons.Add(btn);
-        }
-
-        // 点击移除按钮
-        for (int i = 0; i < _squadRemoveButtons.Count; i++)
-        {
-            _squadRemoveButtons[i].Update(input);
-            if (_squadRemoveButtons[i].IsHovered && input.IsMouseClicked())
+            if (new Rectangle(btnX, btnY, btnW, ActionBtnH).Contains(mp))
             {
-                var squad = GameState.Instance.CurrentSquad.ToList();
-                squad.RemoveAt(i);
-                GameState.Instance.SetCurrentSquad(squad);
+                Phase = CityActionPhase.MilitaryDeploy;
+                _scrollOffset = 0;
+                // 进入编队时，过滤掉不在当前城池的武将
+                FilterSquadBySourceCity();
+                return;
+            }
+            btnY += ActionBtnH + 6;
+            if (new Rectangle(btnX, btnY, btnW, ActionBtnH).Contains(mp))
+            {
+                _onOpenGeneralRoster?.Invoke();
+            }
+        }
+        else if (_selectedCategory == SelectedCategory.Interior)
+        {
+            if (new Rectangle(btnX, btnY, btnW, ActionBtnH).Contains(mp))
+            {
+                Phase = CityActionPhase.InteriorEconomy;
+                _scrollOffset = 0;
+                return;
+            }
+            btnY += ActionBtnH + 6;
+            if (new Rectangle(btnX, btnY, btnW, ActionBtnH).Contains(mp))
+            {
+                Phase = CityActionPhase.InteriorDefense;
+                _scrollOffset = 0;
+                return;
+            }
+            btnY += ActionBtnH + 6;
+            if (new Rectangle(btnX, btnY, btnW, ActionBtnH).Contains(mp))
+            {
+                Phase = CityActionPhase.InteriorBuilding;
+                _scrollOffset = 0;
+                _selectedBuildingIndex = -1;
                 return;
             }
         }
     }
 
-    // ==================== 武将选择模式（简洁布局） ====================
-    private int _clickCooldownFrames = 0;
-
-    private void UpdateSelectGeneralPhase(InputManager input)
+    private void UpdateMilitaryDeploy(InputManager input, Rectangle popup)
     {
-        _backBtn.Update(input);
+        if (!input.IsMouseClicked()) return;
+        var content = GetContentRect(popup);
+        var mp = input.MousePosition.ToPoint();
 
-        if (_clickCooldownFrames > 0) _clickCooldownFrames--;
-        bool canClick = _clickCooldownFrames == 0;
+        // Back button
+        var backRect = new Rectangle(content.Right - 70, content.Y + 4, 60, 28);
+        if (backRect.Contains(mp)) { Phase = CityActionPhase.CategorySelect; _selectedCategory = SelectedCategory.Military; return; }
 
-        if (_backBtn.IsHovered && input.IsMouseClicked() && canClick)
+        // Remove buttons for squad slots
+        var squad = GameState.Instance.CurrentSquad;
+        for (int i = 0; i < squad.Count; i++)
         {
-            _clickCooldownFrames = 5;
-            Phase = CityActionPhase.MilitaryDeploy;
-            _deployCards.Clear();
+            var removeRect = new Rectangle(content.Right - 40, content.Y + HeaderH + 10 + i * 55 + 12, 30, 25);
+            if (removeRect.Contains(mp))
+            {
+                var list = squad.ToList();
+                list.RemoveAt(i);
+                GameState.Instance.SetCurrentSquad(list);
+                return;
+            }
+        }
+
+        // Select general button
+        int bottomY = content.Bottom - 50;
+        var selectRect = new Rectangle(content.X + 10, bottomY, (ContentW - 30) / 2, 36);
+        if (selectRect.Contains(mp))
+        {
+            Phase = CityActionPhase.SelectGeneral;
+            _scrollOffset = 0;
+            PrepareDeployCards();
             return;
         }
 
-        // 确认选择按钮
-        var confirmBtn = new Button("确认选择", new Rectangle(GameSettings.ScreenWidth / 2 - 60, GameSettings.ScreenHeight - 60, 120, 40));
-        confirmBtn.NormalColor = new Color(60, 80, 40);
-        confirmBtn.HoverColor = new Color(90, 120, 60);
-        confirmBtn.Update(input);
-
-        if (confirmBtn.IsHovered && input.IsMouseClicked() && canClick)
+        // Confirm deploy button
+        var confirmRect = new Rectangle(content.X + 10 + (ContentW - 30) / 2 + 10, bottomY, (ContentW - 30) / 2, 36);
+        if (confirmRect.Contains(mp) && squad.Count > 0)
         {
-            _clickCooldownFrames = 5;
-            var selectedCards = _deployCards.Where(c => c.IsSelected).Take(3).ToList();
-            if (selectedCards.Count > 0)
-            {
-                var squadIds = new List<string>();
-                var deployEntries = new List<GeneralDeployEntry>();
-
-                foreach (var card in selectedCards)
-                {
-                    squadIds.Add(card.Data.Id);
-                    var unitType = GetUnitTypeFromIndex(card.UnitIndex);
-                    var formation = GetFormationFromIndex(card.FormationIndex);
-                    deployEntries.Add(new GeneralDeployEntry
-                    {
-                        GeneralId = card.Data.Id,
-                        UnitType = unitType,
-                        BattleFormation = formation,
-                        SoldierCount = card.SoldierCount
-                    });
-                }
-
-                GameState.Instance.SetCurrentSquad(squadIds);
-                GameState.Instance.CurrentDeployConfigs = deployEntries;
-            }
-            Phase = CityActionPhase.MilitaryDeploy;
-            _deployCards.Clear();
-            return;
-        }
-
-        // 初始化卡片列表
-        if (_deployCards.Count == 0)
-        {
-            var squadSet = GameState.Instance.CurrentSquad.ToHashSet();
-            foreach (var genData in _allGeneralsRef)
-            {
-                var progress = GameState.Instance.GetGeneralProgress(genData.Id);
-                if (progress == null || !progress.IsUnlocked) continue;
-                if (progress.Status != GeneralStatus.Recruited) continue;
-                if (squadSet.Contains(genData.Id)) continue;
-
-                _deployCards.Add(new GeneralDeployCard
-                {
-                    Data = genData,
-                    IsSelected = false,
-                    SelectedUnit = "步兵",
-                    SelectedFormation = "先锋",
-                    SoldierCount = 30
-                });
-            }
-        }
-
-        var unitNames = GetUnitNames();
-        var formationNames = GetFormationNames();
-
-        // 更新卡片交互
-        int cardStartY = 110;
-        int cardH = 130;  // 增加高度以容纳两行配置
-        int spacing = 10;
-        int currentY = cardStartY;
-
-        foreach (var card in _deployCards)
-        {
-            var cardRect = new Rectangle(20, currentY, GameSettings.ScreenWidth - 40, cardH);
-            var mousePos = input.MousePosition.ToPoint();
-
-            // 第一行配置区 Y
-            int row1Y = cardRect.Y + 55;
-            // 第二行配置区 Y
-            int row2Y = cardRect.Y + 88;
-
-            // 兵种点击区域
-            var unitRect = new Rectangle(cardRect.X + 195, row1Y, 110, 25);
-            // 阵型点击区域
-            var formRect = new Rectangle(cardRect.X + 410, row1Y, 110, 25);
-            // 士兵数 +/- 按钮
-            var minusRect = new Rectangle(cardRect.X + 640, row1Y, 28, 25);
-            var plusRect = new Rectangle(cardRect.X + 675, row1Y, 28, 25);
-
-            bool clickedOnConfig = unitRect.Contains(mousePos) || formRect.Contains(mousePos) || minusRect.Contains(mousePos) || plusRect.Contains(mousePos);
-
-            // 选择按钮
-            var toggleRect = new Rectangle(cardRect.X + 8, cardRect.Y + 8, 65, 35);
-            if (toggleRect.Contains(mousePos) && input.IsMouseClicked() && !clickedOnConfig && canClick)
-            {
-                _clickCooldownFrames = 5;
-                if (GetSelectedCount() < 3) card.IsSelected = !card.IsSelected;
-                else if (card.IsSelected) card.IsSelected = false;
-            }
-
-            // 兵种选择
-            if (unitRect.Contains(mousePos) && input.IsMouseClicked() && canClick)
-            {
-                _clickCooldownFrames = 5;
-                int currentIdx = card.UnitIndex;
-                card.SelectedUnit = unitNames[(currentIdx + 1) % unitNames.Length];
-            }
-
-            // 阵型选择
-            if (formRect.Contains(mousePos) && input.IsMouseClicked() && canClick)
-            {
-                _clickCooldownFrames = 5;
-                int currentIdx = card.FormationIndex;
-                card.SelectedFormation = formationNames[(currentIdx + 1) % formationNames.Length];
-            }
-
-            // 士兵数 -
-            if (minusRect.Contains(mousePos) && input.IsMouseClicked() && canClick)
-            {
-                _clickCooldownFrames = 5;
-                card.SoldierCount = Math.Max(10, card.SoldierCount - 5);
-            }
-
-            // 士兵数 +
-            if (plusRect.Contains(mousePos) && input.IsMouseClicked() && canClick)
-            {
-                _clickCooldownFrames = 5;
-                card.SoldierCount = Math.Min(100, card.SoldierCount + 5);
-            }
-
-            currentY += cardH + spacing;
-        }
-    }
-
-    private string[] GetUnitNames() => new[] { "步兵", "枪兵", "盾兵", "骑兵", "重骑", "轻骑", "弓兵", "强弩", "攻城", "法师" };
-    private string[] GetFormationNames() => new[] { "先锋", "鱼鳞", "方阵", "锥形", "长蛇", "鹤翼", "八卦", "偃月", "环形" };
-    private UnitType GetUnitTypeFromIndex(int idx)
-    {
-        var types = new[] { UnitType.Infantry, UnitType.Spearman, UnitType.ShieldInfantry, UnitType.Cavalry, UnitType.HeavyCavalry, UnitType.LightCavalry, UnitType.Archer, UnitType.Crossbowman, UnitType.Siege, UnitType.Mage };
-        return idx >= 0 && idx < types.Length ? types[idx] : UnitType.Infantry;
-    }
-    private BattleFormation GetFormationFromIndex(int idx)
-    {
-        var formations = new[] { BattleFormation.Vanguard, BattleFormation.FishScale, BattleFormation.Square, BattleFormation.Wedge, BattleFormation.LongSnake, BattleFormation.CraneWing, BattleFormation.EightTrigrams, BattleFormation.CrescentMoon, BattleFormation.Circle };
-        return idx >= 0 && idx < formations.Length ? formations[idx] : BattleFormation.Vanguard;
-    }
-
-    private int GetSelectedCount() => _deployCards.Count(c => c.IsSelected);
-
-    // ==================== 目标选择 ====================
-    private void UpdateMilitarySelectTargetPhase(InputManager input, List<CityNode> allCities)
-    {
-        _backBtn.Update(input);
-
-        if (_backBtn.IsHovered && input.IsMouseClicked())
-        {
-            Phase = CityActionPhase.MilitaryDeploy;
+            Phase = CityActionPhase.MilitarySelectTarget;
             TargetCity = null;
             MovePath = null;
-            return;
+        }
+    }
+
+    private void FilterSquadBySourceCity()
+    {
+        if (SourceCity == null) return;
+        var gs = GameState.Instance;
+        var squad = gs.CurrentSquad;
+        var cityProgress = gs.GetCityProgress(SourceCity.Id);
+        var filtered = new List<string>();
+        foreach (var genId in squad)
+        {
+            var gp = gs.GetGeneralProgress(genId);
+            if (gp != null && gp.CurrentCityId == SourceCity.Id)
+            {
+                // 排除本回合已行动的武将
+                if (cityProgress?.ActedGeneralsThisTurn.Contains(genId) == true) continue;
+                // 排除正在执行策反任务的武将
+                if (GameState.Instance.IsOnSabotageMission(genId)) continue;
+                filtered.Add(genId);
+            }
+        }
+        gs.SetCurrentSquad(filtered);
+    }
+
+    private void PrepareDeployCards()
+    {
+        _deployCards.Clear();
+        var currentSquad = GameState.Instance.CurrentSquad;
+        var cityProgress = GameState.Instance.GetCityProgress(SourceCity?.Id ?? "");
+        // Only include generals that are in the source city
+        foreach (var gen in _allGeneralsRef)
+        {
+            var gp = GameState.Instance.GetGeneralProgress(gen.Id);
+            if (gp == null || !gp.IsUnlocked) continue;
+            if (gp.Status != GeneralStatus.Recruited) continue;
+            // Filter: only generals in the source city can be selected
+            // 双重检查：城市列表 和 CurrentCityId 都匹配才可选
+            string? sourceCityId = SourceCity?.Id;
+            bool inCityList = _cityGenerals.Contains(gen.Id);
+            bool byCurrentCityId = !string.IsNullOrEmpty(sourceCityId) && gp.CurrentCityId == sourceCityId;
+            if (!inCityList && !byCurrentCityId) continue;
+            // 排除本回合已执行内政/军事任务的武将
+            if (cityProgress?.ActedGeneralsThisTurn.Contains(gen.Id) == true) continue;
+            // 排除正在执行策反任务的武将
+            if (GameState.Instance.IsOnSabotageMission(gen.Id)) continue;
+            var card = new GeneralDeployCard
+            {
+                Data = gen,
+                IsSelected = currentSquad.Contains(gen.Id)
+            };
+            _deployCards.Add(card);
+        }
+    }
+
+    private void UpdateSelectGeneral(InputManager input, Rectangle popup)
+    {
+        var content = GetContentRect(popup);
+        var mp = input.MousePosition.ToPoint();
+
+        if (input.IsMouseClicked() && _clickCooldown <= 0)
+        {
+            // Back button
+            var backRect = new Rectangle(content.Right - 70, content.Y + 4, 60, 28);
+            if (backRect.Contains(mp))
+            {
+                ApplyGeneralSelection();
+                Phase = CityActionPhase.MilitaryDeploy;
+                return;
+            }
+
+            // Confirm button at bottom
+            var confirmRect = new Rectangle(content.X + 10, content.Bottom - 42, ContentW - 20, 34);
+            if (confirmRect.Contains(mp))
+            {
+                ApplyGeneralSelection();
+                Phase = CityActionPhase.MilitaryDeploy;
+                return;
+            }
+
+            // General cards
+            int cardH = 60;
+            int startY = content.Y + HeaderH + 5;
+            int visibleH = content.Height - HeaderH - 50;
+
+            for (int i = 0; i < _deployCards.Count; i++)
+            {
+                int cy = startY + i * (cardH + 4) - (int)_scrollOffset;
+                if (cy + cardH < startY || cy > startY + visibleH) continue;
+
+                var card = _deployCards[i];
+
+                // Toggle selection
+                var selectArea = new Rectangle(content.X + 10, cy, ContentW - 20, 28);
+                if (selectArea.Contains(mp))
+                {
+                    int selectedCount = _deployCards.Count(c => c.IsSelected);
+                    if (card.IsSelected)
+                        card.IsSelected = false;
+                    else if (selectedCount < 3)
+                        card.IsSelected = true;
+                    _clickCooldown = 5;
+                    return;
+                }
+
+                // Unit cycle (row 2 left area)
+                var unitRect = new Rectangle(content.X + 40, cy + 30, 80, 24);
+                if (unitRect.Contains(mp))
+                {
+                    int idx = (card.UnitIndex + 1) % GeneralDeployCard.Units.Length;
+                    card.SelectedUnit = GeneralDeployCard.Units[idx];
+                    _clickCooldown = 5;
+                    return;
+                }
+
+                // Formation cycle (row 2 middle area)
+                var fmtRect = new Rectangle(content.X + 130, cy + 30, 80, 24);
+                if (fmtRect.Contains(mp))
+                {
+                    int idx = (card.FormationIndex + 1) % GeneralDeployCard.Formations.Length;
+                    card.SelectedFormation = GeneralDeployCard.Formations[idx];
+                    _clickCooldown = 5;
+                    return;
+                }
+
+                // Soldier count -/+
+                var minusRect = new Rectangle(content.X + 220, cy + 30, 24, 24);
+                if (minusRect.Contains(mp))
+                {
+                    card.SoldierCount = Math.Max(10, card.SoldierCount - 10);
+                    _clickCooldown = 5;
+                    return;
+                }
+                var plusRect = new Rectangle(content.X + 280, cy + 30, 24, 24);
+                if (plusRect.Contains(mp))
+                {
+                    card.SoldierCount = Math.Min(100, card.SoldierCount + 10);
+                    _clickCooldown = 5;
+                    return;
+                }
+            }
         }
 
+        // Clamp scroll
+        int totalH = _deployCards.Count * 64;
+        int viewH = content.Height - HeaderH - 50;
+        _scrollOffset = Math.Clamp(_scrollOffset, 0, Math.Max(0, totalH - viewH));
+    }
+
+    private void ApplyGeneralSelection()
+    {
+        var selectedIds = _deployCards.Where(c => c.IsSelected).Select(c => c.Data.Id).ToList();
+        GameState.Instance.SetCurrentSquad(selectedIds);
+
+        var configs = new List<GeneralDeployEntry>();
+        foreach (var card in _deployCards.Where(c => c.IsSelected))
+        {
+            configs.Add(new GeneralDeployEntry
+            {
+                GeneralId = card.Data.Id,
+                UnitType = card.GetUnitType(),
+                BattleFormation = card.GetBattleFormation(),
+                SoldierCount = card.SoldierCount
+            });
+        }
+        GameState.Instance.CurrentDeployConfigs = configs;
+    }
+
+    private void UpdateMilitarySelectTarget(InputManager input, List<CityNode> allCities, Rectangle popup)
+    {
         if (input.IsMouseClicked())
         {
+            // Cancel button (small hint bar)
+            var cancelRect = new Rectangle((int)CityScreenPos.X - 40, (int)CityScreenPos.Y - 50, 80, 28);
+            if (cancelRect.Contains(input.MousePosition.ToPoint()))
+            {
+                Phase = CityActionPhase.MilitaryDeploy;
+                TargetCity = null;
+                MovePath = null;
+                return;
+            }
+
+            // Click on target city
             foreach (var city in allCities)
             {
                 if (city.Bounds.Contains(WorldMousePos.ToPoint()) && city.Data.Id != SourceCity?.Id)
@@ -644,13 +722,14 @@ public class CityActionDialog
         }
     }
 
-    // ==================== 确认行军 ====================
-    private void UpdateMilitaryConfirmPhase(InputManager input)
+    private void UpdateMilitaryConfirm(InputManager input, Rectangle popup)
     {
-        _backBtn.Update(input);
-        _confirmBtn.Update(input);
+        if (!input.IsMouseClicked()) return;
+        var content = GetContentRect(popup);
+        var mp = input.MousePosition.ToPoint();
 
-        if (_backBtn.IsHovered && input.IsMouseClicked())
+        var backRect = new Rectangle(content.Right - 70, content.Y + 4, 60, 28);
+        if (backRect.Contains(mp))
         {
             Phase = CityActionPhase.MilitarySelectTarget;
             TargetCity = null;
@@ -658,7 +737,8 @@ public class CityActionDialog
             return;
         }
 
-        if (_confirmBtn.IsHovered && input.IsMouseClicked())
+        var confirmRect = new Rectangle(content.X + 10, content.Bottom - 50, ContentW - 20, 36);
+        if (confirmRect.Contains(mp))
         {
             LaunchArmy();
         }
@@ -667,869 +747,910 @@ public class CityActionDialog
     private void LaunchArmy()
     {
         if (SourceCity == null || TargetCity == null) return;
-
         var generalIds = GameState.Instance.CurrentSquad.ToList();
         if (generalIds.Count == 0) return;
-
-        // 获取出征配置
         var deployConfigs = GameState.Instance.CurrentDeployConfigs.ToList();
-
         _onLaunchArmy?.Invoke(generalIds, deployConfigs, TargetCity);
-        Close();
+        // 出兵后返回军事管理页面，而非关闭对话框
+        Phase = CityActionPhase.MilitaryManage;
+        _selectedCategory = SelectedCategory.Military;
+        _currentMilitaryTab = 0;
+        _deployCards.Clear();
+        TargetCity = null;
+        MovePath = null;
+        RefreshCityData();
     }
 
-    // ==================== 内政主菜单 ====================
-    private void UpdateInteriorMainPhase(InputManager input)
+    private void UpdateInteriorInfo(InputManager input, Rectangle popup)
     {
-        _economyBtn.Update(input);
-        _defenseBtn.Update(input);
-        _buildingBtn.Update(input);
-        _backBtn.Update(input);
-
-        if (_backBtn.IsHovered && input.IsMouseClicked()) { Phase = CityActionPhase.Main; return; }
-        if (_economyBtn.IsHovered && input.IsMouseClicked()) { Phase = CityActionPhase.InteriorEconomy; return; }
-        if (_defenseBtn.IsHovered && input.IsMouseClicked()) { Phase = CityActionPhase.InteriorDefense; return; }
-        if (_buildingBtn.IsHovered && input.IsMouseClicked()) { Phase = CityActionPhase.InteriorBuilding; return; }
+        if (!input.IsMouseClicked()) return;
+        var content = GetContentRect(popup);
+        var backRect = new Rectangle(content.Right - 70, content.Y + 4, 60, 28);
+        if (backRect.Contains(input.MousePosition.ToPoint()))
+        {
+            Phase = CityActionPhase.CategorySelect;
+            _selectedCategory = SelectedCategory.Interior;
+        }
     }
 
-    private void UpdateInteriorEconomyPhase(InputManager input)
+    private void UpdateInteriorBuilding(InputManager input, Rectangle popup)
     {
-        _backBtn.Update(input);
-        if (_backBtn.IsHovered && input.IsMouseClicked()) { Phase = CityActionPhase.InteriorMain; return; }
+        var content = GetContentRect(popup);
+        var mp = input.MousePosition.ToPoint();
+
+        if (!input.IsMouseClicked()) return;
+
+        var backRect = new Rectangle(content.Right - 70, content.Y + 4, 60, 28);
+        if (backRect.Contains(mp))
+        {
+            Phase = CityActionPhase.CategorySelect;
+            _selectedCategory = SelectedCategory.Interior;
+            return;
+        }
+
+        if (SourceCity == null) return;
+        var progress = GameState.Instance.GetOrCreateCityProgress(SourceCity);
+        var buildings = progress.Buildings.Values.ToList();
+
+        int startY = content.Y + HeaderH + 35;
+        int rowH = 45;
+
+        for (int i = 0; i < buildings.Count; i++)
+        {
+            int ry = startY + i * (rowH + 4) - (int)_scrollOffset;
+            var rowRect = new Rectangle(content.X + 10, ry, ContentW - 20, rowH);
+            if (rowRect.Contains(mp))
+            {
+                if (_selectedBuildingIndex == i)
+                {
+                    // Click upgrade
+                    var bld = buildings[i];
+                    if (bld.Level < bld.MaxLevel)
+                    {
+                        progress.UpgradeBuilding(bld.Id, out _);
+                    }
+                }
+                else
+                {
+                    _selectedBuildingIndex = i;
+                }
+                return;
+            }
+        }
+
+        // Clamp scroll
+        int totalH = buildings.Count * (rowH + 4);
+        int viewH = content.Height - HeaderH - 40;
+        _scrollOffset = Math.Clamp(_scrollOffset, 0, Math.Max(0, totalH - viewH));
     }
 
-    private void UpdateInteriorDefensePhase(InputManager input)
+    private void UpdateTalentManage(InputManager input, Rectangle popup)
     {
-        _backBtn.Update(input);
-        if (_backBtn.IsHovered && input.IsMouseClicked()) { Phase = CityActionPhase.InteriorMain; return; }
-    }
+        var content = GetContentRect(popup);
+        var mp = input.MousePosition.ToPoint();
 
-    // ==================== 人才管理 ====================
-    private void UpdateTalentManagePhase(InputManager input)
-    {
-        _backBtn.Update(input);
-        if (_backBtn.IsHovered && input.IsMouseClicked()) { Phase = CityActionPhase.Main; return; }
+        if (!input.IsMouseClicked()) return;
 
-        // Tab 按钮
-        _talentTabButtons.Clear();
-        int tabY = 80;
-        int tabW = 120;
-        int tabH = 35;
-        int tabStartX = GameSettings.ScreenWidth / 2 - (tabW * 3 + 20) / 2;
-        int tabSpacing = 10;
+        // Back button
+        var backRect = new Rectangle(content.Right - 70, content.Y + 4, 60, 28);
+        if (backRect.Contains(mp))
+        {
+            Phase = CityActionPhase.CategorySelect;
+            _selectedCategory = SelectedCategory.Talent;
+            return;
+        }
 
-        string[] tabLabels = { "发现人才", "说服在野", "招降俘虏" };
-        TalentSubTab[] tabValues = { TalentSubTab.Discover, TalentSubTab.Persuade, TalentSubTab.Recruit };
+        // Tab buttons
+        int tabW = (ContentW - 30) / 3;
+        int tabY = content.Y + HeaderH + 5;
         for (int i = 0; i < 3; i++)
         {
-            var btn = new Button(tabLabels[i], new Rectangle(tabStartX + i * (tabW + tabSpacing), tabY, tabW, tabH));
-            btn.NormalColor = _currentTalentTab == tabValues[i] ? new Color(80, 100, 60) : new Color(50, 50, 50);
-            btn.HoverColor = _currentTalentTab == tabValues[i] ? new Color(100, 130, 80) : new Color(70, 70, 70);
-            _talentTabButtons.Add(btn);
-            btn.Update(input);
-            if (btn.IsHovered && input.IsMouseClicked())
+            var tabRect = new Rectangle(content.X + 10 + i * (tabW + 5), tabY, tabW, 28);
+            if (tabRect.Contains(mp))
             {
-                _currentTalentTab = tabValues[i];
+                _currentTalentTab = (TalentSubTab)i;
+                _scrollOffset = 0;
+                return;
             }
         }
 
-        // 根据当前 Tab 更新列表
-        switch (_currentTalentTab)
+        // Tab-specific actions
+        int actionY = tabY + 38;
+        if (_currentTalentTab == TalentSubTab.Discover)
         {
-            case TalentSubTab.Discover:
-                UpdateTalentDiscoverButtons(input);
-                break;
-            case TalentSubTab.Persuade:
-                UpdateTalentPersuadeButtons(input);
-                break;
-            case TalentSubTab.Recruit:
-                UpdateTalentRecruitButtons(input);
-                break;
-        }
-    }
-
-    private void UpdateTalentDiscoverButtons(InputManager input)
-    {
-        _talentDiscoverButtons.Clear();
-
-        // 发现人才按钮
-        var discoverBtn = new Button("发现人才 (消耗100战功)", new Rectangle(GameSettings.ScreenWidth / 2 - 100, 140, 200, 45));
-        discoverBtn.NormalColor = new Color(80, 60, 40);
-        discoverBtn.HoverColor = new Color(120, 90, 60);
-        discoverBtn.Update(input);
-
-        if (discoverBtn.IsHovered && input.IsMouseClicked())
-        {
-            if (GameState.Instance.DiscoverTalent(_allGeneralsRef, out string discoveredId, out string errorMsg))
+            var cp = SourceCity != null ? GameState.Instance.GetOrCreateCityProgress(SourceCity) : null;
+            bool hasSearchOfficer = !string.IsNullOrEmpty(cp?.SearchOfficerId);
+            bool alreadyUsed = cp?.DiscoverUsedThisTurn ?? false;
+            bool searchOfficerActed = cp != null && !string.IsNullOrEmpty(cp.SearchOfficerId) && cp.ActedGeneralsThisTurn.Contains(cp.SearchOfficerId);
+            bool canDiscover = hasSearchOfficer && !alreadyUsed && !searchOfficerActed;
+            int btnY = actionY;
+            if (!hasSearchOfficer) btnY += 20;
+            else if (alreadyUsed || searchOfficerActed) btnY += 20; // 提示文字占位
+            btnY += 25; // 搜索官信息占位
+            var discoverRect = new Rectangle(content.X + 10, btnY, ContentW - 20, 34);
+            if (discoverRect.Contains(mp) && canDiscover)
             {
-                // 发现成功，可在 UI 中显示提示
+                GameState.Instance.DiscoverTalent(_allGeneralsRef, SourceCity!.Id, out _, out _);
+                _availableGenerals = GameState.Instance.GetAvailableGeneralsForCity(SourceCity!);
+                cp!.DiscoverUsedThisTurn = true;
+                cp.ActedGeneralsThisTurn.Add(cp.SearchOfficerId);
+                // 搜索后直接跳转到说服标签
+                _currentTalentTab = TalentSubTab.Persuade;
+                _scrollOffset = 0;
             }
         }
-
-        // 显示已发现但未招募的武将
-        var talents = GameState.Instance.GetAvailableTalents();
-        int startX = 200;
-        int startY = 200;
-        int btnW = 180;
-        int btnH = 45;
-        int spacing = 10;
-        int col = 0;
-        int row = 0;
-
-        foreach (var talent in talents)
+        else if (_currentTalentTab == TalentSubTab.Persuade)
         {
-            string name = talent.Data.Name;
-            var btn = new Button(name, new Rectangle(startX + col * (btnW + spacing), startY + row * (btnH + spacing), btnW, btnH));
-            btn.NormalColor = new Color(50, 60, 40);
-            btn.HoverColor = new Color(70, 90, 60);
-            _talentDiscoverButtons.Add(btn);
-            btn.Update(input);
+            var cp = SourceCity != null ? GameState.Instance.GetOrCreateCityProgress(SourceCity) : null;
+            bool hasSearchOfficer = !string.IsNullOrEmpty(cp?.SearchOfficerId);
+            bool alreadyUsed = cp?.PersuadeUsedThisTurn ?? false;
+            if (!hasSearchOfficer || alreadyUsed) return;
 
-            col++;
-            if (col >= 3) { col = 0; row++; }
-        }
-    }
+            var unaffiliated = GameState.Instance.GetAvailableTalents();
+            int btnY = actionY + 25; // 搜索官信息占位
 
-    private void UpdateTalentPersuadeButtons(InputManager input)
-    {
-        _talentPersuadeButtons.Clear();
-
-        var talents = GameState.Instance.GetAvailableTalents();
-        if (SourceCity == null) return;
-
-        int startX = 200;
-        int startY = 140;
-        int btnW = 200;
-        int btnH = 50;
-        int spacing = 10;
-        int col = 0;
-        int row = 0;
-
-        foreach (var talent in talents)
-        {
-            string name = talent.Data.Name;
-            var btn = new Button($"说服 {name} (200金)", new Rectangle(startX + col * (btnW + spacing), startY + row * (btnH + spacing), btnW, btnH));
-            btn.NormalColor = new Color(60, 50, 80);
-            btn.HoverColor = new Color(90, 75, 120);
-            _talentPersuadeButtons.Add(btn);
-            btn.Update(input);
-
-            if (btn.IsHovered && input.IsMouseClicked())
+            for (int i = 0; i < unaffiliated.Count; i++)
             {
-                if (GameState.Instance.PersuadeTalent(talent.Data.Id, SourceCity.Id, out string errorMsg))
+                var btnRect = new Rectangle(content.X + 10, btnY + i * 38, ContentW - 20, 32);
+                if (btnRect.Contains(mp))
                 {
-                    // 说服成功
+                    bool ok = GameState.Instance.PersuadeTalent(unaffiliated[i].Data.Id, SourceCity!.Id, out var errMsg);
+                    if (!ok)
+                    {
+                        _persuadeResultMsg = errMsg;
+                        _persuadeResultTimer = 60;
+                    }
+                    else
+                    {
+                        _persuadeResultMsg = "说服成功!";
+                        _persuadeResultTimer = 60;
+                        cp!.PersuadeUsedThisTurn = true;
+                        RefreshCityData();
+                    }
+                    return;
                 }
             }
-
-            col++;
-            if (col >= 2) { col = 0; row++; }
         }
-    }
-
-    private void UpdateTalentRecruitButtons(InputManager input)
-    {
-        _talentRecruitButtons.Clear();
-
-        var captives = GameState.Instance.GetCaptives();
-        int startX = 200;
-        int startY = 140;
-        int btnW = 200;
-        int btnH = 50;
-        int spacing = 10;
-        int col = 0;
-        int row = 0;
-
-        foreach (var captive in captives)
+        else if (_currentTalentTab == TalentSubTab.Recruit)
         {
-            string name = captive.Data.Name;
-            var btn = new Button($"招降 {name} (150战功)", new Rectangle(startX + col * (btnW + spacing), startY + row * (btnH + spacing), btnW, btnH));
-            btn.NormalColor = new Color(80, 40, 40);
-            btn.HoverColor = new Color(120, 60, 60);
-            _talentRecruitButtons.Add(btn);
-            btn.Update(input);
-
-            if (btn.IsHovered && input.IsMouseClicked())
+            var captives = GameState.Instance.GetCaptives();
+            for (int i = 0; i < captives.Count; i++)
             {
-                if (GameState.Instance.RecruitCaptive(captive.Data.Id, out string errorMsg))
+                var btnRect = new Rectangle(content.X + 10, actionY + i * 38, ContentW - 20, 32);
+                if (btnRect.Contains(mp) && GameState.Instance.BattleMerit >= 150)
                 {
-                    // 招降成功
+                    GameState.Instance.RecruitCaptive(captives[i].Data.Id, out _);
+                    return;
                 }
             }
-
-            col++;
-            if (col >= 2) { col = 0; row++; }
         }
     }
 
-    // ==================== 绘制 ====================
+    // ===================== DRAW =====================
+
     public void Draw(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, SpriteFontBase titleFont, InputManager input)
     {
         if (!IsActive) return;
 
-        int cx = GameSettings.ScreenWidth / 2;
-        int cy = GameSettings.ScreenHeight / 2;
+        if (Phase == CityActionPhase.MilitarySelectTarget)
+        {
+            DrawMilitaryTargetHint(sb, pixel, font);
+            return;
+        }
 
+        var popup = ComputePopupRect();
+
+        // Drop shadow
+        sb.Draw(pixel, new Rectangle(popup.X + 4, popup.Y + 4, popup.Width, popup.Height), Color.Black * 0.3f);
+
+        // Popup background
+        sb.Draw(pixel, popup, BgColor);
+
+        // Left nav
+        var nav = GetNavRect(popup);
+        sb.Draw(pixel, nav, NavBgColor);
+        DrawLeftNav(sb, pixel, font, titleFont, nav, input);
+
+        // Divider
+        sb.Draw(pixel, new Rectangle(nav.Right, popup.Y + 5, DividerW, popup.Height - 10), DividerColor);
+
+        // Right content
+        var content = GetContentRect(popup);
+        sb.Draw(pixel, content, ContentBgColor);
+
+        // Border
+        DrawBorder(sb, pixel, popup, BorderColor, 2);
+
+        // Title bar drag indicator (subtle top bar)
+        var titleBarRect = new Rectangle(popup.X + 2, popup.Y + 2, popup.Width - 4, TitleBarH - 2);
+        sb.Draw(pixel, titleBarRect, new Color(40, 60, 80, 100));
+        // Draw grip dots in center of title bar
+        int gripX = popup.X + popup.Width / 2 - 15;
+        int gripY = popup.Y + TitleBarH / 2 - 1;
+        for (int i = 0; i < 6; i++)
+            sb.Draw(pixel, new Rectangle(gripX + i * 6, gripY, 2, 2), DividerColor * 1.5f);
+
+        // Resize handle (bottom-right corner triangle)
+        var rhX = popup.Right - ResizeHandleSize;
+        var rhY = popup.Bottom - ResizeHandleSize;
+        for (int i = 0; i < ResizeHandleSize - 2; i++)
+        {
+            int lineLen = i + 1;
+            sb.Draw(pixel, new Rectangle(popup.Right - lineLen - 1, rhY + i + 1, lineLen, 1), DividerColor * 0.8f);
+        }
+
+        // Phase-specific content
         switch (Phase)
         {
-            case CityActionPhase.Main:
-                DrawMainDialog(sb, pixel, font, titleFont, cx, cy);
+            case CityActionPhase.CategorySelect:
+                DrawCategorySubActions(sb, pixel, font, content, input);
                 break;
-            case CityActionPhase.MilitaryMain:
-                DrawMilitaryMainDialog(sb, pixel, font, titleFont, cx, cy);
+            case CityActionPhase.MilitaryManage:
+                DrawMilitaryManage(sb, pixel, font, content, input);
                 break;
             case CityActionPhase.MilitaryDeploy:
-                DrawMilitaryDeployDialog(sb, pixel, font, titleFont);
+                DrawMilitaryDeploy(sb, pixel, font, content, input);
                 break;
             case CityActionPhase.SelectGeneral:
-                DrawSelectGeneralDialog(sb, pixel, font, titleFont, input);
-                break;
-            case CityActionPhase.MilitarySelectTarget:
-                DrawTargetSelectHint(sb, pixel, font);
+                DrawSelectGeneral(sb, pixel, font, content, input);
                 break;
             case CityActionPhase.MilitaryConfirm:
-                DrawMilitaryConfirmDialog(sb, pixel, font, titleFont);
-                break;
-            case CityActionPhase.InteriorMain:
-                DrawInteriorMainDialog(sb, pixel, font, titleFont, cx, cy);
+                DrawMilitaryConfirm(sb, pixel, font, content);
                 break;
             case CityActionPhase.InteriorEconomy:
-                DrawInteriorEconomyDialog(sb, pixel, font, titleFont);
+                DrawInteriorEconomy(sb, pixel, font, content);
                 break;
             case CityActionPhase.InteriorDefense:
-                DrawInteriorDefenseDialog(sb, pixel, font, titleFont);
+                DrawInteriorDefense(sb, pixel, font, content);
                 break;
             case CityActionPhase.InteriorBuilding:
-                DrawInteriorBuildingDialog(sb, pixel, font, titleFont);
+                DrawInteriorBuilding(sb, pixel, font, content, input);
                 break;
             case CityActionPhase.TalentManage:
-                DrawTalentManageDialog(sb, pixel, font, titleFont);
+                DrawTalentManage(sb, pixel, font, content, input);
+                break;
+            case CityActionPhase.OfficerManage:
+                DrawOfficerManage(sb, pixel, font, content, input);
+                break;
+            case CityActionPhase.DiplomacyManage:
+                DrawDiplomacyManage(sb, pixel, font, content, input);
+                break;
+            case CityActionPhase.CaptiveManage:
+                DrawCaptiveManage(sb, pixel, font, content, input);
                 break;
         }
     }
 
-    private void DrawDialogBg(SpriteBatch sb, Texture2D pixel)
+    private void DrawLeftNav(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, SpriteFontBase titleFont, Rectangle nav, InputManager input)
     {
-        sb.Draw(pixel, new Rectangle(0, 0, GameSettings.ScreenWidth, GameSettings.ScreenHeight), Color.Black * 0.5f);
-    }
+        var mp = input.MousePosition.ToPoint();
+        string cityName = SourceCity?.Name ?? "城池";
 
-    private void DrawMainDialog(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, SpriteFontBase titleFont, int cx, int cy)
-    {
-        DrawDialogBg(sb, pixel);
+        // City name header
+        var nameSize = titleFont.MeasureString(cityName);
+        sb.DrawString(titleFont, cityName, new Vector2(nav.X + (nav.Width - nameSize.X) / 2, nav.Y + 10), AccentColor);
+        sb.Draw(pixel, new Rectangle(nav.X + 8, nav.Y + 38, nav.Width - 16, 1), DividerColor);
 
-        int dlgW = 400;
-        int dlgH = 260;
-        Rectangle dlg = new Rectangle(cx - dlgW / 2, cy - dlgH / 2, dlgW, dlgH);
+        int btnX = nav.X + Pad;
+        int btnY = nav.Y + 45;
 
-        // 对话框背景 - 使用渐变色效果
-        sb.Draw(pixel, dlg, new Color(45, 40, 32));
-        
-        // 顶部装饰条 - 更粗更醒目
-        sb.Draw(pixel, new Rectangle(dlg.X + 2, dlg.Y + 2, dlg.Width - 4, 4), new Color(200, 170, 100));
-        
-        // 内边框 - 增加层次感
-        sb.Draw(pixel, new Rectangle(dlg.X + 8, dlg.Y + 8, dlg.Width - 16, dlg.Height - 16), Color.Transparent);
-        DrawBorder(sb, pixel, new Rectangle(dlg.X + 8, dlg.Y + 8, dlg.Width - 16, dlg.Height - 16), new Color(80, 70, 55), 1);
-        
-        // 外边框 - 双层边框设计
-        DrawBorder(sb, pixel, dlg, new Color(160, 135, 85), 3);
+        // Category buttons
+        string[] labels = { "军 事", "内 政", "人 才", "官 员", "外 交", "俘 虏" };
+        SelectedCategory[] cats = { SelectedCategory.Military, SelectedCategory.Interior, SelectedCategory.Talent, SelectedCategory.Officer, SelectedCategory.Diplomacy, SelectedCategory.Captive };
 
-        // 标题 - 增大字号，居中显示
-        string title = SourceCity?.Name ?? "城池操作";
-        Vector2 titleSize = titleFont.MeasureString(title);
-        sb.DrawString(titleFont, title, new Vector2(cx - titleSize.X / 2, dlg.Y + 18), new Color(255, 220, 150));
-        
-        // 副标题 - 使用分隔线
-        sb.Draw(pixel, new Rectangle(dlg.X + 30, dlg.Y + 50, dlg.Width - 60, 1), new Color(100, 85, 60));
-        sb.DrawString(font, "选择操作类型", new Vector2(cx - 55, dlg.Y + 58), new Color(200, 180, 140));
-
-        // 绘制按钮
-        _militaryBtn.Draw(sb, font, pixel);
-        _interiorBtn.Draw(sb, font, pixel);
-        _talentBtn.Draw(sb, font, pixel);
-        _cancelBtn.Draw(sb, font, pixel);
-    }
-
-    private void DrawMilitaryMainDialog(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, SpriteFontBase titleFont, int cx, int cy)
-    {
-        DrawDialogBg(sb, pixel);
-
-        Rectangle topPanel = new Rectangle(0, 0, GameSettings.ScreenWidth, 80);
-        sb.Draw(pixel, topPanel, new Color(30, 25, 20, 240));
-        DrawBorder(sb, pixel, topPanel, new Color(100, 85, 60), 2);
-
-        sb.DrawString(titleFont, "军事管理", new Vector2(20, 25), new Color(240, 200, 140));
-        _backBtn.Draw(sb, font, pixel);
-
-        // 军事子菜单
-        _deployBtn.Draw(sb, font, pixel);
-        _generalRosterBtn.Draw(sb, font, pixel);
-
-        // 城池信息
-        if (SourceCity != null)
+        for (int i = 0; i < labels.Length; i++)
         {
-            var progress = GameState.Instance.GetCityProgress(SourceCity.Id);
-            if (progress != null)
+            var rect = new Rectangle(btnX, btnY, NavBtnW, NavBtnH);
+            bool isActive = _selectedCategory == cats[i];
+            bool isHover = rect.Contains(mp);
+            Color bg = isActive ? NavBtnActive : (isHover ? NavBtnHover : NavBtnNormal);
+            sb.Draw(pixel, rect, bg);
+            DrawBorder(sb, pixel, rect, BorderColor, 1);
+
+            var labelSize = font.MeasureString(labels[i]);
+            sb.DrawString(font, labels[i],
+                new Vector2(rect.X + (rect.Width - labelSize.X) / 2, rect.Y + (rect.Height - labelSize.Y) / 2),
+                isActive ? AccentColor : TitleColor);
+
+            btnY += NavBtnH + 4;
+        }
+
+        // 结束回合按钮（底部）
+        var endTurnRect = new Rectangle(btnX, nav.Bottom - 42, NavBtnW, 36);
+        bool endTurnHover = endTurnRect.Contains(mp);
+        sb.Draw(pixel, endTurnRect, endTurnHover ? new Color(80, 60, 40) : new Color(55, 45, 35));
+        DrawBorder(sb, pixel, endTurnRect, new Color(150, 120, 80), 1);
+        var endTurnSize = font.MeasureString("结束回合");
+        sb.DrawString(font, "结束回合",
+            new Vector2(endTurnRect.X + (endTurnRect.Width - endTurnSize.X) / 2, endTurnRect.Y + (endTurnRect.Height - endTurnSize.Y) / 2),
+            endTurnHover ? new Color(255, 220, 150) : AccentColor);
+
+        // 取消按钮（结束回合上方）
+        var cancelRect = new Rectangle(btnX, nav.Bottom - 82, NavBtnW, 36);
+        bool cancelHover = cancelRect.Contains(mp);
+        sb.Draw(pixel, cancelRect, cancelHover ? new Color(80, 40, 40) : new Color(50, 35, 35));
+        DrawBorder(sb, pixel, cancelRect, new Color(120, 70, 70) * 0.6f, 1);
+        var cancelSize = font.MeasureString("取 消");
+        sb.DrawString(font, "取 消",
+            new Vector2(cancelRect.X + (cancelRect.Width - cancelSize.X) / 2, cancelRect.Y + (cancelRect.Height - cancelSize.Y) / 2),
+            cancelHover ? new Color(255, 180, 180) : TextColor);
+    }
+
+    private void DrawCategorySubActions(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content, InputManager input)
+    {
+        var mp = input.MousePosition.ToPoint();
+        int btnX = content.X + 10;
+        int btnW = ContentW - 20;
+
+        if (_selectedCategory == SelectedCategory.None)
+        {
+            // Show city summary
+            DrawContentHeader(sb, pixel, font, content, "城池信息", false);
+            if (SourceCity == null) return;
+            int y = content.Y + HeaderH + 15;
+            sb.DrawString(font, $"城池规模: {SourceCity.CityScale}", new Vector2(btnX, y), TextColor);
+            y += 22;
+            sb.DrawString(font, $"人口: {SourceCity.Population}  粮草: {SourceCity.Grain}", new Vector2(btnX, y), TextColor);
+            y += 22;
+            sb.DrawString(font, $"最大兵力: {SourceCity.MaxTroops}", new Vector2(btnX, y), TextColor);
+            y += 22;
+            sb.DrawString(font, $"防御等级: {SourceCity.DefenseLevel}  城墙: {SourceCity.WallLevel}", new Vector2(btnX, y), TextColor);
+        }
+        else if (_selectedCategory == SelectedCategory.Military)
+        {
+            DrawContentHeader(sb, pixel, font, content, "军事操作", false);
+            int y = content.Y + HeaderH + 10;
+            string[] actions = { "编队出征", "武将培养" };
+            for (int i = 0; i < actions.Length; i++)
             {
-                sb.DrawString(font, $"城池等级: {progress.Level}", new Vector2(20, 90), new Color(200, 180, 140));
-                sb.DrawString(font, $"驻军武将: {_cityGenerals.Count}人", new Vector2(20, 115), new Color(200, 180, 140));
-                sb.DrawString(font, $"当前编队: {GameState.Instance.CurrentSquad.Count}/3人", new Vector2(20, 140), new Color(200, 180, 140));
+                var rect = new Rectangle(btnX, y, btnW, ActionBtnH);
+                bool hover = rect.Contains(mp);
+                sb.Draw(pixel, rect, hover ? ActionBtnHover : ActionBtnNormal);
+                DrawBorder(sb, pixel, rect, BorderColor, 1);
+                var sz = font.MeasureString(actions[i]);
+                sb.DrawString(font, actions[i],
+                    new Vector2(rect.X + (rect.Width - sz.X) / 2, rect.Y + (rect.Height - sz.Y) / 2),
+                    TitleColor);
+                y += ActionBtnH + 6;
             }
+        }
+        else if (_selectedCategory == SelectedCategory.Interior)
+        {
+            DrawContentHeader(sb, pixel, font, content, "内政管理", false);
+            int y = content.Y + HeaderH + 10;
+            string[] actions = { "经济开发", "城池防御", "城池建筑" };
+            for (int i = 0; i < actions.Length; i++)
+            {
+                var rect = new Rectangle(btnX, y, btnW, ActionBtnH);
+                bool hover = rect.Contains(mp);
+                sb.Draw(pixel, rect, hover ? ActionBtnHover : ActionBtnNormal);
+                DrawBorder(sb, pixel, rect, BorderColor, 1);
+                var sz = font.MeasureString(actions[i]);
+                sb.DrawString(font, actions[i],
+                    new Vector2(rect.X + (rect.Width - sz.X) / 2, rect.Y + (rect.Height - sz.Y) / 2),
+                    TitleColor);
+                y += ActionBtnH + 6;
+            }
+        }
+        else if (_selectedCategory == SelectedCategory.Talent)
+        {
+            // Talent goes directly to TalentManage phase (handled by UpdateLeftNav)
+            DrawContentHeader(sb, pixel, font, content, "人才管理", false);
+        }
+        else if (_selectedCategory == SelectedCategory.Officer)
+        {
+            // Officer now handled directly by OfficerManage phase via UpdateLeftNav
+            DrawContentHeader(sb, pixel, font, content, "官员任命", false);
+        }
+        else if (_selectedCategory == SelectedCategory.Diplomacy)
+        {
+            // Diplomacy now handled directly by DiplomacyManage phase via UpdateLeftNav
+            DrawContentHeader(sb, pixel, font, content, "外交关系", false);
+        }
+        else if (_selectedCategory == SelectedCategory.Captive)
+        {
+            // Captive now handled directly by CaptiveManage phase via UpdateLeftNav
+            DrawContentHeader(sb, pixel, font, content, "俘虏管理", false);
         }
     }
 
-    private void DrawMilitaryDeployDialog(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, SpriteFontBase titleFont)
+    private void DrawMilitaryDeploy(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content, InputManager input)
     {
-        DrawDialogBg(sb, pixel);
+        var mp = input.MousePosition.ToPoint();
+        DrawContentHeader(sb, pixel, font, content, "编队出征", true);
 
-        Rectangle topPanel = new Rectangle(0, 0, GameSettings.ScreenWidth, 80);
-        sb.Draw(pixel, topPanel, new Color(30, 25, 20, 240));
-        sb.DrawString(titleFont, "编队出征", new Vector2(20, 25), new Color(240, 200, 140));
-        _backBtn.Draw(sb, font, pixel);
-
-        // 当前编队武将卡片（最多3人）
         var squad = GameState.Instance.CurrentSquad;
-        int cardStartX = 200;
-        int cardY = 100;
-        int cardW = 180;
-        int cardH = 70;
-        int cardSpacing = 15;
+        int y = content.Y + HeaderH + 10;
 
+        // Squad slots
         for (int i = 0; i < 3; i++)
         {
-            int cardX = cardStartX + i * (cardW + cardSpacing);
-            Rectangle cardRect = new Rectangle(cardX, cardY, cardW, cardH);
+            var slotRect = new Rectangle(content.X + 10, y, ContentW - 20, 48);
+            sb.Draw(pixel, slotRect, new Color(20, 30, 45, 180));
+            DrawBorder(sb, pixel, slotRect, DividerColor, 1);
 
             if (i < squad.Count)
             {
                 string genId = squad[i];
-                string name = _getGeneralName?.Invoke(genId) ?? genId;
+                var gen = _allGeneralsRef.FirstOrDefault(g => g.Id == genId);
+                string name = gen?.Name ?? genId;
+                string stats = gen != null ? $"武:{gen.Strength} 智:{gen.Intelligence} 统:{gen.Leadership}" : "";
 
-                // 武将卡片背景
-                sb.Draw(pixel, cardRect, new Color(50, 45, 35));
-                DrawBorder(sb, pixel, cardRect, new Color(120, 100, 70), 2);
+                sb.DrawString(font, $"[{i + 1}] {name}", new Vector2(slotRect.X + 8, slotRect.Y + 5), AccentColor);
+                sb.DrawString(font, stats, new Vector2(slotRect.X + 8, slotRect.Y + 25), TextColor);
 
-                // 武将名
-                sb.DrawString(font, name, new Vector2(cardX + 10, cardY + 10), new Color(240, 200, 140));
+                // Remove button
+                var removeRect = new Rectangle(content.Right - 40, slotRect.Y + 12, 30, 25);
+                bool rHover = removeRect.Contains(mp);
+                sb.Draw(pixel, removeRect, rHover ? new Color(120, 50, 50) : new Color(80, 40, 40));
+                sb.DrawString(font, "×", new Vector2(removeRect.X + 8, removeRect.Y + 2), new Color(255, 180, 180));
+            }
+            else
+            {
+                sb.DrawString(font, $"[{i + 1}] 空位", new Vector2(slotRect.X + 8, slotRect.Y + 14), DisabledColor);
+            }
+            y += 52;
+        }
 
-                // 属性信息
-                var progress = GameState.Instance.GetGeneralProgress(genId);
-                if (progress != null)
+        // Bottom buttons
+        int bottomY = content.Bottom - 50;
+        int halfW = (ContentW - 30) / 2;
+
+        var selectRect = new Rectangle(content.X + 10, bottomY, halfW, 36);
+        bool selHover = selectRect.Contains(mp);
+        sb.Draw(pixel, selectRect, selHover ? ActionBtnHover : ActionBtnNormal);
+        DrawBorder(sb, pixel, selectRect, BorderColor, 1);
+        var selSz = font.MeasureString("选择武将");
+        sb.DrawString(font, "选择武将", new Vector2(selectRect.X + (halfW - selSz.X) / 2, selectRect.Y + (36 - selSz.Y) / 2), TitleColor);
+
+        var confirmRect = new Rectangle(content.X + 10 + halfW + 10, bottomY, halfW, 36);
+        bool canConfirm = squad.Count > 0;
+        bool confHover = confirmRect.Contains(mp) && canConfirm;
+        sb.Draw(pixel, confirmRect, confHover ? new Color(100, 60, 40) : (canConfirm ? new Color(70, 45, 30) : new Color(40, 40, 40)));
+        DrawBorder(sb, pixel, confirmRect, canConfirm ? new Color(150, 100, 60) * 0.6f : DividerColor, 1);
+        var confSz = font.MeasureString("确认出击");
+        sb.DrawString(font, "确认出击", new Vector2(confirmRect.X + (halfW - confSz.X) / 2, confirmRect.Y + (36 - confSz.Y) / 2), canConfirm ? AccentColor : DisabledColor);
+    }
+
+    private void DrawSelectGeneral(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content, InputManager input)
+    {
+        var mp = input.MousePosition.ToPoint();
+        int selectedCount = _deployCards.Count(c => c.IsSelected);
+        DrawContentHeader(sb, pixel, font, content, $"选择武将 ({selectedCount}/3)", true);
+
+        int cardH = 60;
+        int startY = content.Y + HeaderH + 5;
+        int visibleH = content.Height - HeaderH - 50;
+
+        for (int i = 0; i < _deployCards.Count; i++)
+        {
+            int cy = startY + i * (cardH + 4) - (int)_scrollOffset;
+            if (cy + cardH < startY || cy > startY + visibleH) continue;
+
+            var card = _deployCards[i];
+            var cardRect = new Rectangle(content.X + 8, cy, ContentW - 16, cardH);
+            Color cardBg = card.IsSelected ? new Color(40, 70, 100, 200) : new Color(25, 35, 50, 180);
+            bool cardHover = cardRect.Contains(mp);
+            if (cardHover) cardBg = card.IsSelected ? new Color(50, 85, 120, 220) : new Color(35, 50, 70, 200);
+
+            sb.Draw(pixel, cardRect, cardBg);
+            DrawBorder(sb, pixel, cardRect, card.IsSelected ? new Color(100, 160, 220) * 0.5f : DividerColor, 1);
+
+            // Row 1: selection indicator + name + stats
+            string indicator = card.IsSelected ? "[✓]" : "[○]";
+            sb.DrawString(font, indicator, new Vector2(cardRect.X + 6, cy + 4), card.IsSelected ? AccentColor : DisabledColor);
+            sb.DrawString(font, card.Data.Name, new Vector2(cardRect.X + 38, cy + 4), TitleColor);
+            string stats = $"武:{card.Data.Strength} 智:{card.Data.Intelligence} 统:{card.Data.Leadership}";
+            sb.DrawString(font, stats, new Vector2(cardRect.X + 110, cy + 4), TextColor);
+
+            // Row 2: unit / formation / soldiers
+            int r2y = cy + 32;
+            // Unit (clickable)
+            var unitRect = new Rectangle(content.X + 40, r2y, 80, 22);
+            bool uHover = unitRect.Contains(mp);
+            sb.Draw(pixel, unitRect, uHover ? NavBtnHover : NavBtnNormal);
+            sb.DrawString(font, card.SelectedUnit, new Vector2(unitRect.X + 4, r2y + 2), AccentColor);
+
+            // Formation (clickable)
+            var fmtRect = new Rectangle(content.X + 130, r2y, 80, 22);
+            bool fHover = fmtRect.Contains(mp);
+            sb.Draw(pixel, fmtRect, fHover ? NavBtnHover : NavBtnNormal);
+            sb.DrawString(font, card.SelectedFormation, new Vector2(fmtRect.X + 4, r2y + 2), AccentColor);
+
+            // Soldier count with +/-
+            var minusRect = new Rectangle(content.X + 220, r2y, 24, 22);
+            sb.Draw(pixel, minusRect, minusRect.Contains(mp) ? NavBtnHover : NavBtnNormal);
+            sb.DrawString(font, "-", new Vector2(minusRect.X + 8, r2y + 1), TitleColor);
+
+            sb.DrawString(font, $"{card.SoldierCount}", new Vector2(content.X + 250, r2y + 2), AccentColor);
+
+            var plusRect = new Rectangle(content.X + 280, r2y, 24, 22);
+            sb.Draw(pixel, plusRect, plusRect.Contains(mp) ? NavBtnHover : NavBtnNormal);
+            sb.DrawString(font, "+", new Vector2(plusRect.X + 6, r2y + 1), TitleColor);
+        }
+
+        // Confirm button
+        var confirmRect = new Rectangle(content.X + 10, content.Bottom - 42, ContentW - 20, 34);
+        bool cHover = confirmRect.Contains(mp);
+        sb.Draw(pixel, confirmRect, cHover ? ActionBtnHover : ActionBtnNormal);
+        DrawBorder(sb, pixel, confirmRect, BorderColor, 1);
+        var cSz = font.MeasureString("确认选择");
+        sb.DrawString(font, "确认选择", new Vector2(confirmRect.X + (confirmRect.Width - cSz.X) / 2, confirmRect.Y + (34 - cSz.Y) / 2), TitleColor);
+    }
+
+    private void DrawMilitaryTargetHint(SpriteBatch sb, Texture2D pixel, SpriteFontBase font)
+    {
+        // Minimal hint bar near city
+        int hintW = 220;
+        int hintH = 32;
+        int hx = (int)CityScreenPos.X - hintW / 2;
+        int hy = (int)CityScreenPos.Y - 55;
+        hx = Math.Clamp(hx, 10, GameSettings.ScreenWidth - hintW - 10);
+        hy = Math.Clamp(hy, 60, GameSettings.ScreenHeight - hintH - 10);
+
+        var hintRect = new Rectangle(hx, hy, hintW, hintH);
+        sb.Draw(pixel, hintRect, BgColor);
+        DrawBorder(sb, pixel, hintRect, BorderColor, 1);
+
+        sb.DrawString(font, "点击选择目标城池", new Vector2(hx + 8, hy + 7), AccentColor);
+
+        // Cancel button
+        var cancelRect = new Rectangle(hx + hintW - 55, hy + 3, 48, 26);
+        sb.Draw(pixel, cancelRect, new Color(80, 40, 40));
+        sb.DrawString(font, "取消", new Vector2(cancelRect.X + 8, cancelRect.Y + 4), new Color(255, 180, 180));
+    }
+
+    private void DrawMilitaryConfirm(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content)
+    {
+        DrawContentHeader(sb, pixel, font, content, "确认出征", true);
+
+        int y = content.Y + HeaderH + 15;
+        int x = content.X + 15;
+
+        sb.DrawString(font, $"出发: {SourceCity?.Name ?? "?"}", new Vector2(x, y), TextColor); y += 24;
+        sb.DrawString(font, $"目标: {TargetCity?.Name ?? "?"}", new Vector2(x, y), AccentColor); y += 24;
+
+        if (MovePath != null && MovePath.Count > 0)
+        {
+            string pathStr = string.Join("→", MovePath.Select(id => _getGeneralName != null ? GetCityName(id) : id));
+            sb.DrawString(font, $"路径: {pathStr}", new Vector2(x, y), TextColor);
+            y += 24;
+        }
+
+        var squad = GameState.Instance.CurrentSquad;
+        string squadStr = string.Join(", ", squad.Select(id => _getGeneralName?.Invoke(id) ?? id));
+        sb.DrawString(font, $"编队: {squadStr}", new Vector2(x, y), TextColor);
+
+        // Confirm button
+        var confirmRect = new Rectangle(content.X + 10, content.Bottom - 50, ContentW - 20, 36);
+        sb.Draw(pixel, confirmRect, new Color(100, 60, 40));
+        DrawBorder(sb, pixel, confirmRect, new Color(150, 100, 60) * 0.6f, 1);
+        var sz = font.MeasureString("确认出击");
+        sb.DrawString(font, "确认出击", new Vector2(confirmRect.X + (confirmRect.Width - sz.X) / 2, confirmRect.Y + (36 - sz.Y) / 2), AccentColor);
+    }
+
+    private void DrawInteriorEconomy(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content)
+    {
+        DrawContentHeader(sb, pixel, font, content, "经济开发", true);
+        if (SourceCity == null) return;
+
+        int y = content.Y + HeaderH + 15;
+        int x = content.X + 15;
+        var progress = GameState.Instance.GetOrCreateCityProgress(SourceCity);
+
+        sb.DrawString(font, $"人口: {SourceCity.Population}", new Vector2(x, y), TextColor); y += 22;
+        sb.DrawString(font, $"粮草: {SourceCity.Grain}", new Vector2(x, y), TextColor); y += 22;
+        sb.DrawString(font, $"粮产/回合: {SourceCity.GrainProductionPerTick}", new Vector2(x, y), AccentColor); y += 22;
+        sb.DrawString(font, $"兵产/回合: {SourceCity.TroopProductionPerTick}", new Vector2(x, y), AccentColor); y += 28;
+
+        sb.DrawString(font, "资源储备:", new Vector2(x, y), TitleColor); y += 22;
+        sb.DrawString(font, $"  金: {progress.GetResource(ResourceType.Gold)}", new Vector2(x, y), new Color(255, 220, 100)); y += 20;
+        sb.DrawString(font, $"  粮: {progress.GetResource(ResourceType.Food)}", new Vector2(x, y), new Color(200, 180, 100)); y += 20;
+        sb.DrawString(font, $"  木: {progress.GetResource(ResourceType.Wood)}", new Vector2(x, y), new Color(150, 200, 120)); y += 20;
+        sb.DrawString(font, $"  铁: {progress.GetResource(ResourceType.Iron)}", new Vector2(x, y), new Color(180, 180, 200));
+    }
+
+    private void DrawInteriorDefense(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content)
+    {
+        DrawContentHeader(sb, pixel, font, content, "城池防御", true);
+        if (SourceCity == null) return;
+
+        int y = content.Y + HeaderH + 15;
+        int x = content.X + 15;
+
+        sb.DrawString(font, $"防御等级: {SourceCity.DefenseLevel}", new Vector2(x, y), TextColor); y += 22;
+        sb.DrawString(font, $"城墙等级: {SourceCity.WallLevel}", new Vector2(x, y), TextColor); y += 22;
+        sb.DrawString(font, $"守军加成: {(int)(SourceCity.GarrisonDefenseBonus * 100)}%", new Vector2(x, y), AccentColor); y += 22;
+        sb.DrawString(font, $"最大兵力: {SourceCity.MaxTroops}", new Vector2(x, y), TextColor); y += 28;
+
+        sb.DrawString(font, "守军:", new Vector2(x, y), TitleColor); y += 22;
+        if (SourceCity.Garrison.Count == 0)
+        {
+            sb.DrawString(font, "  无驻军", new Vector2(x, y), DisabledColor);
+        }
+        else
+        {
+            foreach (var g in SourceCity.Garrison)
+            {
+                string name = _getGeneralName?.Invoke(g.GeneralId) ?? g.GeneralId;
+                sb.DrawString(font, $"  {name} ({g.FormationType}) 兵:{g.SoldierCount}", new Vector2(x, y), TextColor);
+                y += 20;
+            }
+        }
+    }
+
+    private void DrawInteriorBuilding(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content, InputManager input)
+    {
+        var mp = input.MousePosition.ToPoint();
+        DrawContentHeader(sb, pixel, font, content, "城池建筑", true);
+        if (SourceCity == null) return;
+
+        var progress = GameState.Instance.GetOrCreateCityProgress(SourceCity);
+
+        // Resource bar
+        int ry = content.Y + HeaderH + 5;
+        string resText = $"金:{progress.GetResource(ResourceType.Gold)} 粮:{progress.GetResource(ResourceType.Food)} 木:{progress.GetResource(ResourceType.Wood)} 铁:{progress.GetResource(ResourceType.Iron)}";
+        sb.DrawString(font, resText, new Vector2(content.X + 10, ry), AccentColor);
+
+        // Building list
+        var buildings = progress.Buildings.Values.ToList();
+        int startY = ry + 25;
+        int rowH = 45;
+
+        for (int i = 0; i < buildings.Count; i++)
+        {
+            int by = startY + i * (rowH + 4) - (int)_scrollOffset;
+            if (by + rowH < startY || by > content.Bottom - 10) continue;
+
+            var bld = buildings[i];
+            var rowRect = new Rectangle(content.X + 8, by, ContentW - 16, rowH);
+            bool isSelected = i == _selectedBuildingIndex;
+            bool hover = rowRect.Contains(mp);
+            Color bg = isSelected ? new Color(40, 70, 100, 200) : (hover ? new Color(35, 50, 70, 180) : new Color(25, 35, 50, 150));
+            sb.Draw(pixel, rowRect, bg);
+            DrawBorder(sb, pixel, rowRect, isSelected ? new Color(100, 160, 220) * 0.5f : DividerColor, 1);
+
+            sb.DrawString(font, $"{bld.Name} Lv.{bld.Level}", new Vector2(rowRect.X + 8, by + 4), TitleColor);
+
+            if (bld.Level >= bld.MaxLevel)
+            {
+                sb.DrawString(font, "满级", new Vector2(rowRect.X + 8, by + 24), DisabledColor);
+            }
+            else if (isSelected)
+            {
+                var config = InteriorConfig.GetBuildingConfig(bld.Id);
+                if (config != null)
                 {
-                    sb.DrawString(font, $"Lv.{progress.Level}  武:{progress.Data.Strength}  智:{progress.Data.Intelligence}",
-                        new Vector2(cardX + 10, cardY + 32), new Color(180, 160, 130));
+                    int goldCost = InteriorConfig.CalculateUpgradeCost(config.GoldUpgradeCost, bld.Level + 1);
+                    int foodCost = InteriorConfig.CalculateUpgradeCost(config.FoodUpgradeCost, bld.Level + 1);
+                    int woodCost = InteriorConfig.CalculateUpgradeCost(config.WoodUpgradeCost, bld.Level + 1);
+                    int ironCost = InteriorConfig.CalculateUpgradeCost(config.IronUpgradeCost, bld.Level + 1);
+                    string costStr = $"升级: 金{goldCost} 粮{foodCost} 木{woodCost} 铁{ironCost}";
+                    bool canAfford = progress.Gold >= goldCost && progress.Food >= foodCost && progress.Wood >= woodCost && progress.Iron >= ironCost;
+                    sb.DrawString(font, costStr, new Vector2(rowRect.X + 8, by + 24), canAfford ? AccentColor : new Color(200, 100, 100));
                 }
             }
             else
             {
-                // 空位
-                sb.Draw(pixel, cardRect, new Color(30, 28, 25));
-                DrawBorder(sb, pixel, cardRect, new Color(80, 70, 50), 2);
-                Vector2 emptySize = font.MeasureString("空位");
-                sb.DrawString(font, "空位", new Vector2(cardX + (cardW - emptySize.X) / 2, cardY + (cardH - 20) / 2), new Color(100, 90, 70));
-            }
-        }
-
-        // 底部按钮
-        _selectGeneralBtn.Draw(sb, font, pixel);
-
-        // 确认出击按钮（编队为空时置灰）
-        bool squadEmpty = squad.Count == 0;
-        Color origConfirmColor = _confirmDeployBtn.NormalColor;
-        Color origConfirmHover = _confirmDeployBtn.HoverColor;
-        if (squadEmpty)
-        {
-            _confirmDeployBtn.NormalColor = new Color(50, 50, 50);
-            _confirmDeployBtn.HoverColor = new Color(60, 60, 60);
-        }
-        _confirmDeployBtn.Draw(sb, font, pixel);
-        _confirmDeployBtn.NormalColor = origConfirmColor;
-        _confirmDeployBtn.HoverColor = origConfirmHover;
-    }
-
-    private void DrawSelectGeneralDialog(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, SpriteFontBase titleFont, InputManager input)
-    {
-        DrawDialogBg(sb, pixel);
-
-        Rectangle topPanel = new Rectangle(0, 0, GameSettings.ScreenWidth, 80);
-        sb.Draw(pixel, topPanel, new Color(30, 25, 20, 240));
-        sb.DrawString(titleFont, "选择武将并配置兵种", new Vector2(20, 25), new Color(240, 200, 140));
-        _backBtn.Draw(sb, font, pixel);
-
-        int squadCount = GameState.Instance.CurrentSquad.Count;
-        sb.DrawString(font, $"当前编队: {squadCount}/3人  |  已选中: {GetSelectedCount()}人",
-            new Vector2(20, 90), new Color(200, 180, 140));
-
-        int cardStartY = 110;
-        int cardH = 130;
-        int spacing = 10;
-        int currentY = cardStartY;
-
-        foreach (var card in _deployCards)
-        {
-            var cardRect = new Rectangle(20, currentY, GameSettings.ScreenWidth - 40, cardH);
-            var mousePos = input.MousePosition.ToPoint();
-
-            // 卡片背景 - 增强对比度
-            Color bgColor = card.IsSelected ? new Color(70, 95, 50) : new Color(50, 45, 38);
-            sb.Draw(pixel, cardRect, bgColor);
-            DrawBorder(sb, pixel, cardRect, card.IsSelected ? new Color(140, 180, 80) : new Color(110, 95, 70), 2);
-
-            // 选择按钮 - 更明显的状态区分
-            var toggleRect = new Rectangle(cardRect.X + 8, cardRect.Y + 8, 65, 35);
-            sb.Draw(pixel, toggleRect, card.IsSelected ? new Color(100, 145, 65) : new Color(60, 55, 48));
-            DrawBorder(sb, pixel, toggleRect, card.IsSelected ? new Color(140, 180, 80) : new Color(110, 95, 70), 2);
-            sb.DrawString(font, card.IsSelected ? "已选" : "选择", new Vector2(toggleRect.X + 13, toggleRect.Y + 7), new Color(255, 235, 180));
-
-            // 头像占位
-            int avatarX = cardRect.X + 80;
-            int avatarY = cardRect.Y + 8;
-            int avatarW = 60;
-            int avatarH = 70;
-            var avatarRect = new Rectangle(avatarX, avatarY, avatarW, avatarH);
-            sb.Draw(pixel, avatarRect, new Color(75, 65, 55));
-            DrawBorder(sb, pixel, avatarRect, new Color(110, 100, 80), 2);
-
-            // 武将名
-            sb.DrawString(font, card.Data.Name, new Vector2(avatarX + avatarW + 10, cardRect.Y + 8), new Color(255, 230, 160));
-
-            // 属性信息
-            sb.DrawString(font, $"武力:{card.Data.Strength}  智力:{card.Data.Intelligence}  统帅:{card.Data.Leadership}  速度:{card.Data.Speed}",
-                new Vector2(avatarX + avatarW + 10, cardRect.Y + 30), new Color(190, 170, 140));
-
-            // 配置区第一行：兵种、阵型、士兵数
-            int row1Y = cardRect.Y + 55;
-
-            // 兵种（点击切换）- 增强边框对比度
-            bool unitHover = new Rectangle(cardRect.X + 195, row1Y, 110, 25).Contains(mousePos);
-            sb.DrawString(font, "兵种:", new Vector2(cardRect.X + 150, row1Y + 3), new Color(190, 170, 130));
-            sb.Draw(pixel, new Rectangle(cardRect.X + 195, row1Y, 110, 25), unitHover ? new Color(80, 75, 60) : new Color(55, 50, 42));
-            DrawBorder(sb, pixel, new Rectangle(cardRect.X + 195, row1Y, 110, 25), new Color(120, 105, 75), 2);
-            sb.DrawString(font, card.SelectedUnit, new Vector2(cardRect.X + 215, row1Y + 3), new Color(255, 240, 180));
-
-            // 阵型（点击切换）
-            bool formHover = new Rectangle(cardRect.X + 410, row1Y, 110, 25).Contains(mousePos);
-            sb.DrawString(font, "阵型:", new Vector2(cardRect.X + 365, row1Y + 3), new Color(190, 170, 130));
-            sb.Draw(pixel, new Rectangle(cardRect.X + 410, row1Y, 110, 25), formHover ? new Color(80, 75, 60) : new Color(55, 50, 42));
-            DrawBorder(sb, pixel, new Rectangle(cardRect.X + 410, row1Y, 110, 25), new Color(120, 105, 75), 2);
-            sb.DrawString(font, card.SelectedFormation, new Vector2(cardRect.X + 430, row1Y + 3), new Color(255, 240, 180));
-
-            // 士兵数
-            sb.DrawString(font, "士兵:", new Vector2(cardRect.X + 560, row1Y + 3), new Color(170, 150, 120));
-            sb.DrawString(font, card.SoldierCount.ToString(), new Vector2(cardRect.X + 600, row1Y + 3), new Color(230, 210, 170));
-
-            // - 按钮
-            bool minusHover = new Rectangle(cardRect.X + 640, row1Y, 28, 25).Contains(mousePos);
-            sb.Draw(pixel, new Rectangle(cardRect.X + 640, row1Y, 28, 25), minusHover ? new Color(110, 70, 70) : new Color(90, 55, 55));
-            DrawBorder(sb, pixel, new Rectangle(cardRect.X + 640, row1Y, 28, 25), new Color(130, 75, 75), 1);
-            sb.DrawString(font, "-", new Vector2(cardRect.X + 650, row1Y + 3), new Color(250, 210, 150));
-
-            // + 按钮
-            bool plusHover = new Rectangle(cardRect.X + 675, row1Y, 28, 25).Contains(mousePos);
-            sb.Draw(pixel, new Rectangle(cardRect.X + 675, row1Y, 28, 25), plusHover ? new Color(70, 110, 70) : new Color(55, 90, 55));
-            DrawBorder(sb, pixel, new Rectangle(cardRect.X + 675, row1Y, 28, 25), new Color(75, 130, 75), 1);
-            sb.DrawString(font, "+", new Vector2(cardRect.X + 685, row1Y + 3), new Color(250, 210, 150));
-
-            // 配置区第二行：提示文字
-            int row2Y = cardRect.Y + 88;
-            sb.DrawString(font, "点击兵种/阵型文字切换选项", new Vector2(cardRect.X + 150, row2Y), new Color(140, 130, 110));
-
-            currentY += cardH + spacing;
-        }
-
-        // 确认选择按钮
-        var confirmBtn = new Button("确认选择", new Rectangle(GameSettings.ScreenWidth / 2 - 60, GameSettings.ScreenHeight - 60, 120, 40));
-        confirmBtn.NormalColor = new Color(60, 80, 40);
-        confirmBtn.HoverColor = new Color(90, 120, 60);
-        confirmBtn.Draw(sb, font, pixel);
-    }
-
-    private void DrawTargetSelectHint(SpriteBatch sb, Texture2D pixel, SpriteFontBase font)
-    {
-        Rectangle hintBar = new Rectangle(0, 0, GameSettings.ScreenWidth, 50);
-        sb.Draw(pixel, hintBar, new Color(30, 25, 20, 230));
-
-        // 显示编队所有武将
-        var squad = GameState.Instance.CurrentSquad;
-        var squadNames = squad.Select(id => _getGeneralName?.Invoke(id) ?? id);
-        string squadStr = string.Join(", ", squadNames);
-        sb.DrawString(font, $"已选择编队: {squadStr} | 点击地图选择目标城池 | 返回取消", new Vector2(20, 15), new Color(200, 180, 140));
-        _backBtn.Draw(sb, font, pixel);
-    }
-
-    private void DrawMilitaryConfirmDialog(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, SpriteFontBase titleFont)
-    {
-        DrawDialogBg(sb, pixel);
-
-        Rectangle bottomPanel = new Rectangle(0, GameSettings.ScreenHeight - 120, GameSettings.ScreenWidth, 120);
-        sb.Draw(pixel, bottomPanel, new Color(30, 25, 20, 240));
-        DrawBorder(sb, pixel, bottomPanel, new Color(100, 85, 60), 2);
-
-        if (SourceCity != null && TargetCity != null)
-        {
-            // 显示编队所有武将
-            var squad = GameState.Instance.CurrentSquad;
-            var squadNames = squad.Select(id => _getGeneralName?.Invoke(id) ?? id);
-            string generalsStr = string.Join(", ", squadNames);
-
-            sb.DrawString(font, $"出征武将: {generalsStr}", new Vector2(20, GameSettings.ScreenHeight - 110), new Color(200, 180, 140));
-            sb.DrawString(font, $"从 {SourceCity.Name} → {TargetCity.Name}", new Vector2(20, GameSettings.ScreenHeight - 85), new Color(200, 180, 140));
-            if (MovePath != null)
-                sb.DrawString(font, $"途经 {MovePath.Count - 2} 城", new Vector2(400, GameSettings.ScreenHeight - 110), new Color(160, 140, 110));
-            sb.DrawString(font, $"编队人数: {squad.Count}人", new Vector2(400, GameSettings.ScreenHeight - 85), new Color(160, 140, 110));
-        }
-
-        _backBtn.Draw(sb, font, pixel);
-        _confirmBtn.Draw(sb, font, pixel);
-    }
-
-    private void DrawInteriorMainDialog(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, SpriteFontBase titleFont, int cx, int cy)
-    {
-        DrawDialogBg(sb, pixel);
-
-        Rectangle topPanel = new Rectangle(0, 0, GameSettings.ScreenWidth, 80);
-        sb.Draw(pixel, topPanel, new Color(30, 25, 20, 240));
-        sb.DrawString(titleFont, "内政管理", new Vector2(20, 25), new Color(240, 200, 140));
-        _backBtn.Draw(sb, font, pixel);
-
-        _economyBtn.Draw(sb, font, pixel);
-        _defenseBtn.Draw(sb, font, pixel);
-        _buildingBtn.Draw(sb, font, pixel);
-
-        // 城池信息
-        if (SourceCity != null)
-        {
-            var progress = GameState.Instance.GetCityProgress(SourceCity.Id);
-            if (progress != null)
-            {
-                sb.DrawString(font, $"城池等级: {progress.Level}", new Vector2(20, 90), new Color(200, 180, 140));
-                sb.DrawString(font, $"人口: {progress.Population}", new Vector2(20, 115), new Color(200, 180, 140));
-                sb.DrawString(font, $"粮草: {progress.Grain}", new Vector2(20, 140), new Color(200, 180, 140));
-                sb.DrawString(font, $"兵力: {progress.CurrentTroops}/{SourceCity.MaxTroops}", new Vector2(20, 165), new Color(200, 180, 140));
-            }
-        }
-    }
-
-    private void DrawInteriorEconomyDialog(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, SpriteFontBase titleFont)
-    {
-        DrawDialogBg(sb, pixel);
-
-        Rectangle topPanel = new Rectangle(0, 0, GameSettings.ScreenWidth, 80);
-        sb.Draw(pixel, topPanel, new Color(30, 25, 20, 240));
-        sb.DrawString(titleFont, "经济开发", new Vector2(20, 25), new Color(240, 200, 140));
-        _backBtn.Draw(sb, font, pixel);
-
-        if (SourceCity != null)
-        {
-            var progress = GameState.Instance.GetCityProgress(SourceCity.Id);
-            if (progress != null)
-            {
-                sb.DrawString(font, "当前城池经济发展状况", new Vector2(200, 100), new Color(220, 200, 160));
-                sb.DrawString(font, $"人口: {progress.Population}", new Vector2(200, 140), new Color(200, 180, 140));
-                sb.DrawString(font, $"粮草储备: {progress.Grain}", new Vector2(200, 170), new Color(200, 180, 140));
-                sb.DrawString(font, $"城池等级: {progress.Level}", new Vector2(200, 200), new Color(200, 180, 140));
-                sb.DrawString(font, "(更多经济功能开发中...)", new Vector2(200, 240), new Color(120, 120, 100));
-            }
-        }
-    }
-
-    private void DrawInteriorDefenseDialog(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, SpriteFontBase titleFont)
-    {
-        DrawDialogBg(sb, pixel);
-
-        Rectangle topPanel = new Rectangle(0, 0, GameSettings.ScreenWidth, 80);
-        sb.Draw(pixel, topPanel, new Color(30, 25, 20, 240));
-        sb.DrawString(titleFont, "城池防御", new Vector2(20, 25), new Color(240, 200, 140));
-        _backBtn.Draw(sb, font, pixel);
-
-        if (SourceCity != null)
-        {
-            sb.DrawString(font, "当前城池防御状况", new Vector2(200, 100), new Color(220, 200, 160));
-            sb.DrawString(font, $"城墙等级: {SourceCity.WallLevel}", new Vector2(200, 140), new Color(200, 180, 140));
-            sb.DrawString(font, $"防御等级: {SourceCity.DefenseLevel}", new Vector2(200, 170), new Color(200, 180, 140));
-            sb.DrawString(font, $"驻军加成: {(int)(SourceCity.GarrisonDefenseBonus * 100)}%", new Vector2(200, 200), new Color(200, 180, 140));
-            sb.DrawString(font, $"(更多防御功能开发中...)", new Vector2(200, 240), new Color(120, 120, 100));
-        }
-    }
-
-    // ==================== 建筑管理 ====================
-    private string _selectedBuildingId = "";
-    private int _hoveredBuildingIdx = -1;
-
-    private void UpdateInteriorBuildingPhase(InputManager input)
-    {
-        _backBtn.Update(input);
-        if (_backBtn.IsHovered && input.IsMouseClicked()) { Phase = CityActionPhase.InteriorMain; return; }
-
-        if (SourceCity == null) return;
-
-        var progress = GameState.Instance.GetCityProgress(SourceCity.Id);
-        if (progress == null) return;
-
-        // 生成建筑按钮
-        _buildingButtons.Clear();
-        var buildings = progress.Buildings.Values.ToList();
-
-        int startX = 20;
-        int startY = 100;
-        int btnW = 380;
-        int btnH = 80;
-        int spacing = 10;
-
-        for (int i = 0; i < buildings.Count; i++)
-        {
-            var building = buildings[i];
-            var config = InteriorConfig.GetBuildingConfig(building.Id);
-            if (config == null) continue;
-
-            int col = i % 2;
-            int row = i / 2;
-            int x = startX + col * (btnW + spacing);
-            int y = startY + row * (btnH + spacing);
-
-            var btn = new Button("", new Rectangle(x, y, btnW, btnH));
-            btn.NormalColor = _selectedBuildingId == building.Id
-                ? new Color(100, 80, 60)
-                : new Color(50, 45, 40);
-            btn.HoverColor = new Color(70, 65, 55);
-            _buildingButtons.Add(btn);
-
-            // 检测点击
-            btn.Update(input);
-            if (btn.IsHovered && input.IsMouseClicked())
-            {
-                _selectedBuildingId = building.Id;
-            }
-
-            // 点击升级按钮
-            if (_selectedBuildingId == building.Id)
-            {
-                int upgradeBtnX = x + btnW - 100;
-                int upgradeBtnY = y + btnH - 45;
-                var upgradeBtn = new Button("升级", new Rectangle(upgradeBtnX, upgradeBtnY, 80, 35));
-                upgradeBtn.NormalColor = new Color(80, 120, 60);
-                upgradeBtn.HoverColor = new Color(100, 150, 80);
-                upgradeBtn.Update(input);
-
-                if (upgradeBtn.IsHovered && input.IsMouseClicked())
+                var config = InteriorConfig.GetBuildingConfig(bld.Id);
+                string info = "";
+                if (config != null && config.BaseProduction > 0)
                 {
-                    if (progress.UpgradeBuilding(building.Id, out string errorMsg))
+                    int prod = InteriorConfig.CalculateProduction(config, bld.Level, SourceCity.CityScale);
+                    info = $"+{prod}/{config.ProducesResource}";
+                }
+                sb.DrawString(font, info, new Vector2(rowRect.X + 8, by + 24), TextColor);
+            }
+        }
+    }
+
+    private void DrawTalentManage(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content, InputManager input)
+    {
+        var mp = input.MousePosition.ToPoint();
+        DrawContentHeader(sb, pixel, font, content, "人才管理", true);
+
+        // Tab buttons
+        int tabW = (ContentW - 30) / 3;
+        int tabY = content.Y + HeaderH + 5;
+        string[] tabs = { "发现", "说服", "招降" };
+        for (int i = 0; i < 3; i++)
+        {
+            var tabRect = new Rectangle(content.X + 10 + i * (tabW + 5), tabY, tabW, 28);
+            bool isActive = (int)_currentTalentTab == i;
+            bool hover = tabRect.Contains(mp);
+            sb.Draw(pixel, tabRect, isActive ? NavBtnActive : (hover ? NavBtnHover : NavBtnNormal));
+            DrawBorder(sb, pixel, tabRect, BorderColor, 1);
+            var sz = font.MeasureString(tabs[i]);
+            sb.DrawString(font, tabs[i], new Vector2(tabRect.X + (tabW - sz.X) / 2, tabRect.Y + (28 - sz.Y) / 2),
+                isActive ? AccentColor : TitleColor);
+        }
+
+        int actionY = tabY + 38;
+
+        if (_currentTalentTab == TalentSubTab.Discover)
+        {
+            var cp = SourceCity != null ? GameState.Instance.GetOrCreateCityProgress(SourceCity) : null;
+            bool hasSearchOfficer = !string.IsNullOrEmpty(cp?.SearchOfficerId);
+            bool alreadyUsed = cp?.DiscoverUsedThisTurn ?? false;
+            bool searchOfficerActed = cp != null && !string.IsNullOrEmpty(cp.SearchOfficerId) && cp.ActedGeneralsThisTurn.Contains(cp.SearchOfficerId);
+            string searchOfficerName = hasSearchOfficer ? (_getGeneralName?.Invoke(cp!.SearchOfficerId) ?? "未知") : "未分配";
+
+            sb.DrawString(font, $"搜索官: {searchOfficerName}", new Vector2(content.X + 15, actionY),
+                hasSearchOfficer ? AccentColor : DisabledColor);
+            if (!hasSearchOfficer)
+            {
+                actionY += 20;
+                sb.DrawString(font, "(请先在官员管理中分配搜索官)", new Vector2(content.X + 15, actionY), DisabledColor);
+            }
+            else if (alreadyUsed)
+            {
+                actionY += 20;
+                sb.DrawString(font, "(本回合已搜索，下回合可再次执行)", new Vector2(content.X + 15, actionY), DisabledColor);
+            }
+            else if (searchOfficerActed)
+            {
+                actionY += 20;
+                sb.DrawString(font, "(搜索官本回合已执行其他任务)", new Vector2(content.X + 15, actionY), DisabledColor);
+            }
+            actionY += 25;
+
+            bool canDiscover = hasSearchOfficer && !alreadyUsed && !searchOfficerActed;
+            var btnRect = new Rectangle(content.X + 10, actionY, ContentW - 20, 34);
+            bool bHover = btnRect.Contains(mp) && canDiscover;
+            sb.Draw(pixel, btnRect, bHover ? ActionBtnHover : (canDiscover ? ActionBtnNormal : new Color(40, 40, 40)));
+            DrawBorder(sb, pixel, btnRect, BorderColor, 1);
+            string discText = canDiscover ? "发现人才" : (alreadyUsed ? "已搜索" : "发现人才");
+            var dSz = font.MeasureString(discText);
+            sb.DrawString(font, discText, new Vector2(btnRect.X + (btnRect.Width - dSz.X) / 2, btnRect.Y + (34 - dSz.Y) / 2),
+                canDiscover ? TitleColor : DisabledColor);
+
+            actionY += 44;
+            sb.DrawString(font, "已发现:", new Vector2(content.X + 15, actionY), TitleColor);
+            actionY += 22;
+
+            var discovered = GameState.Instance.GetAvailableTalents();
+
+            foreach (var gp in discovered)
+            {
+                sb.DrawString(font, $"  · {gp.Data.Name} [武:{gp.Data.Strength} 智:{gp.Data.Intelligence}]", new Vector2(content.X + 15, actionY), TextColor);
+                actionY += 20;
+            }
+        }
+        else if (_currentTalentTab == TalentSubTab.Persuade)
+        {
+            var cp = SourceCity != null ? GameState.Instance.GetOrCreateCityProgress(SourceCity) : null;
+            bool hasSearchOfficer = !string.IsNullOrEmpty(cp?.SearchOfficerId);
+            bool alreadyUsed = cp?.PersuadeUsedThisTurn ?? false;
+            string searchOfficerName = hasSearchOfficer ? (_getGeneralName?.Invoke(cp!.SearchOfficerId) ?? "未知") : "未分配";
+
+            sb.DrawString(font, $"搜索官: {searchOfficerName}", new Vector2(content.X + 15, actionY),
+                hasSearchOfficer ? AccentColor : DisabledColor);
+            actionY += 25;
+
+            if (!hasSearchOfficer)
+            {
+                sb.DrawString(font, "(请先在官员管理中分配搜索官)", new Vector2(content.X + 15, actionY), DisabledColor);
+            }
+            else if (alreadyUsed)
+            {
+                sb.DrawString(font, "(本回合已说服，下回合可再次执行)", new Vector2(content.X + 15, actionY), DisabledColor);
+
+                // 仍显示说服结果提示
+                if (_persuadeResultTimer > 0 && !string.IsNullOrEmpty(_persuadeResultMsg))
+                {
+                    actionY += 25;
+                    Color msgColor = _persuadeResultMsg.Contains("成功") ? new Color(80, 220, 80) : new Color(220, 80, 80);
+                    sb.DrawString(font, _persuadeResultMsg, new Vector2(content.X + 15, actionY), msgColor);
+                }
+            }
+            else
+            {
+                var unaffiliated = GameState.Instance.GetAvailableTalents();
+
+                foreach (var gp in unaffiliated)
+                {
+                    int successRate = GameState.Instance.CalcPersuadeSuccessRate(cp!.SearchOfficerId, gp.Data.Id);
+                    var pBtnRect = new Rectangle(content.X + 10, actionY, ContentW - 20, 32);
+                    bool pHover = pBtnRect.Contains(mp);
+                    sb.Draw(pixel, pBtnRect, pHover ? ActionBtnHover : ActionBtnNormal);
+                    DrawBorder(sb, pixel, pBtnRect, DividerColor, 1);
+
+                    // 检查是否有羁绊
+                    bool hasBond = GameState.Instance.AllBonds.Any(b =>
+                        b.RequiredGeneralIds.Contains(cp.SearchOfficerId) &&
+                        b.RequiredGeneralIds.Contains(gp.Data.Id));
+                    string bondMark = hasBond ? " [羁绊]" : "";
+                    sb.DrawString(font, $"说服 {gp.Data.Name}{bondMark} (成功率{successRate}%)",
+                        new Vector2(pBtnRect.X + 8, pBtnRect.Y + 7), TitleColor);
+                    actionY += 36;
+                }
+
+                if (unaffiliated.Count == 0)
+                    sb.DrawString(font, "暂无可说服的人才", new Vector2(content.X + 15, actionY), DisabledColor);
+
+                // 显示说服结果提示
+                if (_persuadeResultTimer > 0 && !string.IsNullOrEmpty(_persuadeResultMsg))
+                {
+                    actionY += 10;
+                    Color msgColor = _persuadeResultMsg.Contains("成功") ? new Color(80, 220, 80) : new Color(220, 80, 80);
+                    sb.DrawString(font, _persuadeResultMsg, new Vector2(content.X + 15, actionY), msgColor);
+                    actionY += 25;
+                }
+                
+                // 显示进行中的策反任务
+                var missions = GameState.Instance.ActiveMissions;
+                if (missions.Count > 0)
+                {
+                    actionY += 10;
+                    sb.DrawString(font, "-- 进行中的策反任务 --", new Vector2(content.X + 15, actionY), new Color(200, 180, 100));
+                    actionY += 22;
+                    foreach (var m in missions)
                     {
-                        // 升级成功
+                        var targetData = GameState.Instance.GetGeneralProgress(m.TargetGeneralId)?.Data;
+                        string targetName = targetData?.Name ?? m.TargetGeneralId;
+                        var officerData = GameState.Instance.GetGeneralProgress(m.OfficerId)?.Data;
+                        string officerName = officerData?.Name ?? m.OfficerId;
+                        sb.DrawString(font, $"{officerName} -> {targetName} (剩余{m.RemainingTurns}回合, {m.SuccessRate}%)",
+                            new Vector2(content.X + 20, actionY), new Color(180, 160, 120));
+                        actionY += 20;
                     }
                 }
             }
         }
-    }
-
-    private void DrawInteriorBuildingDialog(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, SpriteFontBase titleFont)
-    {
-        DrawDialogBg(sb, pixel);
-
-        Rectangle topPanel = new Rectangle(0, 0, GameSettings.ScreenWidth, 80);
-        sb.Draw(pixel, topPanel, new Color(30, 25, 20, 240));
-        sb.DrawString(titleFont, "城池建筑", new Vector2(20, 25), new Color(240, 200, 140));
-        _backBtn.Draw(sb, font, pixel);
-
-        if (SourceCity == null) return;
-
-        var progress = GameState.Instance.GetCityProgress(SourceCity.Id);
-        if (progress == null) return;
-
-        // 绘制资源条
-        sb.DrawString(font, $"金币: {progress.Gold}/{progress.GoldCap}", new Vector2(20, 90), new Color(255, 220, 100));
-        sb.DrawString(font, $"粮草: {progress.Food}/{progress.FoodCap}", new Vector2(200, 90), new Color(100, 220, 100));
-        sb.DrawString(font, $"木材: {progress.Wood}/{progress.WoodCap}", new Vector2(380, 90), new Color(180, 140, 100));
-        sb.DrawString(font, $"铁矿: {progress.Iron}/{progress.IronCap}", new Vector2(560, 90), new Color(150, 150, 180));
-
-        // 绘制建筑列表
-        var buildings = progress.Buildings.Values.ToList();
-        for (int i = 0; i < _buildingButtons.Count && i < buildings.Count; i++)
+        else if (_currentTalentTab == TalentSubTab.Recruit)
         {
-            var building = buildings[i];
-            var config = InteriorConfig.GetBuildingConfig(building.Id);
-            if (config == null) continue;
+            sb.DrawString(font, $"战功: {GameState.Instance.BattleMerit}", new Vector2(content.X + 15, actionY), AccentColor);
+            actionY += 25;
 
-            _buildingButtons[i].Draw(sb, font, pixel);
-
-            // 建筑名称和等级
-            var btnRect = _buildingButtons[i].Bounds;
-            sb.DrawString(font, $"{building.Name}", new Vector2(btnRect.X + 15, btnRect.Y + 10),
-                new Color(240, 220, 180));
-            sb.DrawString(font, $"Lv.{building.Level}", new Vector2(btnRect.X + 15, btnRect.Y + 35),
-                new Color(180, 180, 160));
-
-            // 建筑类型图标
-            string typeIcon = config.Type switch
+            var captives = GameState.Instance.GetCaptives();
+            foreach (var cap in captives)
             {
-                BuildingType.Resource => "[资源]",
-                BuildingType.Military => "[军事]",
-                BuildingType.Functional => "[功能]",
-                BuildingType.Tech => "[科技]",
-                _ => ""
-            };
-            sb.DrawString(font, typeIcon, new Vector2(btnRect.X + 150, btnRect.Y + 10), new Color(160, 160, 140));
-
-            // 产量信息
-            if (config.ProducesResource != ResourceType.Population)
-            {
-                int production = InteriorConfig.CalculateProduction(config, building.Level, SourceCity.CityScale);
-                string prodStr = config.ProducesResource switch
-                {
-                    ResourceType.Gold => $"+{production}/h 金币",
-                    ResourceType.Food => $"+{production}/h 粮草",
-                    ResourceType.Wood => $"+{production}/h 木材",
-                    ResourceType.Iron => $"+{production}/h 铁矿",
-                    _ => ""
-                };
-                sb.DrawString(font, prodStr, new Vector2(btnRect.X + 150, btnRect.Y + 35), new Color(100, 200, 100));
+                string name = cap.Data.Name;
+                var rBtnRect = new Rectangle(content.X + 10, actionY, ContentW - 20, 32);
+                bool canRecruit = GameState.Instance.BattleMerit >= 150;
+                bool rHover = rBtnRect.Contains(mp) && canRecruit;
+                sb.Draw(pixel, rBtnRect, rHover ? ActionBtnHover : (canRecruit ? ActionBtnNormal : new Color(40, 40, 40)));
+                DrawBorder(sb, pixel, rBtnRect, DividerColor, 1);
+                sb.DrawString(font, $"招降 {name} (150战功)", new Vector2(rBtnRect.X + 8, rBtnRect.Y + 7), canRecruit ? TitleColor : DisabledColor);
+                actionY += 36;
             }
 
-            // 绘制升级按钮（选中时显示）
-            if (_selectedBuildingId == building.Id)
-            {
-                var upgradeBtn = new Button("升级", new Rectangle(btnRect.X + btnRect.Width - 100, btnRect.Y + btnRect.Height - 45, 80, 35));
-                upgradeBtn.NormalColor = new Color(80, 120, 60);
-                upgradeBtn.HoverColor = new Color(100, 150, 80);
-
-                // 检查是否可升级
-                int goldCost = InteriorConfig.CalculateUpgradeCost(config.GoldUpgradeCost, building.Level + 1);
-                int foodCost = InteriorConfig.CalculateUpgradeCost(config.FoodUpgradeCost, building.Level + 1);
-                int woodCost = InteriorConfig.CalculateUpgradeCost(config.WoodUpgradeCost, building.Level + 1);
-                int ironCost = InteriorConfig.CalculateUpgradeCost(config.IronUpgradeCost, building.Level + 1);
-                bool canUpgrade = building.Level < building.MaxLevel
-                    && progress.Gold >= goldCost && progress.Food >= foodCost
-                    && progress.Wood >= woodCost && progress.Iron >= ironCost;
-
-                if (!canUpgrade)
-                {
-                    upgradeBtn.NormalColor = new Color(60, 60, 60);
-                }
-                if (building.Level >= building.MaxLevel)
-                {
-                    upgradeBtn.NormalColor = new Color(80, 80, 50);
-                    upgradeBtn.Text = "满级";
-                }
-
-                upgradeBtn.Draw(sb, font, pixel);
-            }
-        }
-
-        // 绘制选中建筑详情
-        if (!string.IsNullOrEmpty(_selectedBuildingId))
-        {
-            var selectedBuilding = progress.GetBuilding(_selectedBuildingId);
-            var selectedConfig = InteriorConfig.GetBuildingConfig(_selectedBuildingId);
-            if (selectedBuilding != null && selectedConfig != null)
-            {
-                Rectangle detailPanel = new Rectangle(20, GameSettings.ScreenHeight - 120,
-                    GameSettings.ScreenWidth - 40, 100);
-                sb.Draw(pixel, detailPanel, new Color(25, 22, 18, 240));
-                DrawBorder(sb, pixel, detailPanel, new Color(100, 85, 60), 2);
-
-                sb.DrawString(font, $"选中: {selectedBuilding.Name}", new Vector2(30, GameSettings.ScreenHeight - 110),
-                    new Color(240, 200, 140));
-
-                // 升级费用
-                int goldCost = InteriorConfig.CalculateUpgradeCost(selectedConfig.GoldUpgradeCost, selectedBuilding.Level + 1);
-                int foodCost = InteriorConfig.CalculateUpgradeCost(selectedConfig.FoodUpgradeCost, selectedBuilding.Level + 1);
-                int woodCost = InteriorConfig.CalculateUpgradeCost(selectedConfig.WoodUpgradeCost, selectedBuilding.Level + 1);
-                int ironCost = InteriorConfig.CalculateUpgradeCost(selectedConfig.IronUpgradeCost, selectedBuilding.Level + 1);
-
-                sb.DrawString(font, $"升级费用: 金{goldCost} 粮{foodCost} 木{woodCost} 铁{ironCost}",
-                    new Vector2(30, GameSettings.ScreenHeight - 80), new Color(200, 180, 140));
-
-                bool canUpgrade = selectedBuilding.Level < selectedBuilding.MaxLevel
-                    && progress.Gold >= goldCost && progress.Food >= foodCost
-                    && progress.Wood >= woodCost && progress.Iron >= ironCost;
-
-                if (selectedBuilding.Level >= selectedBuilding.MaxLevel)
-                {
-                    sb.DrawString(font, "已达满级", new Vector2(30, GameSettings.ScreenHeight - 50),
-                        new Color(180, 180, 100));
-                }
-                else if (!canUpgrade)
-                {
-                    sb.DrawString(font, "资源不足", new Vector2(30, GameSettings.ScreenHeight - 50),
-                        new Color(200, 100, 100));
-                }
-            }
+            if (captives.Count == 0)
+                sb.DrawString(font, "暂无俘虏", new Vector2(content.X + 15, actionY), DisabledColor);
         }
     }
 
-    // ==================== 人才管理绘制 ====================
-    private void DrawTalentManageDialog(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, SpriteFontBase titleFont)
+    // ===================== HELPERS =====================
+
+    private void DrawContentHeader(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content, string title, bool showBack)
     {
-        DrawDialogBg(sb, pixel);
+        // Header background
+        sb.Draw(pixel, new Rectangle(content.X, content.Y, content.Width, HeaderH), new Color(15, 25, 40, 200));
 
-        Rectangle topPanel = new Rectangle(0, 0, GameSettings.ScreenWidth, 80);
-        sb.Draw(pixel, topPanel, new Color(30, 25, 20, 240));
-        sb.DrawString(titleFont, "人才管理", new Vector2(20, 25), new Color(240, 200, 140));
-        _backBtn.Draw(sb, font, pixel);
+        // Title
+        sb.DrawString(font, title, new Vector2(content.X + 10, content.Y + 8), TitleColor);
 
-        // Tab 按钮
-        foreach (var btn in _talentTabButtons)
+        // Divider
+        sb.Draw(pixel, new Rectangle(content.X + 5, content.Y + HeaderH - 1, content.Width - 10, 1), DividerColor);
+
+        if (showBack)
         {
-            btn.Draw(sb, font, pixel);
-        }
-
-        // 根据当前 Tab 绘制内容
-        switch (_currentTalentTab)
-        {
-            case TalentSubTab.Discover:
-                DrawTalentDiscoverContent(sb, pixel, font);
-                break;
-            case TalentSubTab.Persuade:
-                DrawTalentPersuadeContent(sb, pixel, font);
-                break;
-            case TalentSubTab.Recruit:
-                DrawTalentRecruitContent(sb, pixel, font);
-                break;
+            // Back button drawn as text (click handled in update)
+            var backRect = new Rectangle(content.Right - 70, content.Y + 4, 60, 28);
+            sb.Draw(pixel, backRect, new Color(50, 50, 60));
+            DrawBorder(sb, pixel, backRect, DividerColor, 1);
+            var sz = font.MeasureString("返回");
+            sb.DrawString(font, "返回", new Vector2(backRect.X + (60 - sz.X) / 2, backRect.Y + (28 - sz.Y) / 2), TextColor);
         }
     }
 
-    private void DrawTalentDiscoverContent(SpriteBatch sb, Texture2D pixel, SpriteFontBase font)
+    private string GetCityName(string cityId)
     {
-        // 发现人才按钮
-        var discoverBtn = new Button("发现人才 (消耗100战功)", new Rectangle(GameSettings.ScreenWidth / 2 - 100, 140, 200, 45));
-        discoverBtn.NormalColor = new Color(80, 60, 40);
-        discoverBtn.HoverColor = new Color(120, 90, 60);
-        discoverBtn.Draw(sb, font, pixel);
-
-        // 显示战功
-        sb.DrawString(font, $"当前战功: {GameState.Instance.BattleMerit}", new Vector2(20, 100), new Color(200, 180, 140));
-
-        // 已发现但未招募的武将
-        var talents = GameState.Instance.GetAvailableTalents();
-        sb.DrawString(font, $"已发现未招募: {talents.Count}人", new Vector2(20, 200), new Color(180, 160, 130));
-
-        foreach (var btn in _talentDiscoverButtons)
-        {
-            btn.Draw(sb, font, pixel);
-        }
+        // Try to find city name from source city connections
+        return cityId;
     }
 
-    private void DrawTalentPersuadeContent(SpriteBatch sb, Texture2D pixel, SpriteFontBase font)
-    {
-        sb.DrawString(font, "说服在野武将加入麾下", new Vector2(20, 120), new Color(180, 160, 130));
-
-        foreach (var btn in _talentPersuadeButtons)
-        {
-            btn.Draw(sb, font, pixel);
-        }
-    }
-
-    private void DrawTalentRecruitContent(SpriteBatch sb, Texture2D pixel, SpriteFontBase font)
-    {
-        sb.DrawString(font, "招降俘虏武将", new Vector2(20, 120), new Color(180, 160, 130));
-
-        foreach (var btn in _talentRecruitButtons)
-        {
-            btn.Draw(sb, font, pixel);
-        }
-    }
-
-    private void DrawBorder(SpriteBatch sb, Texture2D pixel, Rectangle rect, Color color, int thickness)
+    private static void DrawBorder(SpriteBatch sb, Texture2D pixel, Rectangle rect, Color color, int thickness)
     {
         sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, thickness), color);
         sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness), color);
@@ -1537,14 +1658,597 @@ public class CityActionDialog
         sb.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), color);
     }
 
-    public void Close()
+    // ===================== 官员任命 =====================
+
+    private void UpdateOfficerManage(InputManager input, Rectangle popup)
     {
-        SourceCity = null;
-        SelectedGeneralId = null;
-        TargetCity = null;
-        MovePath = null;
-        Phase = CityActionPhase.Main;
-        _deployCards.Clear();
-        _onClose?.Invoke();
+        if (!input.IsMouseClicked()) return;
+        var content = GetContentRect(popup);
+        var mp = input.MousePosition.ToPoint();
+        var gs = GameState.Instance;
+        var cp = gs.GetCityProgress(SourceCity?.Id ?? "");
+
+        if (_officerSelectOpen)
+        {
+            // --- 选择面板内的交互 ---
+            int panelX = content.X + 5;
+            int panelW = ContentW - 10;
+            int panelY = content.Y + 5;
+
+            // "取消任命" 按钮
+            string currentOfficerId = GetOfficerId(cp, _officerSelectSlotIndex);
+            int dismissY = panelY + 32;
+            if (!string.IsNullOrEmpty(currentOfficerId))
+            {
+                var dismissRect = new Rectangle(panelX + 5, dismissY, panelW - 10, 30);
+                if (dismissRect.Contains(mp))
+                {
+                    SetOfficerId(cp, _officerSelectSlotIndex, "");
+                    _officerSelectOpen = false;
+                    gs.Save();
+                    return;
+                }
+                dismissY += 36;
+            }
+
+            // 武将列表
+            int listY = dismissY + 5;
+            int itemH = 36;
+            var cityGenIds = cp?.GeneralIds ?? new();
+            for (int i = 0; i < cityGenIds.Count; i++)
+            {
+                int iy = listY + i * (itemH + 4) - (int)_scrollOffset;
+                if (iy < panelY + 30 || iy > content.Bottom - 45) continue;
+                var itemRect = new Rectangle(panelX + 5, iy, panelW - 10, itemH);
+                if (itemRect.Contains(mp))
+                {
+                    string genId = cityGenIds[i];
+                    ClearOfficerFromAllSlots(cp, genId, _officerSelectSlotIndex);
+                    SetOfficerId(cp, _officerSelectSlotIndex, genId);
+                    _officerSelectOpen = false;
+                    gs.Save();
+                    return;
+                }
+            }
+
+            // "关闭" 按钮
+            var closeRect = new Rectangle(panelX + 5, content.Bottom - 38, panelW - 10, 30);
+            if (closeRect.Contains(mp))
+            {
+                _officerSelectOpen = false;
+                return;
+            }
+        }
+        else
+        {
+            // --- 官员槽位点击 ---
+            int btnX = content.X + 10;
+            int btnW = ContentW - 20;
+            int y = content.Y + HeaderH + 10;
+            for (int i = 0; i < 4; i++)
+            {
+                var rect = new Rectangle(btnX, y, btnW, 50);
+                if (rect.Contains(mp))
+                {
+                    _officerSelectSlotIndex = i;
+                    _officerSelectOpen = true;
+                    _scrollOffset = 0;
+                    return;
+                }
+                y += 56;
+            }
+        }
+    }
+
+    private string GetOfficerId(CityProgress? cp, int slot) => slot switch
+    {
+        0 => cp?.GovernorId ?? "",
+        1 => cp?.InteriorOfficerId ?? "",
+        2 => cp?.MilitaryOfficerId ?? "",
+        3 => cp?.SearchOfficerId ?? "",
+        _ => ""
+    };
+
+    private void SetOfficerId(CityProgress? cp, int slot, string genId)
+    {
+        if (cp == null) return;
+        switch (slot)
+        {
+            case 0: cp.GovernorId = genId; break;
+            case 1: cp.InteriorOfficerId = genId; break;
+            case 2: cp.MilitaryOfficerId = genId; break;
+            case 3: cp.SearchOfficerId = genId; break;
+        }
+    }
+
+    private void ClearOfficerFromAllSlots(CityProgress? cp, string genId, int newSlot)
+    {
+        if (cp == null) return;
+        // 清除所有非太守官职
+        if (cp.InteriorOfficerId == genId) cp.InteriorOfficerId = "";
+        if (cp.MilitaryOfficerId == genId) cp.MilitaryOfficerId = "";
+        if (cp.SearchOfficerId == genId) cp.SearchOfficerId = "";
+        // 只有当分配的不是太守时，才清除太守
+        if (newSlot != 0 && cp.GovernorId == genId) cp.GovernorId = "";
+    }
+
+    private string GetOfficerSlotName(int slot) => slot switch
+    {
+        0 => "太守", 1 => "内政官", 2 => "军事官", 3 => "搜索官", _ => ""
+    };
+
+    private string GetOfficerRoleForGeneral(CityProgress? cp, string genId)
+    {
+        if (cp == null) return "";
+        var roles = new List<string>();
+        if (cp.GovernorId == genId) roles.Add("太守");
+        if (cp.InteriorOfficerId == genId) roles.Add("内政官");
+        if (cp.MilitaryOfficerId == genId) roles.Add("军事官");
+        if (cp.SearchOfficerId == genId) roles.Add("搜索官");
+        return string.Join("/", roles);
+    }
+
+    private void DrawOfficerManage(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content, InputManager input)
+    {
+        var mp = input.MousePosition.ToPoint();
+        int btnX = content.X + 10;
+        int btnW = ContentW - 20;
+
+        DrawContentHeader(sb, pixel, font, content, "官员任命", false);
+
+        int y = content.Y + HeaderH + 10;
+        var gs = GameState.Instance;
+        var cityProgress = gs.GetCityProgress(SourceCity?.Id ?? "");
+
+        // 四个官员职位
+        string[] officerLabels = { "太 守", "内政官", "军事官", "搜索官" };
+        string[] statHints = { "统帅加成", "政治/经济加成", "兵力恢复加成", "人才发现加成" };
+
+        for (int i = 0; i < 4; i++)
+        {
+            var rect = new Rectangle(btnX, y, btnW, 50);
+            bool hover = rect.Contains(mp) && !_officerSelectOpen;
+            sb.Draw(pixel, rect, hover ? ActionBtnHover : ActionBtnNormal);
+            DrawBorder(sb, pixel, rect, BorderColor, 1);
+
+            string officerId = GetOfficerId(cityProgress, i);
+            string officerName = string.IsNullOrEmpty(officerId) ? "未任命 (点击分配)" :
+                _allGeneralsRef.FirstOrDefault(g => g.Id == officerId)?.Name ?? officerId;
+
+            sb.DrawString(font, officerLabels[i], new Vector2(rect.X + 8, rect.Y + 5), AccentColor);
+            Color nameColor = string.IsNullOrEmpty(officerId) ? DisabledColor : TextColor;
+            sb.DrawString(font, officerName, new Vector2(rect.X + 8, rect.Y + 25), nameColor);
+            sb.DrawString(font, statHints[i], new Vector2(rect.Right - font.MeasureString(statHints[i]).X - 8, rect.Y + 15), DisabledColor);
+
+            y += 56;
+        }
+
+        // 选择面板覆盖层
+        if (_officerSelectOpen)
+        {
+            int panelX = content.X + 5;
+            int panelW = ContentW - 10;
+            int panelY = content.Y + 5;
+            int panelH = content.Height - 10;
+            var panelRect = new Rectangle(panelX, panelY, panelW, panelH);
+
+            // 覆盖背景
+            sb.Draw(pixel, panelRect, new Color(18, 28, 42, 245));
+            DrawBorder(sb, pixel, panelRect, AccentColor, 1);
+
+            // 标题
+            string slotName = GetOfficerSlotName(_officerSelectSlotIndex);
+            sb.DrawString(font, $"选择武将 - {slotName}任命", new Vector2(panelX + 8, panelY + 6), AccentColor);
+
+            // "取消任命" 按钮（仅当有任命时显示）
+            string currentOfficerId = GetOfficerId(cityProgress, _officerSelectSlotIndex);
+            int listStartY = panelY + 32;
+            if (!string.IsNullOrEmpty(currentOfficerId))
+            {
+                var dismissRect = new Rectangle(panelX + 5, listStartY, panelW - 10, 30);
+                bool dismissHover = dismissRect.Contains(mp);
+                sb.Draw(pixel, dismissRect, dismissHover ? new Color(120, 50, 50) : new Color(80, 35, 35));
+                DrawBorder(sb, pixel, dismissRect, new Color(150, 60, 60), 1);
+                var dimSz = font.MeasureString("取消任命");
+                sb.DrawString(font, "取消任命",
+                    new Vector2(dismissRect.X + (dismissRect.Width - dimSz.X) / 2, dismissRect.Y + (dismissRect.Height - dimSz.Y) / 2),
+                    dismissHover ? new Color(255, 180, 180) : TextColor);
+                listStartY += 36;
+            }
+
+            // 武将列表
+            var cityGenIds = cityProgress?.GeneralIds ?? new();
+            int itemH = 36;
+            listStartY += 5;
+            for (int i = 0; i < cityGenIds.Count; i++)
+            {
+                int iy = listStartY + i * (itemH + 4) - (int)_scrollOffset;
+                if (iy < panelY + 30 || iy > content.Bottom - 45) continue;
+                var itemRect = new Rectangle(panelX + 5, iy, panelW - 10, itemH);
+                bool itemHover = itemRect.Contains(mp);
+                sb.Draw(pixel, itemRect, itemHover ? new Color(45, 75, 105) : new Color(30, 50, 70));
+                DrawBorder(sb, pixel, itemRect, new Color(60, 90, 120), 1);
+
+                string genId = cityGenIds[i];
+                var genData = _allGeneralsRef.FirstOrDefault(g => g.Id == genId);
+                string name = genData?.Name ?? genId;
+
+                // 显示属性（根据槽位不同）
+                string stats = _officerSelectSlotIndex switch
+                {
+                    0 => $"统{genData?.Command ?? 0}",
+                    1 => $"政{genData?.Politics ?? 0} 魅{genData?.Charisma ?? 0}",
+                    2 => $"统{genData?.Command ?? 0} 武{genData?.Strength ?? 0}",
+                    3 => $"智{genData?.Intelligence ?? 0}",
+                    _ => ""
+                };
+
+                sb.DrawString(font, name, new Vector2(itemRect.X + 8, itemRect.Y + 8), TitleColor);
+                sb.DrawString(font, stats, new Vector2(itemRect.X + 100, itemRect.Y + 8), TextColor);
+
+                // 当前任职状态
+                string role = GetOfficerRoleForGeneral(cityProgress, genId);
+                if (!string.IsNullOrEmpty(role))
+                {
+                    string roleText = $"★{role}";
+                    var roleSz = font.MeasureString(roleText);
+                    sb.DrawString(font, roleText, new Vector2(itemRect.Right - roleSz.X - 8, itemRect.Y + 8), new Color(255, 200, 80));
+                }
+
+                // 本回合已行动标记
+                if (cityProgress?.ActedGeneralsThisTurn.Contains(genId) == true)
+                {
+                    sb.DrawString(font, "[已行动]", new Vector2(itemRect.X + 180, itemRect.Y + 8), new Color(200, 100, 100));
+                }
+            }
+
+            if (cityGenIds.Count == 0)
+            {
+                sb.DrawString(font, "该城池无驻扎武将", new Vector2(panelX + 15, listStartY + 10), DisabledColor);
+            }
+
+            // "关闭" 按钮
+            var closeRect = new Rectangle(panelX + 5, content.Bottom - 38, panelW - 10, 30);
+            bool closeHover = closeRect.Contains(mp);
+            sb.Draw(pixel, closeRect, closeHover ? ActionBtnHover : ActionBtnNormal);
+            DrawBorder(sb, pixel, closeRect, BorderColor, 1);
+            var closeSz = font.MeasureString("关 闭");
+            sb.DrawString(font, "关 闭",
+                new Vector2(closeRect.X + (closeRect.Width - closeSz.X) / 2, closeRect.Y + (closeRect.Height - closeSz.Y) / 2),
+                TitleColor);
+        }
+    }
+
+    // ===================== 军事管理（子标签系统）=====================
+
+    private void UpdateMilitaryManage(InputManager input, Rectangle popup)
+    {
+        if (!input.IsMouseClicked()) return;
+        var content = GetContentRect(popup);
+        var mp = input.MousePosition.ToPoint();
+
+        // 子标签切换
+        int tabW = (ContentW - 25) / 2;
+        int tabY = content.Y + HeaderH + 5;
+        for (int t = 0; t < 2; t++)
+        {
+            var tabRect = new Rectangle(content.X + 10 + t * (tabW + 5), tabY, tabW, 28);
+            if (tabRect.Contains(mp))
+            {
+                _currentMilitaryTab = t;
+                _scrollOffset = 0;
+                return;
+            }
+        }
+
+        int btnX = content.X + 10;
+        int btnW = ContentW - 20;
+
+        if (_currentMilitaryTab == 0)
+        {
+            // 编队出征 标签
+            int y = content.Y + HeaderH + 42;
+            if (new Rectangle(btnX, y, btnW, ActionBtnH).Contains(mp))
+            {
+                Phase = CityActionPhase.MilitaryDeploy;
+                _scrollOffset = 0;
+                FilterSquadBySourceCity();
+                return;
+            }
+            y += ActionBtnH + 6;
+            if (new Rectangle(btnX, y, btnW, ActionBtnH).Contains(mp))
+            {
+                _onOpenGeneralRoster?.Invoke();
+            }
+        }
+        else
+        {
+            // 征兵管理 标签
+            var gs = GameState.Instance;
+            var cp = gs.GetCityProgress(SourceCity?.Id ?? "");
+            if (cp == null) return;
+
+            var cityData = DataManager.Instance.AllCities.FirstOrDefault(c => c.Id == SourceCity?.Id);
+            int maxTroops = cityData?.MaxTroops ?? CityScaleConfig.GetMaxTroops(cityData?.CityScale ?? "medium");
+
+            int y = content.Y + HeaderH + 105;
+
+            // [-] 按钮
+            var minusRect = new Rectangle(btnX + 75, y, 30, 26);
+            if (minusRect.Contains(mp))
+            {
+                cp.RecruitTarget = Math.Max(0, cp.RecruitTarget - 10);
+                return;
+            }
+
+            // [+] 按钮
+            var plusRect = new Rectangle(btnX + 180, y, 30, 26);
+            if (plusRect.Contains(mp))
+            {
+                cp.RecruitTarget = Math.Min(maxTroops, cp.RecruitTarget + 10);
+                return;
+            }
+
+            // 开始/停止征兵 按钮
+            y += 80;
+            var toggleRect = new Rectangle(btnX, y, btnW, 36);
+            if (toggleRect.Contains(mp))
+            {
+                if (cp.IsRecruiting)
+                {
+                    cp.IsRecruiting = false;
+                }
+                else if (cp.RecruitTarget > cp.CurrentTroops)
+                {
+                    cp.IsRecruiting = true;
+                }
+                gs.Save();
+            }
+        }
+    }
+
+    private void DrawMilitaryManage(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content, InputManager input)
+    {
+        var mp = input.MousePosition.ToPoint();
+        DrawContentHeader(sb, pixel, font, content, "军事管理", false);
+
+        // 子标签
+        string[] tabLabels = { "编队出征", "征兵管理" };
+        int tabW = (ContentW - 25) / 2;
+        int tabY = content.Y + HeaderH + 5;
+        for (int t = 0; t < 2; t++)
+        {
+            var tabRect = new Rectangle(content.X + 10 + t * (tabW + 5), tabY, tabW, 28);
+            bool isActive = _currentMilitaryTab == t;
+            bool hover = tabRect.Contains(mp);
+            sb.Draw(pixel, tabRect, isActive ? NavBtnActive : (hover ? NavBtnHover : NavBtnNormal));
+            DrawBorder(sb, pixel, tabRect, BorderColor, 1);
+            var tabSz = font.MeasureString(tabLabels[t]);
+            sb.DrawString(font, tabLabels[t],
+                new Vector2(tabRect.X + (tabRect.Width - tabSz.X) / 2, tabRect.Y + (tabRect.Height - tabSz.Y) / 2),
+                isActive ? AccentColor : TitleColor);
+        }
+
+        int btnX = content.X + 10;
+        int btnW = ContentW - 20;
+
+        if (_currentMilitaryTab == 0)
+        {
+            // 编队出征 标签 - 复用原有按钮
+            int y = content.Y + HeaderH + 42;
+            string[] actions = { "进入编队", "武将培养" };
+            for (int i = 0; i < actions.Length; i++)
+            {
+                var rect = new Rectangle(btnX, y, btnW, ActionBtnH);
+                bool hover = rect.Contains(mp);
+                sb.Draw(pixel, rect, hover ? ActionBtnHover : ActionBtnNormal);
+                DrawBorder(sb, pixel, rect, BorderColor, 1);
+                var sz = font.MeasureString(actions[i]);
+                sb.DrawString(font, actions[i],
+                    new Vector2(rect.X + (rect.Width - sz.X) / 2, rect.Y + (rect.Height - sz.Y) / 2),
+                    TitleColor);
+                y += ActionBtnH + 6;
+            }
+        }
+        else
+        {
+            // 征兵管理 标签
+            var gs = GameState.Instance;
+            var cp = gs.GetCityProgress(SourceCity?.Id ?? "");
+            var cityData = DataManager.Instance.AllCities.FirstOrDefault(c => c.Id == SourceCity?.Id);
+            int maxTroops = cityData?.MaxTroops ?? CityScaleConfig.GetMaxTroops(cityData?.CityScale ?? "medium");
+            int currentTroops = cp?.CurrentTroops ?? 0;
+
+            int y = content.Y + HeaderH + 42;
+
+            // 兵力标题
+            sb.DrawString(font, "兵力状况", new Vector2(btnX, y), AccentColor);
+            y += 22;
+
+            // 进度条
+            float ratio = maxTroops > 0 ? (float)currentTroops / maxTroops : 0;
+            var barRect = new Rectangle(btnX, y, btnW, 16);
+            sb.Draw(pixel, barRect, new Color(15, 25, 40));
+            int fillW = (int)(barRect.Width * Math.Clamp(ratio, 0f, 1f));
+            if (fillW > 0)
+                sb.Draw(pixel, new Rectangle(barRect.X, barRect.Y, fillW, barRect.Height), new Color(60, 160, 80));
+            DrawBorder(sb, pixel, barRect, new Color(50, 80, 100), 1);
+            y += 20;
+
+            // 兵力数值
+            sb.DrawString(font, $"当前兵力: {currentTroops} / {maxTroops}", new Vector2(btnX, y), TextColor);
+            y += 28;
+
+            // 分隔线
+            sb.Draw(pixel, new Rectangle(btnX, y, btnW, 1), DividerColor);
+            y += 8;
+
+            // 征兵设置标题
+            sb.DrawString(font, "征兵设置", new Vector2(btnX, y), AccentColor);
+            y += 24;
+
+            // 目标兵力: [-] 数值 [+]
+            sb.DrawString(font, "目标兵力:", new Vector2(btnX, y + 3), TextColor);
+
+            int recruitTarget = cp?.RecruitTarget ?? 0;
+            var minusRect = new Rectangle(btnX + 75, y, 30, 26);
+            bool minusHover = minusRect.Contains(mp);
+            sb.Draw(pixel, minusRect, minusHover ? ActionBtnHover : ActionBtnNormal);
+            DrawBorder(sb, pixel, minusRect, BorderColor, 1);
+            var minusSz = font.MeasureString("−");
+            sb.DrawString(font, "−", new Vector2(minusRect.X + (30 - minusSz.X) / 2, minusRect.Y + (26 - minusSz.Y) / 2), TitleColor);
+
+            string targetStr = recruitTarget.ToString();
+            var targetSz = font.MeasureString(targetStr);
+            sb.DrawString(font, targetStr, new Vector2(btnX + 120 + (45 - targetSz.X) / 2, y + 3), AccentColor);
+
+            var plusRect = new Rectangle(btnX + 180, y, 30, 26);
+            bool plusHover = plusRect.Contains(mp);
+            sb.Draw(pixel, plusRect, plusHover ? ActionBtnHover : ActionBtnNormal);
+            DrawBorder(sb, pixel, plusRect, BorderColor, 1);
+            var plusSz = font.MeasureString("+");
+            sb.DrawString(font, "+", new Vector2(plusRect.X + (30 - plusSz.X) / 2, plusRect.Y + (26 - plusSz.Y) / 2), TitleColor);
+            y += 32;
+
+            // 每回合征兵量和消耗
+            var barracks = cp?.GetBuilding("barracks");
+            int barracksLevel = barracks?.Level ?? 0;
+            int recruitPerTurn = 10 + barracksLevel * 5;
+
+            if (cp != null && !string.IsNullOrEmpty(cp.MilitaryOfficerId))
+            {
+                var officer = gs.GetGeneralProgress(cp.MilitaryOfficerId);
+                if (officer != null)
+                    recruitPerTurn += officer.Data.Command / 10;
+            }
+
+            int goldCost = recruitPerTurn * 2;
+            int grainCost = recruitPerTurn;
+
+            sb.DrawString(font, $"每回合征兵: {recruitPerTurn} 人", new Vector2(btnX, y), TextColor);
+            y += 20;
+            sb.DrawString(font, $"每回合消耗: 金{goldCost}  粮{grainCost}", new Vector2(btnX, y), TextColor);
+            y += 28;
+
+            // 开始/停止征兵按钮
+            bool isRecruiting = cp?.IsRecruiting ?? false;
+            bool canStart = recruitTarget > currentTroops;
+            var toggleRect = new Rectangle(btnX, y, btnW, 36);
+            bool toggleHover = toggleRect.Contains(mp);
+
+            if (isRecruiting)
+            {
+                sb.Draw(pixel, toggleRect, toggleHover ? new Color(160, 60, 60) : new Color(120, 45, 45));
+                DrawBorder(sb, pixel, toggleRect, new Color(180, 80, 80), 1);
+                var stopSz = font.MeasureString("停止征兵");
+                sb.DrawString(font, "停止征兵",
+                    new Vector2(toggleRect.X + (toggleRect.Width - stopSz.X) / 2, toggleRect.Y + (toggleRect.Height - stopSz.Y) / 2),
+                    new Color(255, 200, 200));
+            }
+            else
+            {
+                Color btnBg = canStart ? (toggleHover ? new Color(50, 140, 50) : new Color(35, 100, 35)) : new Color(40, 40, 40);
+                sb.Draw(pixel, toggleRect, btnBg);
+                DrawBorder(sb, pixel, toggleRect, canStart ? new Color(80, 180, 80) : new Color(60, 60, 60), 1);
+                var startSz = font.MeasureString("开始征兵");
+                sb.DrawString(font, "开始征兵",
+                    new Vector2(toggleRect.X + (toggleRect.Width - startSz.X) / 2, toggleRect.Y + (toggleRect.Height - startSz.Y) / 2),
+                    canStart ? new Color(200, 255, 200) : DisabledColor);
+            }
+            y += 42;
+
+            // 状态
+            if (isRecruiting)
+            {
+                int remaining = Math.Max(0, recruitTarget - currentTroops);
+                sb.DrawString(font, $"征兵中 - 还需 {remaining} 人", new Vector2(btnX, y), AccentColor);
+            }
+            else if (currentTroops >= maxTroops)
+            {
+                sb.DrawString(font, "兵力已满", new Vector2(btnX, y), new Color(100, 180, 100));
+            }
+            else
+            {
+                sb.DrawString(font, "未开始征兵", new Vector2(btnX, y), DisabledColor);
+            }
+        }
+    }
+
+    // ===================== 外交关系 =====================
+
+    private void DrawDiplomacyManage(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content, InputManager input)
+    {
+        var mp = input.MousePosition.ToPoint();
+        int btnX = content.X + 10;
+        int btnW = ContentW - 20;
+        int y = content.Y + HeaderH + 10;
+
+        var gs = GameState.Instance;
+        string playerFaction = gs.PlayerFactionId;
+
+        // 显示当前外交关系
+        sb.DrawString(font, "当前外交关系:", new Vector2(btnX, y), AccentColor);
+        y += 25;
+
+        // 演示数据：显示几个势力的关系
+        string[] factions = { "曹操", "刘备", "孙权", "袁绍" };
+        DiplomacyRelation[] relations = { DiplomacyRelation.Alliance, DiplomacyRelation.Neutral, DiplomacyRelation.Trade, DiplomacyRelation.Hostile };
+        string[] relationTexts = { "同 盟", "中 立", "贸 易", "敌 对" };
+        Color[] relationColors = { new Color(60, 130, 220), new Color(180, 195, 210), new Color(255, 220, 130), new Color(220, 60, 60) };
+
+        for (int i = 0; i < factions.Length; i++)
+        {
+            var rect = new Rectangle(btnX, y, btnW, 35);
+            sb.Draw(pixel, rect, new Color(20, 30, 45, 180));
+            DrawBorder(sb, pixel, rect, DividerColor, 1);
+
+            sb.DrawString(font, factions[i], new Vector2(rect.X + 8, rect.Y + 7), TextColor);
+            sb.DrawString(font, relationTexts[i], new Vector2(rect.Right - 80, rect.Y + 7), relationColors[i]);
+
+            y += 40;
+        }
+    }
+
+    // ===================== 俘虏管理 =====================
+
+    private void DrawCaptiveManage(SpriteBatch sb, Texture2D pixel, SpriteFontBase font, Rectangle content, InputManager input)
+    {
+        var mp = input.MousePosition.ToPoint();
+        int btnX = content.X + 10;
+        int btnW = ContentW - 20;
+        int y = content.Y + HeaderH + 10;
+
+        var gs = GameState.Instance;
+        var captives = gs.GetCaptives();
+
+        if (captives.Count == 0)
+        {
+            sb.DrawString(font, "暂无俘虏", new Vector2(btnX, y), DisabledColor);
+            return;
+        }
+
+        foreach (var captive in captives)
+        {
+            var rect = new Rectangle(btnX, y, btnW, 55);
+            bool hover = rect.Contains(mp);
+            sb.Draw(pixel, rect, hover ? ActionBtnHover : ActionBtnNormal);
+            DrawBorder(sb, pixel, rect, BorderColor, 1);
+
+            string name = captive.Data.Name;
+            int loyalty = captive.Loyalty;
+
+            sb.DrawString(font, name, new Vector2(rect.X + 8, rect.Y + 5), AccentColor);
+            sb.DrawString(font, $"忠诚度: {loyalty}", new Vector2(rect.X + 8, rect.Y + 25), TextColor);
+
+            // 招降按钮
+            var recruitRect = new Rectangle(rect.Right - 85, rect.Y + 10, 75, 30);
+            bool recruitHover = recruitRect.Contains(mp);
+            sb.Draw(pixel, recruitRect, recruitHover ? new Color(50, 170, 50) : new Color(35, 120, 35));
+            DrawBorder(sb, pixel, recruitRect, new Color(80, 200, 80) * 0.6f, 1);
+            var recruitSize = font.MeasureString("招降");
+            sb.DrawString(font, "招降", new Vector2(recruitRect.X + (75 - recruitSize.X) / 2, recruitRect.Y + (30 - recruitSize.Y) / 2), new Color(220, 255, 220));
+
+            y += 60;
+        }
     }
 }

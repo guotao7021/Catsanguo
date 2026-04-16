@@ -95,7 +95,7 @@ public class EquipmentSelectScene : Scene
 
     private void CreateEquipmentButtons()
     {
-        _equipmentButtons.Clear();
+        var buttons = new List<Button>();
 
         int startX = 30;
         int startY = 80;
@@ -122,8 +122,10 @@ public class EquipmentSelectScene : Scene
             btn.NormalColor = isEquipped ? new Color(55, 50, 35) : new Color(45, 40, 35);
             btn.HoverColor = isEquipped ? new Color(75, 65, 45) : new Color(65, 55, 45);
             btn.OnClick = () => ToggleEquip(idx);
-            _equipmentButtons.Add(btn);
+            buttons.Add(btn);
         }
+
+        _equipmentButtons = buttons;
     }
 
     private void ToggleEquip(int index)

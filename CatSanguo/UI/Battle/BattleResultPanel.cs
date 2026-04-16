@@ -22,6 +22,7 @@ public class BattleResultData
     public int IronReward { get; set; }
     public int MeritReward { get; set; }
     public List<string> KeyEvents { get; set; } = new();
+    public List<string> CapturedGenerals { get; set; } = new();
 }
 
 public class BattleResultPanel

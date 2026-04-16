@@ -30,8 +30,28 @@ public class Camera2D
         var vp = _graphicsDevice.Viewport;
         float halfW = vp.Width / (2f * Zoom);
         float halfH = vp.Height / (2f * Zoom);
-        float x = MathHelper.Clamp(Position.X, WorldBounds.Left + halfW, WorldBounds.Right - halfW);
-        float y = MathHelper.Clamp(Position.Y, WorldBounds.Top + halfH, WorldBounds.Bottom - halfH);
+
+        // 顶部 HUD 占 60px 屏幕空间，转换为世界空间偏移量
+        float hudWorldOffset = 60f / Zoom;
+
+        float minX = WorldBounds.Left + halfW;
+        float maxX = WorldBounds.Right - halfW;
+        // 允许向上多滚动，使 HUD 下方能看到顶部城池
+        float minY = WorldBounds.Top + halfH - hudWorldOffset;
+        float maxY = WorldBounds.Bottom - halfH;
+
+        float x, y;
+        // 可视区域超过世界范围时居中，否则正常 clamp
+        if (minX >= maxX)
+            x = (WorldBounds.Left + WorldBounds.Right) / 2f;
+        else
+            x = MathHelper.Clamp(Position.X, minX, maxX);
+
+        if (minY >= maxY)
+            y = (WorldBounds.Top + WorldBounds.Bottom) / 2f;
+        else
+            y = MathHelper.Clamp(Position.Y, minY, maxY);
+
         Position = new Vector2(x, y);
     }
 
@@ -60,5 +80,10 @@ public class Camera2D
     public Vector2 ScreenToWorld(Vector2 screenPos)
     {
         return Vector2.Transform(screenPos, Matrix.Invert(GetTransformMatrix()));
+    }
+
+    public Vector2 WorldToScreen(Vector2 worldPos)
+    {
+        return Vector2.Transform(worldPos, GetTransformMatrix());
     }
 }

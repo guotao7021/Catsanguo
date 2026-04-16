@@ -1,0 +1,3314 @@
+[
+  {
+    "id": "huangjin_rebellion",
+    "name": "黄巾之乱",
+    "description": "东汉末年，张角发动黄巾起义，天下大乱。英雄豪杰纷纷崛起，准备平定乱世。",
+    "startDate": {
+      "year": 184,
+      "month": 1,
+      "day": 1
+    },
+    "playableFactions": [
+      "liubei_huangjin"
+    ],
+    "factions": [
+      {
+        "factionId": "liubei_huangjin",
+        "factionName": "刘备势力",
+        "leaderId": "liubei",
+        "initialCityIds": [
+          "xu_zhou"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liubei",
+            "assignedCityId": "xu_zhou",
+            "initialLevel": 5,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "guanyu",
+            "assignedCityId": "xu_zhou",
+            "initialLevel": 5,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhangfei",
+            "assignedCityId": "xu_zhou",
+            "initialLevel": 5,
+            "initialLoyalty": 100
+          }
+        ],
+        "startGold": 500,
+        "startFood": 400,
+        "isPlayable": true
+      },
+      {
+        "factionId": "caocao_huangjin",
+        "factionName": "曹操势力",
+        "leaderId": "caocao",
+        "initialCityIds": [
+          "chen_liu",
+          "xiao_pei"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "caocao",
+            "assignedCityId": "chen_liu",
+            "initialLevel": 5,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "xiahoudun",
+            "assignedCityId": "chen_liu",
+            "initialLevel": 4,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "caoren",
+            "assignedCityId": "xiao_pei",
+            "initialLevel": 3,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "caohong",
+            "assignedCityId": "xiao_pei",
+            "initialLevel": 3,
+            "initialLoyalty": 90
+          }
+        ],
+        "startGold": 800,
+        "startFood": 600,
+        "isPlayable": false
+      },
+      {
+        "factionId": "sunjian_huangjin",
+        "factionName": "孙坚势力",
+        "leaderId": "sunjian",
+        "initialCityIds": [
+          "chang_sha",
+          "wu_ling"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "sunjian",
+            "assignedCityId": "chang_sha",
+            "initialLevel": 6,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "huanggai",
+            "assignedCityId": "chang_sha",
+            "initialLevel": 4,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "chengpu",
+            "assignedCityId": "chang_sha",
+            "initialLevel": 4,
+            "initialLoyalty": 90
+          }
+        ],
+        "startGold": 600,
+        "startFood": 500,
+        "isPlayable": false
+      },
+      {
+        "factionId": "dongzhuo_huangjin",
+        "factionName": "董卓势力",
+        "leaderId": "dongzhuo",
+        "initialCityIds": [
+          "chang_an",
+          "tian_shui"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "dongzhuo",
+            "assignedCityId": "chang_an",
+            "initialLevel": 7,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "lvbu",
+            "assignedCityId": "chang_an",
+            "initialLevel": 8,
+            "initialLoyalty": 60
+          },
+          {
+            "generalId": "dianwei",
+            "assignedCityId": "chang_an",
+            "initialLevel": 5,
+            "initialLoyalty": 85
+          }
+        ],
+        "startGold": 1000,
+        "startFood": 800,
+        "isPlayable": false
+      },
+      {
+        "factionId": "yuanshao_huangjin",
+        "factionName": "袁绍势力",
+        "leaderId": "yuanshao",
+        "initialCityIds": [
+          "ye_cheng",
+          "jin_yang"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "yuanshao",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 6,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "yan_liang",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 5,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "wen_chou",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 5,
+            "initialLoyalty": 85
+          }
+        ],
+        "startGold": 700,
+        "startFood": 550,
+        "isPlayable": false
+      },
+      {
+        "factionId": "gongsunzan_huangjin",
+        "factionName": "公孙瓒势力",
+        "leaderId": "gongsunzan",
+        "initialCityIds": [
+          "you_zhou",
+          "bei_ping"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "gongsunzan",
+            "assignedCityId": "you_zhou",
+            "initialLevel": 6,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhaoyun",
+            "assignedCityId": "you_zhou",
+            "initialLevel": 4,
+            "initialLoyalty": 75
+          }
+        ],
+        "startGold": 550,
+        "startFood": 450,
+        "isPlayable": false
+      },
+      {
+        "factionId": "liubiao_huangjin",
+        "factionName": "刘表势力",
+        "leaderId": "liubiao",
+        "initialCityIds": [
+          "xiang_yang",
+          "jiang_ling"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liubiao",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 5,
+            "initialLoyalty": 100
+          }
+        ],
+        "startGold": 600,
+        "startFood": 500,
+        "isPlayable": false
+      },
+      {
+        "factionId": "liuyan_huangjin",
+        "factionName": "刘焉势力",
+        "leaderId": "liuyan",
+        "initialCityIds": [
+          "cheng_du",
+          "zi_tong"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liuyan",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 4,
+            "initialLoyalty": 100
+          }
+        ],
+        "startGold": 500,
+        "startFood": 400,
+        "isPlayable": false
+      }
+    ],
+    "events": [
+      {
+        "eventId": "huangjin_rise",
+        "eventName": "黄巾起义",
+        "triggerType": "scenario_start",
+        "triggerConditions": {},
+        "effects": {
+          "type": "narrative",
+          "description": "张角发动黄巾起义，天下响应。各地豪杰纷纷起兵平乱。",
+          "messageTitle": "黄巾之乱",
+          "messageText": "苍天已死，黄天当立。岁在甲子，天下大吉。"
+        }
+      },
+      {
+        "eventId": "peach_oath",
+        "eventName": "桃园结义",
+        "triggerType": "faction_start",
+        "triggerConditions": {
+          "requiredFactionId": "liubei_huangjin"
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "刘备、关羽、张飞于桃园结义，誓共匡扶汉室。",
+          "messageTitle": "桃园结义",
+          "messageText": "念刘备、关羽、张飞，虽然异姓，既结为兄弟，则同心协力，救困扶危；上报国家，下安黎庶。"
+        }
+      }
+    ]
+  },
+  {
+    "id": "anti_dongzhuo",
+    "name": "反董卓联合",
+    "description": "董卓废少帝立献帝，把持朝政。袁绍号召十八路诸侯联合讨伐董卓，天下风云再起。",
+    "startDate": {
+      "year": 190,
+      "month": 1,
+      "day": 1
+    },
+    "playableFactions": [
+      "caocao_dongzhuo",
+      "yuanshao_dongzhuo",
+      "sunjian_dongzhuo"
+    ],
+    "factions": [
+      {
+        "factionId": "dongzhuo_coalition",
+        "factionName": "董卓",
+        "leaderId": "dongzhuo",
+        "initialCityIds": [
+          "luo_yang",
+          "chang_an",
+          "tong_guan"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "dongzhuo",
+            "assignedCityId": "luo_yang",
+            "initialLevel": 10,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "lvbu",
+            "assignedCityId": "luo_yang",
+            "initialLevel": 12,
+            "initialLoyalty": 55
+          },
+          {
+            "generalId": "dianwei",
+            "assignedCityId": "luo_yang",
+            "initialLevel": 8,
+            "initialLoyalty": 80
+          },
+          {
+            "generalId": "li_ru",
+            "assignedCityId": "luo_yang",
+            "initialLevel": 7,
+            "initialLoyalty": 90
+          }
+        ],
+        "startGold": 1500,
+        "startFood": 1200,
+        "isPlayable": false
+      },
+      {
+        "factionId": "yuanshao_dongzhuo",
+        "factionName": "袁绍",
+        "leaderId": "yuanshao",
+        "initialCityIds": [
+          "ye_cheng",
+          "jin_yang",
+          "ping_yuan"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "yuanshao",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 9,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "yan_liang",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 8,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "wen_chou",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 8,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "zhanghe",
+            "assignedCityId": "jin_yang",
+            "initialLevel": 7,
+            "initialLoyalty": 80
+          }
+        ],
+        "startGold": 1200,
+        "startFood": 1000,
+        "isPlayable": true
+      },
+      {
+        "factionId": "caocao_dongzhuo",
+        "factionName": "曹操",
+        "leaderId": "caocao",
+        "initialCityIds": [
+          "chen_liu",
+          "xiao_pei",
+          "pu_yang"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "caocao",
+            "assignedCityId": "chen_liu",
+            "initialLevel": 10,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "xiahoudun",
+            "assignedCityId": "chen_liu",
+            "initialLevel": 8,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "xiahouyuan",
+            "assignedCityId": "chen_liu",
+            "initialLevel": 7,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "caoren",
+            "assignedCityId": "xiao_pei",
+            "initialLevel": 6,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "caohong",
+            "assignedCityId": "xiao_pei",
+            "initialLevel": 6,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "dianwei",
+            "assignedCityId": "chen_liu",
+            "initialLevel": 9,
+            "initialLoyalty": 95
+          }
+        ],
+        "startGold": 1000,
+        "startFood": 800,
+        "isPlayable": true
+      },
+      {
+        "factionId": "sunjian_dongzhuo",
+        "factionName": "孙坚",
+        "leaderId": "sunjian",
+        "initialCityIds": [
+          "chang_sha",
+          "wu_ling",
+          "ling_ling"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "sunjian",
+            "assignedCityId": "chang_sha",
+            "initialLevel": 10,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "huanggai",
+            "assignedCityId": "chang_sha",
+            "initialLevel": 7,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "chengpu",
+            "assignedCityId": "chang_sha",
+            "initialLevel": 7,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "sunce",
+            "assignedCityId": "chang_sha",
+            "initialLevel": 6,
+            "initialLoyalty": 90
+          }
+        ],
+        "startGold": 800,
+        "startFood": 600,
+        "isPlayable": true
+      },
+      {
+        "factionId": "liubei_dongzhuo",
+        "factionName": "刘备",
+        "leaderId": "liubei",
+        "initialCityIds": [
+          "ping_yuan"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liubei",
+            "assignedCityId": "ping_yuan",
+            "initialLevel": 7,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "guanyu",
+            "assignedCityId": "ping_yuan",
+            "initialLevel": 7,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhangfei",
+            "assignedCityId": "ping_yuan",
+            "initialLevel": 7,
+            "initialLoyalty": 100
+          }
+        ],
+        "startGold": 400,
+        "startFood": 300,
+        "isPlayable": false
+      },
+      {
+        "factionId": "gongsunzan_dongzhuo",
+        "factionName": "公孙瓒",
+        "leaderId": "gongsunzan",
+        "initialCityIds": [
+          "you_zhou",
+          "bei_ping"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "gongsunzan",
+            "assignedCityId": "you_zhou",
+            "initialLevel": 8,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhaoyun",
+            "assignedCityId": "you_zhou",
+            "initialLevel": 5,
+            "initialLoyalty": 70
+          }
+        ],
+        "startGold": 700,
+        "startFood": 550,
+        "isPlayable": false
+      },
+      {
+        "factionId": "yuan_shu_dongzhuo",
+        "factionName": "袁术",
+        "leaderId": "yuan_shu",
+        "initialCityIds": [
+          "shou_chun",
+          "lu_jiang",
+          "ru_nan"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "yuan_shu",
+            "assignedCityId": "shou_chun",
+            "initialLevel": 6,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "ji_ling",
+            "assignedCityId": "shou_chun",
+            "initialLevel": 6,
+            "initialLoyalty": 80
+          }
+        ],
+        "startGold": 700,
+        "startFood": 550,
+        "isPlayable": false
+      },
+      {
+        "factionId": "liubiao_dongzhuo",
+        "factionName": "刘表",
+        "leaderId": "liubiao",
+        "initialCityIds": [
+          "xiang_yang",
+          "jiang_ling"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liubiao",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 6,
+            "initialLoyalty": 100
+          }
+        ],
+        "startGold": 600,
+        "startFood": 500,
+        "isPlayable": false
+      },
+      {
+        "factionId": "ma_teng_dongzhuo",
+        "factionName": "马腾",
+        "leaderId": "ma_teng",
+        "initialCityIds": [
+          "tian_shui",
+          "wu_wei"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "ma_teng",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 7,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "machao",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 6,
+            "initialLoyalty": 95
+          }
+        ],
+        "startGold": 550,
+        "startFood": 450,
+        "isPlayable": false
+      }
+    ],
+    "events": [
+      {
+        "eventId": "coalition_form",
+        "eventName": "反董卓联盟",
+        "triggerType": "scenario_start",
+        "triggerConditions": {},
+        "effects": {
+          "type": "narrative",
+          "description": "袁绍号召十八路诸侯联合讨伐董卓。",
+          "messageTitle": "反董卓联合",
+          "messageText": "董卓欺君罔上，祸乱朝纲，天下共愤。今奉诏讨贼，诸路诸侯，宜同心协力，共扶汉室。"
+        }
+      },
+      {
+        "eventId": "emperor_relocated",
+        "eventName": "废少帝立献帝",
+        "triggerType": "faction_control",
+        "triggerConditions": {
+          "requiredFactionId": "dongzhuo_coalition",
+          "requiredCityIds": [
+            "luo_yang"
+          ],
+          "requiredGeneralIds": [
+            "li_ru"
+          ]
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "董卓废少帝，立献帝，把持朝政。",
+          "messageTitle": "朝政易主",
+          "messageText": "董卓入京，废少帝为弘农王，立陈留王为献帝，自封相国，专断朝政。"
+        }
+      },
+      {
+        "eventId": "capital_move_changan",
+        "eventName": "迁都长安",
+        "triggerType": "city_fall",
+        "triggerConditions": {
+          "triggerFactionId": "dongzhuo_coalition",
+          "lostCityId": "hu_lao",
+          "controlledCityIds": [
+            "luo_yang",
+            "chang_an"
+          ]
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "董卓火烧洛阳，迁都长安。",
+          "messageTitle": "迁都长安",
+          "messageText": "董卓惧诸侯兵威，焚洛阳宫室，劫天子迁都长安。洛阳繁华，一朝化为焦土。"
+        }
+      },
+      {
+        "eventId": "sunce_campaign",
+        "eventName": "孙策出阵",
+        "triggerType": "faction_start",
+        "triggerConditions": {
+          "requiredFactionId": "sunjian_dongzhuo"
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "孙坚之子孙策随父出征，初露锋芒。",
+          "messageTitle": "小霸王初阵",
+          "messageText": "孙策年方弱冠，英勇过人，随父征讨董卓，屡立战功，人称小霸王。"
+        }
+      }
+    ]
+  },
+  {
+    "id": "warlords_rise",
+    "name": "群雄割据",
+    "description": "董卓已死，群雄并起，天下进入混战时期。曹操、袁绍、吕布、孙策等势力各霸一方。",
+    "startDate": {
+      "year": 194,
+      "month": 6,
+      "day": 1
+    },
+    "playableFactions": [
+      "caocao_warlords",
+      "yuanshao_warlords",
+      "sunce_warlords"
+    ],
+    "factions": [
+      {
+        "factionId": "caocao_warlords",
+        "factionName": "曹操",
+        "leaderId": "caocao",
+        "initialCityIds": [
+          "chen_liu",
+          "pu_yang",
+          "xiao_pei"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "caocao",
+            "assignedCityId": "chen_liu",
+            "initialLevel": 12,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "xiahoudun",
+            "assignedCityId": "chen_liu",
+            "initialLevel": 10,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "xiahouyuan",
+            "assignedCityId": "chen_liu",
+            "initialLevel": 9,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "caoren",
+            "assignedCityId": "xiao_pei",
+            "initialLevel": 8,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "xunyu",
+            "assignedCityId": "chen_liu",
+            "initialLevel": 8,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "guojia",
+            "assignedCityId": "chen_liu",
+            "initialLevel": 7,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "chengyu",
+            "assignedCityId": "chen_liu",
+            "initialLevel": 7,
+            "initialLoyalty": 88
+          }
+        ],
+        "startGold": 1200,
+        "startFood": 1000,
+        "isPlayable": true
+      },
+      {
+        "factionId": "yuanshao_warlords",
+        "factionName": "袁绍",
+        "leaderId": "yuanshao",
+        "initialCityIds": [
+          "ye_cheng",
+          "jin_yang",
+          "ping_yuan",
+          "pu_yang"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "yuanshao",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 12,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "yan_liang",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 10,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "wen_chou",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 10,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "zhanghe",
+            "assignedCityId": "jin_yang",
+            "initialLevel": 9,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "ju_shou",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 8,
+            "initialLoyalty": 80
+          }
+        ],
+        "startGold": 1400,
+        "startFood": 1200,
+        "isPlayable": true
+      },
+      {
+        "factionId": "lvbu_warlords",
+        "factionName": "吕布",
+        "leaderId": "lvbu",
+        "initialCityIds": [
+          "xia_pi",
+          "xiao_pei"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "lvbu",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 15,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhangliao",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 10,
+            "initialLoyalty": 80
+          },
+          {
+            "generalId": "chen_gong",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 9,
+            "initialLoyalty": 85
+          }
+        ],
+        "startGold": 700,
+        "startFood": 600,
+        "isPlayable": false
+      },
+      {
+        "factionId": "sunce_warlords",
+        "factionName": "孙策",
+        "leaderId": "sunce",
+        "initialCityIds": [
+          "jian_ye",
+          "wu_jun"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "sunce",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 12,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhouyu",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 10,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "taishici",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 9,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "lusu",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 7,
+            "initialLoyalty": 80
+          }
+        ],
+        "startGold": 600,
+        "startFood": 500,
+        "isPlayable": true
+      },
+      {
+        "factionId": "liubei_warlords",
+        "factionName": "刘备",
+        "leaderId": "liubei",
+        "initialCityIds": [
+          "xu_zhou"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liubei",
+            "assignedCityId": "xu_zhou",
+            "initialLevel": 10,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "guanyu",
+            "assignedCityId": "xu_zhou",
+            "initialLevel": 10,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhangfei",
+            "assignedCityId": "xu_zhou",
+            "initialLevel": 10,
+            "initialLoyalty": 100
+          }
+        ],
+        "startGold": 500,
+        "startFood": 400,
+        "isPlayable": false
+      },
+      {
+        "factionId": "yuan_shu_warlords",
+        "factionName": "袁术",
+        "leaderId": "yuan_shu",
+        "initialCityIds": [
+          "shou_chun",
+          "lu_jiang",
+          "ru_nan"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "yuan_shu",
+            "assignedCityId": "shou_chun",
+            "initialLevel": 8,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "ji_ling",
+            "assignedCityId": "shou_chun",
+            "initialLevel": 7,
+            "initialLoyalty": 75
+          }
+        ],
+        "startGold": 800,
+        "startFood": 650,
+        "isPlayable": false
+      },
+      {
+        "factionId": "liubiao_warlords",
+        "factionName": "刘表",
+        "leaderId": "liubiao",
+        "initialCityIds": [
+          "xiang_yang",
+          "jiang_ling",
+          "jiang_xia"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liubiao",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 8,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "huangzhong",
+            "assignedCityId": "jiang_ling",
+            "initialLevel": 9,
+            "initialLoyalty": 80
+          },
+          {
+            "generalId": "weyan",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 7,
+            "initialLoyalty": 70
+          }
+        ],
+        "startGold": 700,
+        "startFood": 600,
+        "isPlayable": false
+      },
+      {
+        "factionId": "liuzhang_warlords",
+        "factionName": "刘璋",
+        "leaderId": "liuzhang",
+        "initialCityIds": [
+          "cheng_du",
+          "zi_tong",
+          "jiang_zhou"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liuzhang",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 6,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhangren",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 9,
+            "initialLoyalty": 90
+          }
+        ],
+        "startGold": 600,
+        "startFood": 500,
+        "isPlayable": false
+      },
+      {
+        "factionId": "zhanglu_warlords",
+        "factionName": "张鲁",
+        "leaderId": "zhanglu",
+        "initialCityIds": [
+          "han_zhong"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "zhanglu",
+            "assignedCityId": "han_zhong",
+            "initialLevel": 7,
+            "initialLoyalty": 100
+          }
+        ],
+        "startGold": 400,
+        "startFood": 350,
+        "isPlayable": false
+      },
+      {
+        "factionId": "machao_warlords",
+        "factionName": "马腾",
+        "leaderId": "machao",
+        "initialCityIds": [
+          "tian_shui",
+          "wu_wei"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "machao",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 12,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "ma_teng",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 8,
+            "initialLoyalty": 90
+          }
+        ],
+        "startGold": 550,
+        "startFood": 450,
+        "isPlayable": false
+      }
+    ],
+    "events": [
+      {
+        "eventId": "sunce_independence",
+        "eventName": "孙策独立",
+        "triggerType": "faction_start",
+        "triggerConditions": {
+          "requiredFactionId": "sunce_warlords"
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "孙策脱离袁术，自立江东，开创基业。",
+          "messageTitle": "小霸王独立",
+          "messageText": "孙策以玉玺为质，向袁术借兵三千，渡江而击刘繇，遂有江东之地。"
+        }
+      },
+      {
+        "eventId": "caocao_expand",
+        "eventName": "曹操崛起",
+        "triggerType": "scenario_start",
+        "triggerConditions": {},
+        "effects": {
+          "type": "narrative",
+          "description": "曹操收编青州兵，势力大增，开始逐鹿中原。",
+          "messageTitle": "青州兵威",
+          "messageText": "曹操击破青州黄巾三十万众，收其精锐，号青州兵，威震中原。"
+        }
+      }
+    ]
+  },
+  {
+    "id": "guandu_battle",
+    "name": "官渡之战",
+    "description": "曹操已消灭吕布、袁术，袁绍也统一了河北。两大势力在官渡展开决战，这是决定北方霸主归属的关键一战。",
+    "startDate": {
+      "year": 200,
+      "month": 4,
+      "day": 1
+    },
+    "playableFactions": [
+      "caocao_guandu",
+      "yuanshao_guandu"
+    ],
+    "factions": [
+      {
+        "factionId": "caocao_guandu",
+        "factionName": "曹操",
+        "leaderId": "caocao",
+        "initialCityIds": [
+          "xu_chang",
+          "chen_liu",
+          "ru_nan",
+          "pu_yang",
+          "xia_pi"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "caocao",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 15,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "xiahoudun",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 12,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "xiahouyuan",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 11,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "caoren",
+            "assignedCityId": "ru_nan",
+            "initialLevel": 10,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "xuhuang",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 11,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "zhangliao",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 12,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "zhanghe",
+            "assignedCityId": "pu_yang",
+            "initialLevel": 10,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "xunyu",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 10,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "guojia",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 9,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "chengyu",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 9,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "jiaxu",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 9,
+            "initialLoyalty": 75
+          },
+          {
+            "generalId": "xunyou",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 15,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "yuejin",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 14,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "manchong",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 12,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "caochun",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 12,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "caoxiu",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 6,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "zhongyao",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 12,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "maojie",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 8,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "cuiyan",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 7,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "hanhao",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 10,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "shihuan",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 10,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "zhuling",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 9,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "caimao",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 8,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "wenpin",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 10,
+            "initialLoyalty": 88
+          }
+        ],
+        "startGold": 1500,
+        "startFood": 1200,
+        "isPlayable": true
+      },
+      {
+        "factionId": "yuanshao_guandu",
+        "factionName": "袁绍",
+        "leaderId": "yuanshao",
+        "initialCityIds": [
+          "ye_cheng",
+          "jin_yang",
+          "ping_yuan",
+          "pu_yang",
+          "bei_ping",
+          "you_zhou"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "yuanshao",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 14,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "yan_liang",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 12,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "wen_chou",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 12,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "zhanghe",
+            "assignedCityId": "jin_yang",
+            "initialLevel": 11,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "gao_lan",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 10,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "ju_shou",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 10,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "tian_feng",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 9,
+            "initialLoyalty": 75
+          },
+          {
+            "generalId": "shenpei",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 14,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "fengji",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 12,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "chunyuqiong",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 12,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "gaogan",
+            "assignedCityId": "jin_yang",
+            "initialLevel": 10,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "yuantan",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 8,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "jugui",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 5,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "zanghong",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 8,
+            "initialLoyalty": 88
+          }
+        ],
+        "startGold": 1800,
+        "startFood": 1500,
+        "isPlayable": true
+      },
+      {
+        "factionId": "liubei_guandu",
+        "factionName": "刘备",
+        "leaderId": "liubei",
+        "initialCityIds": [
+          "xia_pi"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liubei",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 12,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "guanyu",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 12,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhangfei",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 11,
+            "initialLoyalty": 98
+          },
+          {
+            "generalId": "zhaoyun",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 10,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "mizhu",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 10,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "sunqian",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 8,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "jianyong",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 8,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "chendao",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 10,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "liaohua",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 8,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "liufeng",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 5,
+            "initialLoyalty": 80
+          }
+        ],
+        "startGold": 500,
+        "startFood": 400,
+        "isPlayable": false
+      },
+      {
+        "factionId": "sunce_guandu",
+        "factionName": "孙策",
+        "leaderId": "sunce",
+        "initialCityIds": [
+          "jian_ye",
+          "wu_jun",
+          "kuai_ji",
+          "lu_jiang",
+          "chai_sang"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "sunce",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 15,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhouyu",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 12,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "taishici",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 11,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "lusu",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 9,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "lvmeng",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 8,
+            "initialLoyalty": 82
+          }
+        ],
+        "startGold": 1000,
+        "startFood": 800,
+        "isPlayable": false
+      },
+      {
+        "factionId": "liubiao_guandu",
+        "factionName": "刘表",
+        "leaderId": "liubiao",
+        "initialCityIds": [
+          "xiang_yang",
+          "jiang_ling",
+          "jiang_xia",
+          "chang_sha"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liubiao",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 10,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "huangzhong",
+            "assignedCityId": "jiang_ling",
+            "initialLevel": 12,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "weyan",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 9,
+            "initialLoyalty": 75
+          },
+          {
+            "generalId": "wenpin",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 12,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "zhangyun",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 7,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "liuqi",
+            "assignedCityId": "jiang_xia",
+            "initialLevel": 4,
+            "initialLoyalty": 80
+          }
+        ],
+        "startGold": 700,
+        "startFood": 600,
+        "isPlayable": false
+      },
+      {
+        "factionId": "liuzhang_guandu",
+        "factionName": "刘璋",
+        "leaderId": "liuzhang",
+        "initialCityIds": [
+          "cheng_du",
+          "zi_tong",
+          "mian_zhu",
+          "jiang_zhou"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liuzhang",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 8,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhangren",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 11,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "yanyan",
+            "assignedCityId": "jiang_zhou",
+            "initialLevel": 12,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "huangquan",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 10,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "zhangsong",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 7,
+            "initialLoyalty": 55
+          },
+          {
+            "generalId": "liyan",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 8,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "wuyi",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 6,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "qinmi",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 6,
+            "initialLoyalty": 80
+          }
+        ],
+        "startGold": 600,
+        "startFood": 500,
+        "isPlayable": false
+      },
+      {
+        "factionId": "zhanglu_guandu",
+        "factionName": "张鲁",
+        "leaderId": "zhanglu",
+        "initialCityIds": [
+          "han_zhong"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "zhanglu",
+            "assignedCityId": "han_zhong",
+            "initialLevel": 9,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "yangsong",
+            "assignedCityId": "han_zhong",
+            "initialLevel": 6,
+            "initialLoyalty": 52
+          },
+          {
+            "generalId": "yangbai",
+            "assignedCityId": "han_zhong",
+            "initialLevel": 7,
+            "initialLoyalty": 82
+          }
+        ],
+        "startGold": 400,
+        "startFood": 350,
+        "isPlayable": false
+      },
+      {
+        "factionId": "machao_guandu",
+        "factionName": "马腾",
+        "leaderId": "machao",
+        "initialCityIds": [
+          "tian_shui",
+          "wu_wei"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "machao",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 14,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "ma_teng",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 10,
+            "initialLoyalty": 90
+          }
+        ],
+        "startGold": 500,
+        "startFood": 400,
+        "isPlayable": false
+      }
+    ],
+    "events": [
+      {
+        "eventId": "guandu_confrontation",
+        "eventName": "官渡对峙",
+        "triggerType": "scenario_start",
+        "triggerConditions": {},
+        "effects": {
+          "type": "narrative",
+          "description": "曹操与袁绍在官渡展开决战。",
+          "messageTitle": "官渡之战",
+          "messageText": "袁绍起冀、青、幽、并四州之兵七十万，曹操起兵七万，两军对峙于官渡。"
+        }
+      },
+      {
+        "eventId": "wuchao_burn",
+        "eventName": "火烧乌巢",
+        "triggerType": "turn_count",
+        "triggerConditions": {
+          "minTurnsElapsed": 6,
+          "requiredFactionId": "caocao_guandu"
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "许攸投曹，献计火烧乌巢，袁绍军心大乱。",
+          "messageTitle": "乌巢火起",
+          "messageText": "许攸来降，献计烧乌巢粮草。曹操大喜，亲率精兵五千，夜袭乌巢。"
+        }
+      },
+      {
+        "eventId": "zhanghe_defect",
+        "eventName": "张郃降曹",
+        "triggerType": "event_chain",
+        "triggerConditions": {
+          "requiresEventId": "wuchao_burn",
+          "daysAfterEvent": 10
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "张郃、高览降曹，袁绍军心崩溃。",
+          "messageTitle": "将星叛离",
+          "messageText": "张郃、高览见袁绍不能用人，遂降曹操。绍军大溃。"
+        }
+      }
+    ]
+  },
+  {
+    "id": "three_visits",
+    "name": "三顾茅庐",
+    "description": "曹操基本统一北方，孙权坐镇江东，刘备驻守新野。此时诸葛亮隐居隆中，等待明主三顾茅庐。",
+    "startDate": {
+      "year": 207,
+      "month": 9,
+      "day": 1
+    },
+    "playableFactions": [
+      "liubei_visits",
+      "caocao_visits",
+      "sunquan_visits"
+    ],
+    "factions": [
+      {
+        "factionId": "caocao_visits",
+        "factionName": "曹操",
+        "leaderId": "caocao",
+        "initialCityIds": [
+          "xu_chang",
+          "ye_cheng",
+          "chen_liu",
+          "ru_nan",
+          "luo_yang",
+          "chang_an",
+          "jin_yang",
+          "ping_yuan"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "caocao",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 20,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "xiahoudun",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 16,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "xiahouyuan",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 15,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "caoren",
+            "assignedCityId": "ru_nan",
+            "initialLevel": 14,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "xuhuang",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 15,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "zhangliao",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 16,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "zhanghe",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 14,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "xuchu",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 15,
+            "initialLoyalty": 96
+          },
+          {
+            "generalId": "xunyu",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 14,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "guojia",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 13,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "jiaxu",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 13,
+            "initialLoyalty": 80
+          },
+          {
+            "generalId": "simayi",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 10,
+            "initialLoyalty": 65
+          },
+          {
+            "generalId": "xunyou",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 18,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "yuejin",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 16,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "manchong",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 14,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "caochun",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 14,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "caozhen",
+            "assignedCityId": "luo_yang",
+            "initialLevel": 8,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "caoxiu",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 10,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "zhongyao",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 14,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "chenqun",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 8,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "yangxiu",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 6,
+            "initialLoyalty": 72
+          },
+          {
+            "generalId": "cuiyan",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 10,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "wenpin",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 14,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "zangba",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 12,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "maojie",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 10,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "hanhao",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 12,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "shihuan",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 12,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "zhuling",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 12,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "lvqian",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 8,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "zhangxiu",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 12,
+            "initialLoyalty": 75
+          },
+          {
+            "generalId": "caimao",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 10,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "zhangyun",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 8,
+            "initialLoyalty": 80
+          },
+          {
+            "generalId": "xinpi",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 8,
+            "initialLoyalty": 82
+          }
+        ],
+        "startGold": 2500,
+        "startFood": 2000,
+        "isPlayable": true
+      },
+      {
+        "factionId": "liubei_visits",
+        "factionName": "刘备",
+        "leaderId": "liubei",
+        "initialCityIds": [
+          "xia_pi",
+          "ru_nan"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liubei",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 15,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "guanyu",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 15,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhangfei",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 14,
+            "initialLoyalty": 98
+          },
+          {
+            "generalId": "zhaoyun",
+            "assignedCityId": "ru_nan",
+            "initialLevel": 13,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "mizhu",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 12,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "sunqian",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 10,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "jianyong",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 10,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "chendao",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 12,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "liaohua",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 10,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "liufeng",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 8,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "mifang",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 6,
+            "initialLoyalty": 60
+          }
+        ],
+        "startGold": 400,
+        "startFood": 300,
+        "isPlayable": true
+      },
+      {
+        "factionId": "sunquan_visits",
+        "factionName": "孙权",
+        "leaderId": "sunquan",
+        "initialCityIds": [
+          "jian_ye",
+          "wu_jun",
+          "kuai_ji",
+          "chai_sang",
+          "lu_jiang",
+          "he_fei"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "sunquan",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 15,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhouyu",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 16,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "lusu",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 12,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "lvmeng",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 11,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "ganning",
+            "assignedCityId": "chai_sang",
+            "initialLevel": 12,
+            "initialLoyalty": 80
+          },
+          {
+            "generalId": "taishici",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 12,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "zhangzhao",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 10,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "handang",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 14,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "jiangqin",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 12,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "lingtong",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 8,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "zhuzhi",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 12,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "dongxi",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 10,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "chenwu",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 9,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "panzhang",
+            "assignedCityId": "chai_sang",
+            "initialLevel": 8,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "xusheng",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 8,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "zhugejin",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 8,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "guyong",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 10,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "kanze",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 8,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "buzhi",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 7,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "yufan",
+            "assignedCityId": "kuai_ji",
+            "initialLevel": 6,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "zhanghong",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 10,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "sunshangxiang",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 6,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "dingfeng",
+            "assignedCityId": "lu_jiang",
+            "initialLevel": 5,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "quancong",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 4,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "lvfan",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 8,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "daqiao",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 5,
+            "initialLoyalty": 80
+          },
+          {
+            "generalId": "xiaoqiao",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 5,
+            "initialLoyalty": 82
+          }
+        ],
+        "startGold": 1200,
+        "startFood": 1000,
+        "isPlayable": true
+      },
+      {
+        "factionId": "liubiao_visits",
+        "factionName": "刘表",
+        "leaderId": "liubiao",
+        "initialCityIds": [
+          "xiang_yang",
+          "jiang_ling",
+          "jiang_xia"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liubiao",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 12,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "huangzhong",
+            "assignedCityId": "jiang_ling",
+            "initialLevel": 14,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "weyan",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 10,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "liuqi",
+            "assignedCityId": "jiang_xia",
+            "initialLevel": 6,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "liucong",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 3,
+            "initialLoyalty": 78
+          }
+        ],
+        "startGold": 800,
+        "startFood": 700,
+        "isPlayable": false
+      },
+      {
+        "factionId": "liuzhang_visits",
+        "factionName": "刘璋",
+        "leaderId": "liuzhang",
+        "initialCityIds": [
+          "cheng_du",
+          "zi_tong",
+          "mian_zhu",
+          "jiang_zhou",
+          "han_zhong"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liuzhang",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 8,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhangren",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 12,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "fazheng",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 9,
+            "initialLoyalty": 70
+          },
+          {
+            "generalId": "yanyan",
+            "assignedCityId": "jiang_zhou",
+            "initialLevel": 14,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "huangquan",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 12,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "zhangsong",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 10,
+            "initialLoyalty": 50
+          },
+          {
+            "generalId": "liyan",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 10,
+            "initialLoyalty": 75
+          },
+          {
+            "generalId": "wuyi",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 8,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "wuban",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 5,
+            "initialLoyalty": 80
+          },
+          {
+            "generalId": "qinmi",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 8,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "liuba",
+            "assignedCityId": "zi_tong",
+            "initialLevel": 6,
+            "initialLoyalty": 70
+          }
+        ],
+        "startGold": 600,
+        "startFood": 500,
+        "isPlayable": false
+      },
+      {
+        "factionId": "zhanglu_visits",
+        "factionName": "张鲁",
+        "leaderId": "zhanglu",
+        "initialCityIds": [
+          "han_zhong"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "zhanglu",
+            "assignedCityId": "han_zhong",
+            "initialLevel": 10,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "yangsong",
+            "assignedCityId": "han_zhong",
+            "initialLevel": 8,
+            "initialLoyalty": 48
+          },
+          {
+            "generalId": "yangbai",
+            "assignedCityId": "han_zhong",
+            "initialLevel": 8,
+            "initialLoyalty": 82
+          }
+        ],
+        "startGold": 350,
+        "startFood": 300,
+        "isPlayable": false
+      },
+      {
+        "factionId": "machao_visits",
+        "factionName": "马腾",
+        "leaderId": "machao",
+        "initialCityIds": [
+          "tian_shui",
+          "wu_wei"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "machao",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 16,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "ma_teng",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 12,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "pang_de",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 14,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "madai",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 10,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "maxiu",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 7,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "matie",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 6,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "hansui",
+            "assignedCityId": "wu_wei",
+            "initialLevel": 14,
+            "initialLoyalty": 55
+          },
+          {
+            "generalId": "chenggongying",
+            "assignedCityId": "wu_wei",
+            "initialLevel": 10,
+            "initialLoyalty": 82
+          }
+        ],
+        "startGold": 500,
+        "startFood": 400,
+        "isPlayable": false
+      },
+      {
+        "factionId": "menghuo_visits",
+        "factionName": "孟获",
+        "leaderId": "menghuo",
+        "initialCityIds": [
+          "wu_ling",
+          "ling_ling"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "menghuo",
+            "assignedCityId": "wu_ling",
+            "initialLevel": 12,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "mengyou",
+            "assignedCityId": "wu_ling",
+            "initialLevel": 6,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "zhurong",
+            "assignedCityId": "wu_ling",
+            "initialLevel": 8,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "wutugu",
+            "assignedCityId": "ling_ling",
+            "initialLevel": 6,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "shamoke",
+            "assignedCityId": "wu_ling",
+            "initialLevel": 5,
+            "initialLoyalty": 80
+          }
+        ],
+        "startGold": 300,
+        "startFood": 250,
+        "isPlayable": false
+      }
+    ],
+    "events": [
+      {
+        "eventId": "three_visits_1",
+        "eventName": "三顾之礼一",
+        "triggerType": "faction_start",
+        "triggerConditions": {
+          "requiredFactionId": "liubei_visits"
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "刘备第一次拜访诸葛亮。",
+          "messageTitle": "一顾茅庐",
+          "messageText": "刘备闻卧龙之名，亲往隆中拜访。孔明出游，未遇。"
+        }
+      },
+      {
+        "eventId": "three_visits_2",
+        "eventName": "三顾之礼二",
+        "triggerType": "turn_count",
+        "triggerConditions": {
+          "minTurnsElapsed": 3,
+          "requiredFactionId": "liubei_visits"
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "刘备第二次拜访诸葛亮。",
+          "messageTitle": "二顾茅庐",
+          "messageText": "刘备冒雪再往隆中，只见孔明之弟诸葛均。留书一封，表达诚意。"
+        }
+      },
+      {
+        "eventId": "three_visits_3",
+        "eventName": "三顾之礼三",
+        "triggerType": "turn_count",
+        "triggerConditions": {
+          "minTurnsElapsed": 6,
+          "requiredFactionId": "liubei_visits"
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "刘备第三次拜访诸葛亮，孔明出山相助。",
+          "messageTitle": "三顾茅庐",
+          "messageText": "刘备斋戒三日，三顾茅庐。孔明感其诚意，遂出隆中，为备画三分之计。"
+        }
+      },
+      {
+        "eventId": "liubiao_death",
+        "eventName": "刘表之死",
+        "triggerType": "year_month",
+        "triggerConditions": {
+          "targetYear": 208,
+          "targetMonth": 1,
+          "requiredFactionId": "liubiao_visits",
+          "requiredCityIds": [
+            "xiang_yang",
+            "jiang_xia"
+          ]
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "刘表病死，刘琮继位，暗中准备投降曹操。",
+          "messageTitle": "刘表病逝",
+          "messageText": "刘表病亡，蔡夫人与蔡瑁等立刘琮为荆州之主，暗通曹操。"
+        }
+      },
+      {
+        "eventId": "caocao_south",
+        "eventName": "曹操南征",
+        "triggerType": "event_chain",
+        "triggerConditions": {
+          "requiresEventId": "liubiao_death",
+          "daysAfterEvent": 10
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "曹操南征荆州，刘琮投降。",
+          "messageTitle": "荆襄易主",
+          "messageText": "曹操大军南下，刘琮举荆州降。刘备弃新野，走樊城，奔襄阳。"
+        }
+      }
+    ]
+  },
+  {
+    "id": "red_cliffs",
+    "name": "赤壁之战",
+    "description": "曹操南下荆州，刘琮投降，刘备败走夏口。孙刘联合抗曹，火烧赤壁，奠定三分天下格局。",
+    "startDate": {
+      "year": 208,
+      "month": 10,
+      "day": 1
+    },
+    "playableFactions": [
+      "liubei_alliance",
+      "sun_liu_alliance"
+    ],
+    "factions": [
+      {
+        "factionId": "caocao_redcliffs",
+        "factionName": "曹操",
+        "leaderId": "caocao",
+        "initialCityIds": [
+          "xu_chang",
+          "ye_cheng",
+          "xiang_yang",
+          "jiang_ling",
+          "luo_yang",
+          "chang_an",
+          "ru_nan",
+          "jin_yang",
+          "wan_cheng"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "caocao",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 22,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "xiahoudun",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 18,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "xiahouyuan",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 17,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "caoren",
+            "assignedCityId": "jiang_ling",
+            "initialLevel": 16,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "xuhuang",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 17,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "zhangliao",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 18,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "zhanghe",
+            "assignedCityId": "ye_cheng",
+            "initialLevel": 16,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "xuchu",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 17,
+            "initialLoyalty": 96
+          },
+          {
+            "generalId": "lidian",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 14,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "yujin",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 14,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "jiaxu",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 15,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "xunyou",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 18,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "yuejin",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 16,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "manchong",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 15,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "caochun",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 15,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "caozhen",
+            "assignedCityId": "luo_yang",
+            "initialLevel": 10,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "caoxiu",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 12,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "zhongyao",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 15,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "chenqun",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 10,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "wenpin",
+            "assignedCityId": "jiang_ling",
+            "initialLevel": 15,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "zangba",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 13,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "caimao",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 12,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "zhangyun",
+            "assignedCityId": "xiang_yang",
+            "initialLevel": 10,
+            "initialLoyalty": 80
+          },
+          {
+            "generalId": "maojie",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 12,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "zhangxiu",
+            "assignedCityId": "wan_cheng",
+            "initialLevel": 13,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "hanhao",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 13,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "shihuan",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 13,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "zhuling",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 13,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "lvqian",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 10,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "niujin",
+            "assignedCityId": "jiang_ling",
+            "initialLevel": 6,
+            "initialLoyalty": 80
+          },
+          {
+            "generalId": "yangxiu",
+            "assignedCityId": "xu_chang",
+            "initialLevel": 8,
+            "initialLoyalty": 70
+          }
+        ],
+        "startGold": 2500,
+        "startFood": 2000,
+        "isPlayable": false
+      },
+      {
+        "factionId": "liubei_alliance",
+        "factionName": "刘备",
+        "leaderId": "liubei",
+        "initialCityIds": [
+          "xia_pi",
+          "jiang_xia"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liubei",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 16,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "guanyu",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 16,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhangfei",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 15,
+            "initialLoyalty": 98
+          },
+          {
+            "generalId": "zhaoyun",
+            "assignedCityId": "jiang_xia",
+            "initialLevel": 14,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "zhugeliang",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 12,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "mizhu",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 14,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "sunqian",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 12,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "jianyong",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 12,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "chendao",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 14,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "liaohua",
+            "assignedCityId": "jiang_xia",
+            "initialLevel": 12,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "liufeng",
+            "assignedCityId": "xia_pi",
+            "initialLevel": 10,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "mifang",
+            "assignedCityId": "jiang_xia",
+            "initialLevel": 8,
+            "initialLoyalty": 58
+          },
+          {
+            "generalId": "mengda",
+            "assignedCityId": "jiang_xia",
+            "initialLevel": 7,
+            "initialLoyalty": 65
+          },
+          {
+            "generalId": "dengzhi",
+            "assignedCityId": "jiang_xia",
+            "initialLevel": 6,
+            "initialLoyalty": 82
+          }
+        ],
+        "startGold": 600,
+        "startFood": 450,
+        "isPlayable": true
+      },
+      {
+        "factionId": "sun_liu_alliance",
+        "factionName": "孙权",
+        "leaderId": "sunquan",
+        "initialCityIds": [
+          "jian_ye",
+          "wu_jun",
+          "kuai_ji",
+          "chai_sang",
+          "lu_jiang",
+          "he_fei"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "sunquan",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 16,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhouyu",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 18,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "lusu",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 14,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "lvmeng",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 12,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "ganning",
+            "assignedCityId": "chai_sang",
+            "initialLevel": 13,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "taishici",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 13,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "huanggai",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 14,
+            "initialLoyalty": 95
+          },
+          {
+            "generalId": "chengpu",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 12,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "luxun",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 10,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "handang",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 14,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "jiangqin",
+            "assignedCityId": "chai_sang",
+            "initialLevel": 13,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "lingtong",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 10,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "zhuzhi",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 12,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "dongxi",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 11,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "chenwu",
+            "assignedCityId": "lu_jiang",
+            "initialLevel": 10,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "panzhang",
+            "assignedCityId": "chai_sang",
+            "initialLevel": 9,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "xusheng",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 9,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "zhugejin",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 10,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "guyong",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 11,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "kanze",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 9,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "buzhi",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 8,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "yufan",
+            "assignedCityId": "kuai_ji",
+            "initialLevel": 8,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "zhanghong",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 11,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "sunshangxiang",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 8,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "dingfeng",
+            "assignedCityId": "lu_jiang",
+            "initialLevel": 6,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "quancong",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 5,
+            "initialLoyalty": 78
+          },
+          {
+            "generalId": "lvfan",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 9,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "daqiao",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 6,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "xiaoqiao",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 6,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "zhuran",
+            "assignedCityId": "jian_ye",
+            "initialLevel": 5,
+            "initialLoyalty": 80
+          },
+          {
+            "generalId": "zhuhuan",
+            "assignedCityId": "wu_jun",
+            "initialLevel": 5,
+            "initialLoyalty": 80
+          }
+        ],
+        "startGold": 1500,
+        "startFood": 1200,
+        "isPlayable": true
+      },
+      {
+        "factionId": "liuzhang_redcliffs",
+        "factionName": "刘璋",
+        "leaderId": "liuzhang",
+        "initialCityIds": [
+          "cheng_du",
+          "zi_tong",
+          "mian_zhu",
+          "jiang_zhou"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "liuzhang",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 8,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "zhangren",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 12,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "wangping",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 8,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "yanyan",
+            "assignedCityId": "jiang_zhou",
+            "initialLevel": 14,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "huangquan",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 12,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "zhangsong",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 10,
+            "initialLoyalty": 48
+          },
+          {
+            "generalId": "liyan",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 12,
+            "initialLoyalty": 75
+          },
+          {
+            "generalId": "wuyi",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 10,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "wuban",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 6,
+            "initialLoyalty": 80
+          },
+          {
+            "generalId": "qinmi",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 9,
+            "initialLoyalty": 82
+          },
+          {
+            "generalId": "liuba",
+            "assignedCityId": "cheng_du",
+            "initialLevel": 8,
+            "initialLoyalty": 68
+          }
+        ],
+        "startGold": 500,
+        "startFood": 400,
+        "isPlayable": false
+      },
+      {
+        "factionId": "zhanglu_redcliffs",
+        "factionName": "张鲁",
+        "leaderId": "zhanglu",
+        "initialCityIds": [
+          "han_zhong"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "zhanglu",
+            "assignedCityId": "han_zhong",
+            "initialLevel": 10,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "yangsong",
+            "assignedCityId": "han_zhong",
+            "initialLevel": 8,
+            "initialLoyalty": 45
+          },
+          {
+            "generalId": "yangbai",
+            "assignedCityId": "han_zhong",
+            "initialLevel": 8,
+            "initialLoyalty": 82
+          }
+        ],
+        "startGold": 350,
+        "startFood": 300,
+        "isPlayable": false
+      },
+      {
+        "factionId": "machao_redcliffs",
+        "factionName": "马腾",
+        "leaderId": "machao",
+        "initialCityIds": [
+          "tian_shui",
+          "wu_wei"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "machao",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 16,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "ma_teng",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 12,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "pang_de",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 14,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "madai",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 10,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "maxiu",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 8,
+            "initialLoyalty": 88
+          },
+          {
+            "generalId": "matie",
+            "assignedCityId": "tian_shui",
+            "initialLevel": 7,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "hansui",
+            "assignedCityId": "wu_wei",
+            "initialLevel": 14,
+            "initialLoyalty": 52
+          },
+          {
+            "generalId": "chenggongying",
+            "assignedCityId": "wu_wei",
+            "initialLevel": 10,
+            "initialLoyalty": 82
+          }
+        ],
+        "startGold": 500,
+        "startFood": 400,
+        "isPlayable": false
+      },
+      {
+        "factionId": "menghuo_redcliffs",
+        "factionName": "孟获",
+        "leaderId": "menghuo",
+        "initialCityIds": [
+          "wu_ling",
+          "ling_ling"
+        ],
+        "initialGenerals": [
+          {
+            "generalId": "menghuo",
+            "assignedCityId": "wu_ling",
+            "initialLevel": 12,
+            "initialLoyalty": 100
+          },
+          {
+            "generalId": "mengyou",
+            "assignedCityId": "wu_ling",
+            "initialLevel": 7,
+            "initialLoyalty": 90
+          },
+          {
+            "generalId": "zhurong",
+            "assignedCityId": "wu_ling",
+            "initialLevel": 9,
+            "initialLoyalty": 92
+          },
+          {
+            "generalId": "wutugu",
+            "assignedCityId": "ling_ling",
+            "initialLevel": 7,
+            "initialLoyalty": 85
+          },
+          {
+            "generalId": "shamoke",
+            "assignedCityId": "wu_ling",
+            "initialLevel": 6,
+            "initialLoyalty": 80
+          }
+        ],
+        "startGold": 300,
+        "startFood": 250,
+        "isPlayable": false
+      }
+    ],
+    "events": [
+      {
+        "eventId": "sun_liu_alliance_form",
+        "eventName": "孙刘同盟",
+        "triggerType": "scenario_start",
+        "triggerConditions": {},
+        "effects": {
+          "type": "narrative",
+          "description": "诸葛亮舌战群儒，说服孙权联合抗曹。",
+          "messageTitle": "孙刘结盟",
+          "messageText": "诸葛亮过江东，舌战群儒，说服孙权。周瑜、鲁肃力主抗曹，孙刘同盟遂成。"
+        }
+      },
+      {
+        "eventId": "chain_strategy",
+        "eventName": "连环计",
+        "triggerType": "turn_count",
+        "triggerConditions": {
+          "minTurnsElapsed": 2,
+          "requiredFactionId": "sun_liu_alliance"
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "庞统献连环计，曹操将战船首尾相连。",
+          "messageTitle": "连环战船",
+          "messageText": "庞统过曹营，献连环计。曹操大喜，令工匠将战船首尾相连，结为水寨。"
+        }
+      },
+      {
+        "eventId": "huanggai_surrender",
+        "eventName": "黄盖诈降",
+        "triggerType": "turn_count",
+        "triggerConditions": {
+          "minTurnsElapsed": 3,
+          "requiredFactionId": "sun_liu_alliance"
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "黄盖行苦肉计，诈降曹操。",
+          "messageTitle": "苦肉计",
+          "messageText": "周瑜打黄盖，一个愿打一个愿挨。黄盖遣使向曹营献降书。"
+        }
+      },
+      {
+        "eventId": "red_cliffs_fire",
+        "eventName": "火烧赤壁",
+        "triggerType": "turn_count",
+        "triggerConditions": {
+          "minTurnsElapsed": 5,
+          "requiredFactionId": "sun_liu_alliance"
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "黄盖驾火船冲入曹营，火烧赤壁，曹操大败。",
+          "messageTitle": "火烧赤壁",
+          "messageText": "东南风起，黄盖驾火船十艘，径冲曹营。曹营战船相连，一时俱着。烟焰涨天，曹军大败。"
+        }
+      },
+      {
+        "eventId": "huarong_path",
+        "eventName": "华容道",
+        "triggerType": "event_chain",
+        "triggerConditions": {
+          "requiresEventId": "red_cliffs_fire",
+          "daysAfterEvent": 10
+        },
+        "effects": {
+          "type": "narrative",
+          "description": "曹操败走华容道，关羽义释曹操。",
+          "messageTitle": "义释曹操",
+          "messageText": "曹操败走华容道，遇关羽伏兵。操以旧日恩情动之，关羽义释曹操。"
+        }
+      }
+    ]
+  }
+]

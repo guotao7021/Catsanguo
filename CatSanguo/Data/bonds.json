@@ -4,7 +4,7 @@
     "name": "桃园结义",
     "requiredGeneralIds": ["guanyu", "zhangfei"],
     "statBonuses": { "attack": 0.15, "defense": 0.10 },
-    "description": "猫云猫飞结义，攻防兼备"
+    "description": "关羽张飞结义，攻防兼备"
   },
   {
     "id": "father_son",
